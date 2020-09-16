@@ -1,0 +1,10 @@
+*\slprj
+*\netlist
+SysgenFeatureReport.htm*
+*sysgen.log*
+*sysgen_error.log*
+*sysgen_warning.log*
+*.slxc
+*.autosave
+*.lpr
+*.asv
