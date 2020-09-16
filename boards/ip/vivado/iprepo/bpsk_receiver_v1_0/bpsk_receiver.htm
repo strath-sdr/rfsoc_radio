@@ -1,0 +1,301 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<style type="text/css">
+body {margin-top:6.35em; 
+      margin-left:6.35em; 
+      width:62.5em;
+      text-align:justify;
+      font-size:1em; 
+      font-family:"Arial", Serif;
+      color:#000000;}
+
+h1 {font-size:1.125em;
+    font-family:"Arial", Sans-serif;
+    color:#943634;}
+
+p {font-size:inherit;
+   width:62.5em;
+   font-family:inherit;
+   color:inherit;}
+
+ul {font-size:inherit;
+    width:62.5em;
+    font-family:inherit;
+    color:inherit;}
+
+li {width:46.15em;}
+
+.image {position: relative;
+        width: 100%;}
+
+table {border-collapse:collapse;
+       border-spacing:0;
+       caption-side:bottom;
+       border-style:solid;
+       border-width:thin;
+       font-size:1em;
+       width:62.5em;
+       font-family:inherit;
+       color:inherit;}
+
+.title_table {border-collapse:collapse;
+       border-spacing:0;
+       caption-side:bottom;
+       font-size:1em;
+       width:62.5em;
+       border-style:none;}
+
+.title_table_image_cell {border-bottom:thin solid #000000;}
+
+.title_table_design_cell {vertical-align:bottom;
+        font-size:1.875em;
+        text-align:right;
+        border-bottom:thin solid #000000;}
+
+.title_table_date_cell{font-size:1.25em;
+        vertical-align:bottom;
+        text-align:left;
+        border-bottom:thick solid #943634}
+
+.sg_row {font-size:inherit;
+         font-family:inherit;
+         color:inherit;
+         border-style:solid;
+         border-width:thin;}
+
+.sg_cell {margin:0;
+          padding:1em;
+          border-width:inherit;
+          border-style:inherit;
+          font-size:inherit;
+          font-family:inherit;
+          color:inherit;}
+
+.sg_cell_first_row {margin:0;
+          padding:1em;
+          border-width:inherit;
+          border-style:inherit;
+          border-bottom:thick solid #943634;
+          font-size:inherit;
+          font-family:inherit;
+          color:inherit;}
+
+.sg_caption {text-align:left;
+             caption-side:bottom;
+             font-family:inherit;
+             font-size:inherit;}
+</style>
+</head>
+<body>
+<table class="title_table">
+<tr>
+<td class="title_table_image_cell"><img src="images/hw_data_sheet_logo.gif"/></td>
+<td class="title_table_design_cell">bpsk_receiver</td>
+</tr>
+<tr>
+<td colspan=2 class="title_table_date_cell"><b>15-Sep-2020</b></td>
+</tr>
+</table>
+<br>
+<h1>Introduction</h1>
+<p>
+This document is generated from a <b>Xilinx System Generator for DSP</b> (System Generator) design. The purpose of the document is to specify the interface of this design. Each of the subsequent sections provides details on the port interface, signal timing, design files, design statistics and design environment.
+</p>
+<h1>Port Interface</h1><p>
+This section documents the port interface of bpsk_receiver. All the <i>Gateway In</i> and <i>Gateway Out</i> blocks in a System Generator design are translated to top-level input and output ports. <i>System Generator Type</i> refers to the type of signals emanating from Gateway Ins and driving Gateway Outs. <i>Type</i> refers to one of the following -
+</p>
+<ul>
+<li>Data - Signals that are synchronized to Clock
+<li>Clock - Clock signal for the design. All operations of the core are synchronized to the rising edge of the Clock signal
+<li>Clock Enable - Clock Enable signal is attached to the clock enable pins of flip-flops. A valid clock signal occurs only when Clock Enable Signal attached to CE pin of flip-flops is high on a rising clock edge. If CE is Low, the flip-flops are held in their current state.
+</ul>
+<p>
+<i>Period</i> refers to the sampling period of a particular signal. Please refer to the section below on Multi-rate Realization for more details.
+</p>
+<table>
+<tr class="sg_row">
+<td class="sg_cell_first_row">Name</td><td class="sg_cell_first_row">Direction</td><td class="sg_cell_first_row">HDL Type</td><td class="sg_cell_first_row">Type</td><td class="sg_cell_first_row">System Generator Type</td><td class="sg_cell_first_row">Period</td><td class="sg_cell_first_row">Description</td></tr>
+<tr class="sg_row">
+<td class="sg_cell">s_axis_tvalid_re</td><td class="sg_cell">in</td><td class="sg_cell">std_logic_vector(0 downto 0)</td><td class="sg_cell">data</td><td class="sg_cell">Bool</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">s_axis_tvalid_im</td><td class="sg_cell">in</td><td class="sg_cell">std_logic_vector(0 downto 0)</td><td class="sg_cell">data</td><td class="sg_cell">Bool</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">s_axis_tdata_re</td><td class="sg_cell">in</td><td class="sg_cell">std_logic_vector(31 downto 0)</td><td class="sg_cell">data</td><td class="sg_cell">UFix_32_0</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">s_axis_tdata_im</td><td class="sg_cell">in</td><td class="sg_cell">std_logic_vector(31 downto 0)</td><td class="sg_cell">data</td><td class="sg_cell">UFix_32_0</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">m_axis_tready</td><td class="sg_cell">in</td><td class="sg_cell">std_logic_vector(0 downto 0)</td><td class="sg_cell">data</td><td class="sg_cell">Bool</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">irq</td><td class="sg_cell">out</td><td class="sg_cell">std_logic_vector(0 downto 0)</td><td class="sg_cell">data</td><td class="sg_cell">Bool</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">m_axis_tdata</td><td class="sg_cell">out</td><td class="sg_cell">std_logic_vector(7 downto 0)</td><td class="sg_cell">data</td><td class="sg_cell">UFix_8_0</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">m_axis_tlast</td><td class="sg_cell">out</td><td class="sg_cell">std_logic_vector(0 downto 0)</td><td class="sg_cell">data</td><td class="sg_cell">Bool</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">m_axis_tvalid</td><td class="sg_cell">out</td><td class="sg_cell">std_logic_vector(0 downto 0)</td><td class="sg_cell">data</td><td class="sg_cell">Bool</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">s_axis_tready_im</td><td class="sg_cell">out</td><td class="sg_cell">std_logic_vector(0 downto 0)</td><td class="sg_cell">data</td><td class="sg_cell">Bool</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">s_axis_tready_re</td><td class="sg_cell">out</td><td class="sg_cell">std_logic_vector(0 downto 0)</td><td class="sg_cell">data</td><td class="sg_cell">Bool</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">m_axis_op_tdata</td><td class="sg_cell">out</td><td class="sg_cell">std_logic_vector(31 downto 0)</td><td class="sg_cell">data</td><td class="sg_cell">UFix_32_0</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">m_axis_op_tvalid</td><td class="sg_cell">out</td><td class="sg_cell">std_logic_vector(0 downto 0)</td><td class="sg_cell">data</td><td class="sg_cell">Bool</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">bpsk_receiver_aresetn</td><td class="sg_cell">in</td><td class="sg_cell">std_logic</td><td class="sg_cell">data</td><td class="sg_cell">-</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">bpsk_receiver_s_axi_awaddr</td><td class="sg_cell">in</td><td class="sg_cell">std_logic_vector(5 downto 0)</td><td class="sg_cell">data</td><td class="sg_cell">-</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">bpsk_receiver_s_axi_awvalid</td><td class="sg_cell">in</td><td class="sg_cell">std_logic</td><td class="sg_cell">data</td><td class="sg_cell">-</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">bpsk_receiver_s_axi_awready</td><td class="sg_cell">out</td><td class="sg_cell">std_logic</td><td class="sg_cell">data</td><td class="sg_cell">-</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">bpsk_receiver_s_axi_wdata</td><td class="sg_cell">in</td><td class="sg_cell">std_logic_vector(31 downto 0)</td><td class="sg_cell">data</td><td class="sg_cell">-</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">bpsk_receiver_s_axi_wstrb</td><td class="sg_cell">in</td><td class="sg_cell">std_logic_vector(3 downto 0)</td><td class="sg_cell">data</td><td class="sg_cell">-</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">bpsk_receiver_s_axi_wvalid</td><td class="sg_cell">in</td><td class="sg_cell">std_logic</td><td class="sg_cell">data</td><td class="sg_cell">-</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">bpsk_receiver_s_axi_wready</td><td class="sg_cell">out</td><td class="sg_cell">std_logic</td><td class="sg_cell">data</td><td class="sg_cell">-</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">bpsk_receiver_s_axi_bresp</td><td class="sg_cell">out</td><td class="sg_cell">std_logic_vector(1 downto 0)</td><td class="sg_cell">data</td><td class="sg_cell">-</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">bpsk_receiver_s_axi_bvalid</td><td class="sg_cell">out</td><td class="sg_cell">std_logic</td><td class="sg_cell">data</td><td class="sg_cell">-</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">bpsk_receiver_s_axi_bready</td><td class="sg_cell">in</td><td class="sg_cell">std_logic</td><td class="sg_cell">data</td><td class="sg_cell">-</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">bpsk_receiver_s_axi_araddr</td><td class="sg_cell">in</td><td class="sg_cell">std_logic_vector(5 downto 0)</td><td class="sg_cell">data</td><td class="sg_cell">-</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">bpsk_receiver_s_axi_arvalid</td><td class="sg_cell">in</td><td class="sg_cell">std_logic</td><td class="sg_cell">data</td><td class="sg_cell">-</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">bpsk_receiver_s_axi_arready</td><td class="sg_cell">out</td><td class="sg_cell">std_logic</td><td class="sg_cell">data</td><td class="sg_cell">-</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">bpsk_receiver_s_axi_rdata</td><td class="sg_cell">out</td><td class="sg_cell">std_logic_vector(31 downto 0)</td><td class="sg_cell">data</td><td class="sg_cell">-</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">bpsk_receiver_s_axi_rresp</td><td class="sg_cell">out</td><td class="sg_cell">std_logic_vector(1 downto 0)</td><td class="sg_cell">data</td><td class="sg_cell">-</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">bpsk_receiver_s_axi_rvalid</td><td class="sg_cell">out</td><td class="sg_cell">std_logic</td><td class="sg_cell">data</td><td class="sg_cell">-</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">bpsk_receiver_s_axi_rready</td><td class="sg_cell">in</td><td class="sg_cell">std_logic</td><td class="sg_cell">data</td><td class="sg_cell">-</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">clk</td><td class="sg_cell">in</td><td class="sg_cell">std_logic</td><td class="sg_cell">clock</td><td class="sg_cell">-</td><td class="sg_cell">1</td><td class="sg_cell"></td></tr>
+<caption class="sg_caption"><i>Table 1.</i> <b>Top Level Port Interface</b></caption>
+</table>
+<br>
+<h1>Multi-rate Realization</h1>
+<p>
+The design provided is a multi-rate design. Multiple rates in the design are realized using a network of clock enable generated by default_clock_driver instantiated in bpsk_receiver.vhd. These clock enable are connected to flip-flops in the design and have a specific phase with the clock signals. The diagram below depicts the phase between the clock enable and clock. This diagram is not specifically tailored to bpsk_receiver.vhd, but is an example of how multiple rates are realized in designs produced using System Generator.
+</p>
+<table>
+<tr><td><img src="images/hw_data_sheet_timing_diagram.gif" title="Figure 1. An example of generated clock enables in a System Generator design"/></td></tr>
+<caption class="sg_caption"><i>Figure 1.</i> <b>An example of generated clock enables in a System Generator design</b></caption>
+</table>
+<p>
+The timing diagram above is an example of a System Generator design that contains three different rate domains with data periods
+</p>
+<ul>
+<li>1 - Realized using the clk signal
+<li>2 - Realized using ce2 signal 
+<li>5 - Realized using ce5 signal
+</ul>
+<p>
+As seen in the timing diagram, the first rising edge of ce2 is caused by the first rising edge of the clk and this allows the flip-flops connected to ce2 to capture data on the second rising edge of the clk. Similarly, the first rising edge of ce5 is caused by the fourth rising edge of clk and this allows the flip-flops connected to ce5 to capture data on the fifth rising edge of the clk. This rule can be extended to evety rate in the design. This phase has to be maintained to ensure that the design when simulated in System Generator is cycle accurate with hardware. The diagram also contains data signals - data2 and data5. These signals can either be generated by flip-flops connected to clock enable ce2 or ce5 or these signals can drive the input ports of the design. If these signals are driving input ports with normalized sample periods of 2 or 5 (refer to the Table 2 for details on the port interface of bpsk_receiver.vhd), then they must also align with ce2 and ce5 signals as shown in the timing diagram to be cycle accurate with the System Generator simulation model of the design.
+</p>
+<br>
+<h1>Design Files</h1>
+<p>
+System Generator creates a number of design files to assist in compiling the design all the way down to a bitstream. The Figure below gives an overview of the structural connectivity in the top-level module bpsk_receiver . This section also provides information on each of the files that are produced when the System Generator design is netlisted to create its HDL representation.
+</p>
+<table>
+<caption class="sg_caption"><i>Figure 2.</i> <b>Structural connectivity of the top-level module bpsk_receiver</b></caption>
+<tr><td>
+<div class="image">
+    <img src="images/hw_data_sheet_design_ce.gif" title="Figure 2. Structural connectivity of the top-level module bpsk_receiver"/>
+    <p style="position:absolute;top:120px;left:80px;width:100%">default_clock_driver</p>
+    <p style="position:absolute;top:188px;left:260px;width:100%">bpsk_receiver_struct</p>
+    <p style="position:absolute;top:228px;left:120px;width:100%">bpsk_receiver</p>
+</div>
+</td></tr>
+</table>
+<table>
+<tr class="sg_row">
+<td class="sg_cell_first_row">HDL File</td><td class="sg_cell_first_row">Description</td></tr>
+<tr class="sg_row">
+<td class="sg_cell">bpsk_receiver.vhd</td><td class="sg_cell">This file defines the top level module and the hierarchical structural connectivity.
+</td></tr>
+<tr class="sg_row">
+<td class="sg_cell">bpsk_receiver_entity_declarations.vhd</td><td class="sg_cell">This file defines the entities and modules of System Generator blocks.
+</td></tr>
+<tr class="sg_row">
+<td class="sg_cell">synth_reg.vhd</td><td class="sg_cell">This file defines a multi-bit register created from primitives.
+</td></tr>
+<tr class="sg_row">
+<td class="sg_cell">synth_reg_w_init.vhd</td><td class="sg_cell">This file defines a multi-bit register created from primitives that can be initialized to non-zero value.
+</td></tr>
+<tr class="sg_row">
+<td class="sg_cell">conv_pkg.vhd</td><td class="sg_cell">This implements common functions for conversions between various types as well as defines constants.
+</td></tr>
+<caption class="sg_caption"><i>Table 2.</i> <b>Design Files</b></caption>
+</table>
+<h1>Design Statistics</h1>
+<p>
+The table below contains the settings on the System Generator token used to generate the design.
+</p>
+<table>
+<tr class="sg_row">
+<td class="sg_cell_first_row">Options</td><td class="sg_cell_first_row">Settings</td></tr>
+<tr class="sg_row">
+<td class="sg_cell">Compilation Target</td><td class="sg_cell">IP Catalog</td></tr>
+<tr class="sg_row">
+<td class="sg_cell">Part</td><td class="sg_cell">zynquplusRFSOC-xczu28dr-2-effvg1517</td></tr>
+<tr class="sg_row">
+<td class="sg_cell">Synthesis Tool</td><td class="sg_cell">Vivado</td></tr>
+<tr class="sg_row">
+<td class="sg_cell">Multirate Implementation</td><td class="sg_cell">Clock Enables</td></tr>
+<caption class="sg_caption"><i>Table 3.</i> <b>Compilation options</b></caption>
+</table>
+<h1>Tools</h1>
+<p>
+The table below lists the tools and their versions used to generate this design.
+</p>
+<table>
+<tr class="sg_row">
+<td class="sg_cell_first_row">Tools</td><td class="sg_cell_first_row">Version</td></tr>
+<tr class="sg_row">
+<td class="sg_cell">Vivado</td><td class="sg_cell">2019.1</td></tr>
+<caption class="sg_caption"><i>Table 3.</i> <b>Tool Versions</b></caption>
+</table>
+<h1>Memory Map</h1>
+<p>
+The table below documents the memory map for System Generator design : 
+</p>
+
+<table>
+<tr class="sg_row">
+<td class="sg_cell_first_row">Name</td><td class="sg_cell_first_row">Type</td><td class="sg_cell_first_row">Interface Name</td><td class="sg_cell_first_row">Address Offset</td><td class="sg_cell_first_row">Description</td></tr>
+<tr class="sg_row">
+<td class="sg_cell">threshold</td><td class="sg_cell">UFix_32_0</td><td class="sg_cell"></td><td class="sg_cell">0000000C</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">reset_time_sync</td><td class="sg_cell">Bool</td><td class="sg_cell"></td><td class="sg_cell">00000000</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">reset_phase_sync</td><td class="sg_cell">Bool</td><td class="sg_cell"></td><td class="sg_cell">00000004</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">reset_frame_sync</td><td class="sg_cell">Bool</td><td class="sg_cell"></td><td class="sg_cell">00000008</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">observation_point</td><td class="sg_cell">UFix_32_0</td><td class="sg_cell"></td><td class="sg_cell">00000024</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">enable_transfer</td><td class="sg_cell">Bool</td><td class="sg_cell"></td><td class="sg_cell">0000001C</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">frame_size</td><td class="sg_cell">UFix_8_0</td><td class="sg_cell"></td><td class="sg_cell">00000010</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">data_count</td><td class="sg_cell">UFix_12_0</td><td class="sg_cell"></td><td class="sg_cell">00000020</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">packet_count</td><td class="sg_cell">UFix_32_0</td><td class="sg_cell"></td><td class="sg_cell">00000018</td><td class="sg_cell"></td></tr>
+<tr class="sg_row">
+<td class="sg_cell">packet_size</td><td class="sg_cell">UFix_8_0</td><td class="sg_cell"></td><td class="sg_cell">00000014</td><td class="sg_cell"></td></tr>
+<caption class="sg_caption"><i>Table 4.</i> <b>Memory Map</b></caption>
+</table>
+</body>
+</html>
