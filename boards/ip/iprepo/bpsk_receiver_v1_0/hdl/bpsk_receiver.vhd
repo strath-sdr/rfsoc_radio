@@ -12,12 +12,12 @@ entity bpsk_receiver_rising_edge_detector_enable is
   );
 end bpsk_receiver_rising_edge_detector_enable;
 architecture structural of bpsk_receiver_rising_edge_detector_enable is 
-  signal clk_net : std_logic;
-  signal enable_transfer_net : std_logic_vector( 1-1 downto 0 );
   signal logical3_y_net : std_logic_vector( 1-1 downto 0 );
   signal register1_q_net : std_logic_vector( 1-1 downto 0 );
   signal ce_net : std_logic;
+  signal clk_net : std_logic;
   signal inverter2_op_net : std_logic_vector( 1-1 downto 0 );
+  signal enable_transfer_net : std_logic_vector( 1-1 downto 0 );
 begin
   output <= logical3_y_net;
   enable_transfer_net <= input;
@@ -68,11 +68,11 @@ entity bpsk_receiver_rising_edge_detector_last is
   );
 end bpsk_receiver_rising_edge_detector_last;
 architecture structural of bpsk_receiver_rising_edge_detector_last is 
-  signal logical3_y_net : std_logic_vector( 1-1 downto 0 );
   signal slice_y_net : std_logic_vector( 1-1 downto 0 );
+  signal logical3_y_net : std_logic_vector( 1-1 downto 0 );
+  signal inverter2_op_net : std_logic_vector( 1-1 downto 0 );
   signal register1_q_net : std_logic_vector( 1-1 downto 0 );
   signal clk_net : std_logic;
-  signal inverter2_op_net : std_logic_vector( 1-1 downto 0 );
   signal ce_net : std_logic;
 begin
   output <= logical3_y_net;
@@ -137,52 +137,52 @@ entity bpsk_receiver_axi_stream_master_interface is
   );
 end bpsk_receiver_axi_stream_master_interface;
 architecture structural of bpsk_receiver_axi_stream_master_interface is 
-  signal fifo_dout_net : std_logic_vector( 9-1 downto 0 );
-  signal logical_y_net : std_logic;
-  signal fifo_empty_net : std_logic;
-  signal logical3_y_net : std_logic;
-  signal fifo_full_net : std_logic;
-  signal logical5_y_net : std_logic;
-  signal fifo1_full_net : std_logic;
-  signal fifo1_dcount_net : std_logic_vector( 13-1 downto 0 );
-  signal fifo1_dout_net : std_logic_vector( 8-1 downto 0 );
-  signal inverter1_op_net : std_logic_vector( 1-1 downto 0 );
-  signal up_sample3_q_net : std_logic_vector( 8-1 downto 0 );
-  signal inverter2_op_net : std_logic_vector( 1-1 downto 0 );
-  signal fifo1_empty_net : std_logic;
-  signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
-  signal relational_op_net : std_logic_vector( 1-1 downto 0 );
-  signal up_sample2_q_net : std_logic_vector( 1-1 downto 0 );
   signal logical1_y_net : std_logic_vector( 1-1 downto 0 );
-  signal logical2_y_net : std_logic_vector( 1-1 downto 0 );
-  signal mux_y_net : std_logic_vector( 1-1 downto 0 );
   signal logical4_y_net : std_logic_vector( 1-1 downto 0 );
+  signal relational_op_net : std_logic_vector( 1-1 downto 0 );
+  signal logical2_y_net : std_logic_vector( 1-1 downto 0 );
+  signal up_sample2_q_net : std_logic_vector( 1-1 downto 0 );
+  signal mux_y_net : std_logic_vector( 1-1 downto 0 );
+  signal inverter2_op_net : std_logic_vector( 1-1 downto 0 );
+  signal inverter1_op_net : std_logic_vector( 1-1 downto 0 );
   signal register1_q_net : std_logic_vector( 1-1 downto 0 );
-  signal register_q_net : std_logic_vector( 1-1 downto 0 );
+  signal fifo_dcount_net : std_logic_vector( 12-1 downto 0 );
+  signal mux1_y_net : std_logic_vector( 8-1 downto 0 );
+  signal enable_transfer_net : std_logic_vector( 1-1 downto 0 );
+  signal register6_q_net : std_logic_vector( 8-1 downto 0 );
+  signal inverter3_op_net : std_logic_vector( 1-1 downto 0 );
+  signal slice1_y_net : std_logic_vector( 8-1 downto 0 );
+  signal reset_frame_sync_net : std_logic_vector( 1-1 downto 0 );
+  signal register3_q_net : std_logic_vector( 1-1 downto 0 );
+  signal register5_q_net : std_logic_vector( 8-1 downto 0 );
+  signal logical2_y_net_x0 : std_logic_vector( 1-1 downto 0 );
+  signal m_axis_tready_net : std_logic_vector( 1-1 downto 0 );
+  signal slice_y_net : std_logic_vector( 1-1 downto 0 );
   signal clk_net : std_logic;
   signal ce_net : std_logic;
   signal src_clk_net : std_logic;
-  signal logical3_y_net_x0 : std_logic_vector( 1-1 downto 0 );
-  signal logical3_y_net_x1 : std_logic_vector( 1-1 downto 0 );
   signal src_ce_net : std_logic;
-  signal concat_y_net : std_logic_vector( 9-1 downto 0 );
+  signal logical3_y_net_x1 : std_logic_vector( 1-1 downto 0 );
+  signal register_q_net : std_logic_vector( 1-1 downto 0 );
+  signal logical3_y_net_x0 : std_logic_vector( 1-1 downto 0 );
   signal up_sample4_q_net : std_logic_vector( 8-1 downto 0 );
-  signal constant_op_net : std_logic_vector( 1-1 downto 0 );
   signal up_sample1_q_net : std_logic_vector( 1-1 downto 0 );
+  signal concat_y_net : std_logic_vector( 9-1 downto 0 );
   signal constant1_op_net : std_logic_vector( 1-1 downto 0 );
+  signal constant_op_net : std_logic_vector( 1-1 downto 0 );
   signal constant2_op_net : std_logic_vector( 8-1 downto 0 );
-  signal mux1_y_net : std_logic_vector( 8-1 downto 0 );
-  signal enable_transfer_net : std_logic_vector( 1-1 downto 0 );
-  signal reset_frame_sync_net : std_logic_vector( 1-1 downto 0 );
-  signal register5_q_net : std_logic_vector( 8-1 downto 0 );
-  signal logical2_y_net_x0 : std_logic_vector( 1-1 downto 0 );
-  signal fifo_dcount_net : std_logic_vector( 12-1 downto 0 );
-  signal register3_q_net : std_logic_vector( 1-1 downto 0 );
-  signal inverter3_op_net : std_logic_vector( 1-1 downto 0 );
-  signal register6_q_net : std_logic_vector( 8-1 downto 0 );
-  signal slice_y_net : std_logic_vector( 1-1 downto 0 );
-  signal slice1_y_net : std_logic_vector( 8-1 downto 0 );
-  signal m_axis_tready_net : std_logic_vector( 1-1 downto 0 );
+  signal fifo_dout_net : std_logic_vector( 9-1 downto 0 );
+  signal fifo_empty_net : std_logic;
+  signal logical3_y_net : std_logic;
+  signal fifo_full_net : std_logic;
+  signal logical_y_net : std_logic;
+  signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
+  signal fifo1_dout_net : std_logic_vector( 8-1 downto 0 );
+  signal fifo1_empty_net : std_logic;
+  signal fifo1_dcount_net : std_logic_vector( 13-1 downto 0 );
+  signal up_sample3_q_net : std_logic_vector( 8-1 downto 0 );
+  signal logical5_y_net : std_logic;
+  signal fifo1_full_net : std_logic;
 begin
   count <= fifo_dcount_net;
   size_out <= mux1_y_net;
@@ -568,22 +568,22 @@ entity bpsk_receiver_cic_decimator is
   );
 end bpsk_receiver_cic_decimator;
 architecture structural of bpsk_receiver_cic_decimator is 
-  signal cmult1_p_net : std_logic_vector( 16-1 downto 0 );
   signal cic_decimator_real_m_axis_data_tvalid_net : std_logic;
   signal cmult2_p_net : std_logic_vector( 16-1 downto 0 );
-  signal cic_decimator_real_m_axis_data_tdata_real_net : std_logic_vector( 23-1 downto 0 );
-  signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
-  signal cic_decimator_imag_s_axis_data_tready_net : std_logic;
-  signal ce_5_net : std_logic;
   signal ce_net : std_logic;
-  signal clk_net : std_logic;
-  signal cic_decimator_real_s_axis_data_tready_net : std_logic;
-  signal clk_5_net : std_logic;
-  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
-  signal cic_decimator_imag_m_axis_data_tvalid_net : std_logic;
-  signal cic_decimator_imag_m_axis_data_tdata_real_net : std_logic_vector( 23-1 downto 0 );
+  signal cic_decimator_imag_s_axis_data_tready_net : std_logic;
+  signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
+  signal ce_5_net : std_logic;
   signal shift1_op_net : std_logic_vector( 23-1 downto 0 );
+  signal cmult1_p_net : std_logic_vector( 16-1 downto 0 );
+  signal cic_decimator_imag_m_axis_data_tdata_real_net : std_logic_vector( 23-1 downto 0 );
+  signal clk_5_net : std_logic;
+  signal cic_decimator_real_s_axis_data_tready_net : std_logic;
   signal shift2_op_net : std_logic_vector( 23-1 downto 0 );
+  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
+  signal clk_net : std_logic;
+  signal cic_decimator_imag_m_axis_data_tvalid_net : std_logic;
+  signal cic_decimator_real_m_axis_data_tdata_real_net : std_logic_vector( 23-1 downto 0 );
 begin
   valid_out <= cic_decimator_real_m_axis_data_tvalid_net;
   real_out <= cmult2_p_net;
@@ -726,27 +726,27 @@ entity bpsk_receiver_de_rotate_constellation is
   );
 end bpsk_receiver_de_rotate_constellation;
 architecture structural of bpsk_receiver_de_rotate_constellation is 
-  signal register1_q_net : std_logic_vector( 33-1 downto 0 );
-  signal register_q_net : std_logic_vector( 33-1 downto 0 );
   signal register4_q_net : std_logic_vector( 1-1 downto 0 );
-  signal delay2_q_net : std_logic_vector( 16-1 downto 0 );
-  signal delay1_q_net : std_logic_vector( 16-1 downto 0 );
-  signal delay3_q_net : std_logic_vector( 1-1 downto 0 );
-  signal neg_sin_rom_data_net : std_logic_vector( 16-1 downto 0 );
+  signal register_q_net : std_logic_vector( 33-1 downto 0 );
   signal cos_rom_data_net : std_logic_vector( 16-1 downto 0 );
   signal register_q_net_x0 : std_logic_vector( 1-1 downto 0 );
-  signal clk_net : std_logic;
   signal ce_net : std_logic;
-  signal src_clk_net : std_logic;
+  signal delay2_q_net : std_logic_vector( 16-1 downto 0 );
   signal src_ce_net : std_logic;
   signal delay_q_net : std_logic_vector( 1-1 downto 0 );
+  signal register7_q_net : std_logic_vector( 1-1 downto 0 );
+  signal delay1_q_net : std_logic_vector( 16-1 downto 0 );
   signal product_p_re_net : std_logic_vector( 33-1 downto 0 );
   signal product_p_im_net : std_logic_vector( 33-1 downto 0 );
-  signal register7_q_net : std_logic_vector( 1-1 downto 0 );
-  signal register2_q_net : std_logic_vector( 16-1 downto 0 );
   signal register3_q_net : std_logic_vector( 16-1 downto 0 );
+  signal delay3_q_net : std_logic_vector( 1-1 downto 0 );
+  signal clk_net : std_logic;
+  signal src_clk_net : std_logic;
   signal register6_q_net : std_logic_vector( 16-1 downto 0 );
+  signal neg_sin_rom_data_net : std_logic_vector( 16-1 downto 0 );
+  signal register1_q_net : std_logic_vector( 33-1 downto 0 );
   signal register5_q_net : std_logic_vector( 16-1 downto 0 );
+  signal register2_q_net : std_logic_vector( 16-1 downto 0 );
 begin
   imag_out <= register1_q_net;
   real_out <= register_q_net;
@@ -912,21 +912,21 @@ entity bpsk_receiver_vectoring_cell_0 is
   );
 end bpsk_receiver_vectoring_cell_0;
 architecture structural of bpsk_receiver_vectoring_cell_0 is 
-  signal constant_op_net_x0 : std_logic_vector( 20-1 downto 0 );
-  signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
-  signal shift1_op_net : std_logic_vector( 15-1 downto 0 );
+  signal src_ce_net : std_logic;
   signal shift_op_net : std_logic_vector( 15-1 downto 0 );
-  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
   signal slice1_y_net : std_logic_vector( 1-1 downto 0 );
-  signal slice_y_net : std_logic_vector( 1-1 downto 0 );
-  signal addsub2_s_net : std_logic_vector( 15-1 downto 0 );
-  signal constant_op_net : std_logic_vector( 16-1 downto 0 );
+  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
   signal src_clk_net : std_logic;
-  signal addsub3_s_net : std_logic_vector( 15-1 downto 0 );
-  signal addsub1_s_net : std_logic_vector( 20-1 downto 0 );
+  signal shift1_op_net : std_logic_vector( 15-1 downto 0 );
+  signal constant_op_net : std_logic_vector( 16-1 downto 0 );
+  signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
+  signal constant_op_net_x0 : std_logic_vector( 20-1 downto 0 );
+  signal slice_y_net : std_logic_vector( 1-1 downto 0 );
   signal register_q_net : std_logic_vector( 16-1 downto 0 );
   signal register1_q_net : std_logic_vector( 16-1 downto 0 );
-  signal src_ce_net : std_logic;
+  signal addsub2_s_net : std_logic_vector( 15-1 downto 0 );
+  signal addsub3_s_net : std_logic_vector( 15-1 downto 0 );
+  signal addsub1_s_net : std_logic_vector( 20-1 downto 0 );
 begin
   x_out <= addsub2_s_net;
   y_out <= addsub3_s_net;
@@ -1048,20 +1048,20 @@ entity bpsk_receiver_vectoring_cell_1 is
 end bpsk_receiver_vectoring_cell_1;
 architecture structural of bpsk_receiver_vectoring_cell_1 is 
   signal shift1_op_net : std_logic_vector( 15-1 downto 0 );
-  signal slice_y_net : std_logic_vector( 1-1 downto 0 );
-  signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
   signal slice1_y_net : std_logic_vector( 1-1 downto 0 );
-  signal shift_op_net : std_logic_vector( 15-1 downto 0 );
-  signal constant_op_net : std_logic_vector( 20-1 downto 0 );
-  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
-  signal addsub3_s_net : std_logic_vector( 15-1 downto 0 );
-  signal addsub1_s_net : std_logic_vector( 20-1 downto 0 );
-  signal delay_q_net : std_logic_vector( 15-1 downto 0 );
-  signal addsub2_s_net : std_logic_vector( 15-1 downto 0 );
   signal delay1_q_net : std_logic_vector( 15-1 downto 0 );
+  signal shift_op_net : std_logic_vector( 15-1 downto 0 );
+  signal addsub2_s_net : std_logic_vector( 15-1 downto 0 );
+  signal delay_q_net : std_logic_vector( 15-1 downto 0 );
+  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
+  signal constant_op_net : std_logic_vector( 20-1 downto 0 );
   signal delay2_q_net : std_logic_vector( 20-1 downto 0 );
-  signal src_clk_net : std_logic;
+  signal slice_y_net : std_logic_vector( 1-1 downto 0 );
   signal src_ce_net : std_logic;
+  signal addsub3_s_net : std_logic_vector( 15-1 downto 0 );
+  signal src_clk_net : std_logic;
+  signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
+  signal addsub1_s_net : std_logic_vector( 20-1 downto 0 );
 begin
   x_out <= addsub2_s_net;
   y_out <= addsub3_s_net;
@@ -1182,21 +1182,21 @@ entity bpsk_receiver_vectoring_cell_2 is
   );
 end bpsk_receiver_vectoring_cell_2;
 architecture structural of bpsk_receiver_vectoring_cell_2 is 
-  signal slice1_y_net : std_logic_vector( 1-1 downto 0 );
-  signal slice_y_net : std_logic_vector( 1-1 downto 0 );
   signal shift_op_net : std_logic_vector( 15-1 downto 0 );
-  signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
-  signal shift1_op_net : std_logic_vector( 15-1 downto 0 );
-  signal addsub2_s_net : std_logic_vector( 15-1 downto 0 );
-  signal addsub1_s_net : std_logic_vector( 20-1 downto 0 );
-  signal addsub3_s_net : std_logic_vector( 15-1 downto 0 );
-  signal delay3_q_net : std_logic_vector( 15-1 downto 0 );
-  signal delay4_q_net : std_logic_vector( 15-1 downto 0 );
   signal delay5_q_net : std_logic_vector( 20-1 downto 0 );
   signal src_clk_net : std_logic;
-  signal src_ce_net : std_logic;
   signal constant_op_net : std_logic_vector( 20-1 downto 0 );
+  signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
+  signal addsub3_s_net : std_logic_vector( 15-1 downto 0 );
+  signal addsub2_s_net : std_logic_vector( 15-1 downto 0 );
+  signal addsub1_s_net : std_logic_vector( 20-1 downto 0 );
   signal logical_y_net : std_logic_vector( 1-1 downto 0 );
+  signal delay4_q_net : std_logic_vector( 15-1 downto 0 );
+  signal src_ce_net : std_logic;
+  signal shift1_op_net : std_logic_vector( 15-1 downto 0 );
+  signal delay3_q_net : std_logic_vector( 15-1 downto 0 );
+  signal slice_y_net : std_logic_vector( 1-1 downto 0 );
+  signal slice1_y_net : std_logic_vector( 1-1 downto 0 );
 begin
   x_out <= addsub2_s_net;
   y_out <= addsub3_s_net;
@@ -1317,21 +1317,21 @@ entity bpsk_receiver_vectoring_cell_3 is
   );
 end bpsk_receiver_vectoring_cell_3;
 architecture structural of bpsk_receiver_vectoring_cell_3 is 
-  signal slice1_y_net : std_logic_vector( 1-1 downto 0 );
-  signal slice_y_net : std_logic_vector( 1-1 downto 0 );
+  signal addsub1_s_net : std_logic_vector( 20-1 downto 0 );
+  signal constant_op_net : std_logic_vector( 20-1 downto 0 );
+  signal shift1_op_net : std_logic_vector( 15-1 downto 0 );
   signal addsub2_s_net : std_logic_vector( 15-1 downto 0 );
-  signal addsub3_s_net : std_logic_vector( 15-1 downto 0 );
   signal shift_op_net : std_logic_vector( 15-1 downto 0 );
   signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
-  signal addsub1_s_net : std_logic_vector( 20-1 downto 0 );
+  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
   signal delay6_q_net : std_logic_vector( 15-1 downto 0 );
+  signal src_clk_net : std_logic;
+  signal addsub3_s_net : std_logic_vector( 15-1 downto 0 );
+  signal src_ce_net : std_logic;
   signal delay7_q_net : std_logic_vector( 15-1 downto 0 );
   signal delay8_q_net : std_logic_vector( 20-1 downto 0 );
-  signal constant_op_net : std_logic_vector( 20-1 downto 0 );
-  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
-  signal src_clk_net : std_logic;
-  signal src_ce_net : std_logic;
-  signal shift1_op_net : std_logic_vector( 15-1 downto 0 );
+  signal slice1_y_net : std_logic_vector( 1-1 downto 0 );
+  signal slice_y_net : std_logic_vector( 1-1 downto 0 );
 begin
   x_out <= addsub2_s_net;
   y_out <= addsub3_s_net;
@@ -1452,21 +1452,21 @@ entity bpsk_receiver_vectoring_cell_4 is
   );
 end bpsk_receiver_vectoring_cell_4;
 architecture structural of bpsk_receiver_vectoring_cell_4 is 
+  signal src_ce_net : std_logic;
+  signal addsub3_s_net : std_logic_vector( 15-1 downto 0 );
+  signal constant_op_net : std_logic_vector( 20-1 downto 0 );
+  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
+  signal delay11_q_net : std_logic_vector( 20-1 downto 0 );
   signal addsub1_s_net : std_logic_vector( 20-1 downto 0 );
   signal addsub2_s_net : std_logic_vector( 15-1 downto 0 );
-  signal addsub3_s_net : std_logic_vector( 15-1 downto 0 );
-  signal delay10_q_net : std_logic_vector( 15-1 downto 0 );
-  signal delay9_q_net : std_logic_vector( 15-1 downto 0 );
   signal src_clk_net : std_logic;
-  signal delay11_q_net : std_logic_vector( 20-1 downto 0 );
+  signal delay9_q_net : std_logic_vector( 15-1 downto 0 );
+  signal delay10_q_net : std_logic_vector( 15-1 downto 0 );
   signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
-  signal shift_op_net : std_logic_vector( 15-1 downto 0 );
   signal slice_y_net : std_logic_vector( 1-1 downto 0 );
   signal slice1_y_net : std_logic_vector( 1-1 downto 0 );
-  signal src_ce_net : std_logic;
-  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
-  signal constant_op_net : std_logic_vector( 20-1 downto 0 );
   signal shift1_op_net : std_logic_vector( 15-1 downto 0 );
+  signal shift_op_net : std_logic_vector( 15-1 downto 0 );
 begin
   x_out <= addsub2_s_net;
   y_out <= addsub3_s_net;
@@ -1588,20 +1588,20 @@ entity bpsk_receiver_vectoring_cell_5 is
 end bpsk_receiver_vectoring_cell_5;
 architecture structural of bpsk_receiver_vectoring_cell_5 is 
   signal addsub2_s_net : std_logic_vector( 15-1 downto 0 );
-  signal src_clk_net : std_logic;
-  signal shift_op_net : std_logic_vector( 15-1 downto 0 );
-  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
-  signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
-  signal slice1_y_net : std_logic_vector( 1-1 downto 0 );
   signal addsub1_s_net : std_logic_vector( 20-1 downto 0 );
-  signal delay13_q_net : std_logic_vector( 15-1 downto 0 );
-  signal shift1_op_net : std_logic_vector( 15-1 downto 0 );
-  signal constant_op_net : std_logic_vector( 20-1 downto 0 );
-  signal delay14_q_net : std_logic_vector( 20-1 downto 0 );
   signal addsub3_s_net : std_logic_vector( 15-1 downto 0 );
   signal delay12_q_net : std_logic_vector( 15-1 downto 0 );
+  signal delay13_q_net : std_logic_vector( 15-1 downto 0 );
+  signal delay14_q_net : std_logic_vector( 20-1 downto 0 );
+  signal src_clk_net : std_logic;
   signal src_ce_net : std_logic;
+  signal constant_op_net : std_logic_vector( 20-1 downto 0 );
+  signal shift_op_net : std_logic_vector( 15-1 downto 0 );
+  signal shift1_op_net : std_logic_vector( 15-1 downto 0 );
+  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
   signal slice_y_net : std_logic_vector( 1-1 downto 0 );
+  signal slice1_y_net : std_logic_vector( 1-1 downto 0 );
+  signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
 begin
   x_out <= addsub2_s_net;
   y_out <= addsub3_s_net;
@@ -1722,21 +1722,21 @@ entity bpsk_receiver_vectoring_cell_6 is
   );
 end bpsk_receiver_vectoring_cell_6;
 architecture structural of bpsk_receiver_vectoring_cell_6 is 
-  signal shift1_op_net : std_logic_vector( 15-1 downto 0 );
-  signal src_clk_net : std_logic;
-  signal delay17_q_net : std_logic_vector( 20-1 downto 0 );
   signal addsub2_s_net : std_logic_vector( 15-1 downto 0 );
-  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
   signal addsub3_s_net : std_logic_vector( 15-1 downto 0 );
-  signal addsub1_s_net : std_logic_vector( 20-1 downto 0 );
-  signal delay15_q_net : std_logic_vector( 15-1 downto 0 );
-  signal src_ce_net : std_logic;
-  signal delay16_q_net : std_logic_vector( 15-1 downto 0 );
-  signal shift_op_net : std_logic_vector( 15-1 downto 0 );
-  signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
   signal constant_op_net : std_logic_vector( 20-1 downto 0 );
+  signal delay17_q_net : std_logic_vector( 20-1 downto 0 );
+  signal src_ce_net : std_logic;
+  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
   signal slice1_y_net : std_logic_vector( 1-1 downto 0 );
+  signal delay15_q_net : std_logic_vector( 15-1 downto 0 );
+  signal src_clk_net : std_logic;
+  signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
+  signal shift1_op_net : std_logic_vector( 15-1 downto 0 );
+  signal addsub1_s_net : std_logic_vector( 20-1 downto 0 );
+  signal shift_op_net : std_logic_vector( 15-1 downto 0 );
   signal slice_y_net : std_logic_vector( 1-1 downto 0 );
+  signal delay16_q_net : std_logic_vector( 15-1 downto 0 );
 begin
   x_out <= addsub2_s_net;
   y_out <= addsub3_s_net;
@@ -1856,15 +1856,15 @@ entity bpsk_receiver_vectoring_cell_7 is
 end bpsk_receiver_vectoring_cell_7;
 architecture structural of bpsk_receiver_vectoring_cell_7 is 
   signal slice_y_net : std_logic_vector( 1-1 downto 0 );
-  signal addsub1_s_net : std_logic_vector( 20-1 downto 0 );
-  signal delay20_q_net : std_logic_vector( 20-1 downto 0 );
-  signal constant_op_net : std_logic_vector( 20-1 downto 0 );
-  signal src_ce_net : std_logic;
   signal logical_y_net : std_logic_vector( 1-1 downto 0 );
-  signal delay19_q_net : std_logic_vector( 15-1 downto 0 );
   signal slice1_y_net : std_logic_vector( 1-1 downto 0 );
+  signal constant_op_net : std_logic_vector( 20-1 downto 0 );
+  signal delay19_q_net : std_logic_vector( 15-1 downto 0 );
   signal delay18_q_net : std_logic_vector( 15-1 downto 0 );
   signal src_clk_net : std_logic;
+  signal addsub1_s_net : std_logic_vector( 20-1 downto 0 );
+  signal delay20_q_net : std_logic_vector( 20-1 downto 0 );
+  signal src_ce_net : std_logic;
 begin
   z_out <= addsub1_s_net;
   delay18_q_net <= x_in;
@@ -1936,55 +1936,55 @@ entity bpsk_receiver_circular_cordic is
   );
 end bpsk_receiver_circular_cordic;
 architecture structural of bpsk_receiver_circular_cordic is 
-  signal register1_q_net : std_logic_vector( 16-1 downto 0 );
   signal register_q_net : std_logic_vector( 16-1 downto 0 );
   signal delay23_q_net : std_logic_vector( 20-1 downto 0 );
-  signal addsub1_s_net_x4 : std_logic_vector( 20-1 downto 0 );
-  signal delay7_q_net : std_logic_vector( 15-1 downto 0 );
-  signal addsub1_s_net_x2 : std_logic_vector( 20-1 downto 0 );
-  signal delay16_q_net : std_logic_vector( 15-1 downto 0 );
-  signal addsub2_s_net_x3 : std_logic_vector( 15-1 downto 0 );
-  signal addsub3_s_net_x6 : std_logic_vector( 15-1 downto 0 );
-  signal addsub1_s_net_x3 : std_logic_vector( 20-1 downto 0 );
-  signal delay2_q_net : std_logic_vector( 20-1 downto 0 );
-  signal delay13_q_net : std_logic_vector( 15-1 downto 0 );
-  signal delay5_q_net : std_logic_vector( 20-1 downto 0 );
-  signal delay4_q_net : std_logic_vector( 15-1 downto 0 );
-  signal addsub3_s_net_x4 : std_logic_vector( 15-1 downto 0 );
-  signal addsub1_s_net_x1 : std_logic_vector( 20-1 downto 0 );
-  signal addsub2_s_net_x6 : std_logic_vector( 15-1 downto 0 );
-  signal addsub1_s_net_x6 : std_logic_vector( 20-1 downto 0 );
-  signal delay6_q_net : std_logic_vector( 15-1 downto 0 );
-  signal addsub2_s_net_x4 : std_logic_vector( 15-1 downto 0 );
   signal src_clk_net : std_logic;
-  signal addsub3_s_net_x3 : std_logic_vector( 15-1 downto 0 );
-  signal delay17_q_net : std_logic_vector( 20-1 downto 0 );
-  signal addsub3_s_net_x1 : std_logic_vector( 15-1 downto 0 );
+  signal src_ce_net : std_logic;
+  signal register1_q_net : std_logic_vector( 16-1 downto 0 );
   signal delay14_q_net : std_logic_vector( 20-1 downto 0 );
-  signal delay1_q_net : std_logic_vector( 15-1 downto 0 );
-  signal delay12_q_net : std_logic_vector( 15-1 downto 0 );
-  signal delay20_q_net : std_logic_vector( 20-1 downto 0 );
+  signal addsub2_s_net_x4 : std_logic_vector( 15-1 downto 0 );
   signal addsub1_s_net_x5 : std_logic_vector( 20-1 downto 0 );
+  signal delay1_q_net : std_logic_vector( 15-1 downto 0 );
+  signal delay2_q_net : std_logic_vector( 20-1 downto 0 );
+  signal delay7_q_net : std_logic_vector( 15-1 downto 0 );
+  signal addsub2_s_net_x1 : std_logic_vector( 15-1 downto 0 );
+  signal addsub1_s_net_x4 : std_logic_vector( 20-1 downto 0 );
+  signal addsub3_s_net_x1 : std_logic_vector( 15-1 downto 0 );
   signal delay3_q_net : std_logic_vector( 15-1 downto 0 );
+  signal delay13_q_net : std_logic_vector( 15-1 downto 0 );
+  signal delay17_q_net : std_logic_vector( 20-1 downto 0 );
+  signal delay15_q_net : std_logic_vector( 15-1 downto 0 );
   signal delay8_q_net : std_logic_vector( 20-1 downto 0 );
   signal addsub2_s_net_x2 : std_logic_vector( 15-1 downto 0 );
-  signal src_ce_net : std_logic;
-  signal addsub3_s_net_x2 : std_logic_vector( 15-1 downto 0 );
+  signal delay10_q_net : std_logic_vector( 15-1 downto 0 );
+  signal delay12_q_net : std_logic_vector( 15-1 downto 0 );
+  signal addsub2_s_net_x0 : std_logic_vector( 15-1 downto 0 );
   signal delay11_q_net : std_logic_vector( 20-1 downto 0 );
-  signal addsub2_s_net_x1 : std_logic_vector( 15-1 downto 0 );
-  signal addsub1_s_net_x0 : std_logic_vector( 20-1 downto 0 );
-  signal delay15_q_net : std_logic_vector( 15-1 downto 0 );
+  signal delay16_q_net : std_logic_vector( 15-1 downto 0 );
+  signal addsub3_s_net_x3 : std_logic_vector( 15-1 downto 0 );
   signal addsub1_s_net : std_logic_vector( 20-1 downto 0 );
+  signal delay19_q_net : std_logic_vector( 15-1 downto 0 );
+  signal delay20_q_net : std_logic_vector( 20-1 downto 0 );
+  signal addsub1_s_net_x1 : std_logic_vector( 20-1 downto 0 );
+  signal addsub3_s_net_x0 : std_logic_vector( 15-1 downto 0 );
+  signal addsub1_s_net_x0 : std_logic_vector( 20-1 downto 0 );
+  signal delay4_q_net : std_logic_vector( 15-1 downto 0 );
+  signal addsub1_s_net_x2 : std_logic_vector( 20-1 downto 0 );
+  signal addsub2_s_net_x3 : std_logic_vector( 15-1 downto 0 );
   signal constant_op_net : std_logic_vector( 16-1 downto 0 );
+  signal delay9_q_net : std_logic_vector( 15-1 downto 0 );
+  signal addsub2_s_net_x6 : std_logic_vector( 15-1 downto 0 );
+  signal addsub3_s_net_x5 : std_logic_vector( 15-1 downto 0 );
+  signal addsub1_s_net_x3 : std_logic_vector( 20-1 downto 0 );
+  signal addsub1_s_net_x6 : std_logic_vector( 20-1 downto 0 );
   signal addsub2_s_net_x5 : std_logic_vector( 15-1 downto 0 );
   signal delay18_q_net : std_logic_vector( 15-1 downto 0 );
-  signal addsub3_s_net_x5 : std_logic_vector( 15-1 downto 0 );
+  signal addsub3_s_net_x4 : std_logic_vector( 15-1 downto 0 );
+  signal addsub3_s_net_x6 : std_logic_vector( 15-1 downto 0 );
   signal delay_q_net : std_logic_vector( 15-1 downto 0 );
-  signal delay19_q_net : std_logic_vector( 15-1 downto 0 );
-  signal delay10_q_net : std_logic_vector( 15-1 downto 0 );
-  signal addsub3_s_net_x0 : std_logic_vector( 15-1 downto 0 );
-  signal delay9_q_net : std_logic_vector( 15-1 downto 0 );
-  signal addsub2_s_net_x0 : std_logic_vector( 15-1 downto 0 );
+  signal delay5_q_net : std_logic_vector( 20-1 downto 0 );
+  signal delay6_q_net : std_logic_vector( 15-1 downto 0 );
+  signal addsub3_s_net_x2 : std_logic_vector( 15-1 downto 0 );
 begin
   angle <= delay23_q_net;
   register1_q_net <= imag_in;
@@ -2432,16 +2432,16 @@ entity bpsk_receiver_generate_angle_error is
   );
 end bpsk_receiver_generate_angle_error;
 architecture structural of bpsk_receiver_generate_angle_error is 
-  signal delay23_q_net : std_logic_vector( 20-1 downto 0 );
-  signal delay_q_net : std_logic_vector( 1-1 downto 0 );
+  signal register3_q_net : std_logic_vector( 1-1 downto 0 );
+  signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
+  signal src_clk_net : std_logic;
+  signal src_ce_net : std_logic;
   signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
   signal register4_q_net : std_logic_vector( 1-1 downto 0 );
-  signal register_q_net : std_logic_vector( 16-1 downto 0 );
-  signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
-  signal src_ce_net : std_logic;
+  signal delay23_q_net : std_logic_vector( 20-1 downto 0 );
+  signal delay_q_net : std_logic_vector( 1-1 downto 0 );
   signal register1_q_net : std_logic_vector( 16-1 downto 0 );
-  signal src_clk_net : std_logic;
-  signal register3_q_net : std_logic_vector( 1-1 downto 0 );
+  signal register_q_net : std_logic_vector( 16-1 downto 0 );
 begin
   angle <= delay23_q_net;
   valid_out <= delay_q_net;
@@ -2531,17 +2531,17 @@ entity bpsk_receiver_loop_filter is
 end bpsk_receiver_loop_filter;
 architecture structural of bpsk_receiver_loop_filter is 
   signal addsub_s_net : std_logic_vector( 36-1 downto 0 );
+  signal register4_q_net : std_logic_vector( 1-1 downto 0 );
+  signal register_q_net : std_logic_vector( 36-1 downto 0 );
+  signal src_ce_net : std_logic;
+  signal addsub1_s_net : std_logic_vector( 37-1 downto 0 );
+  signal register3_q_net : std_logic_vector( 37-1 downto 0 );
+  signal src_clk_net : std_logic;
+  signal delay23_q_net : std_logic_vector( 20-1 downto 0 );
   signal reset_phase_sync_net : std_logic_vector( 1-1 downto 0 );
   signal delay_q_net : std_logic_vector( 1-1 downto 0 );
-  signal delay23_q_net : std_logic_vector( 20-1 downto 0 );
-  signal src_clk_net : std_logic;
-  signal src_ce_net : std_logic;
-  signal register3_q_net : std_logic_vector( 37-1 downto 0 );
-  signal register4_q_net : std_logic_vector( 1-1 downto 0 );
   signal k2_gain_p_net : std_logic_vector( 36-1 downto 0 );
-  signal register_q_net : std_logic_vector( 36-1 downto 0 );
   signal k1_gain_p_net : std_logic_vector( 36-1 downto 0 );
-  signal addsub1_s_net : std_logic_vector( 37-1 downto 0 );
   signal register1_q_net : std_logic_vector( 20-1 downto 0 );
 begin
   error <= register3_q_net;
@@ -2749,16 +2749,16 @@ entity bpsk_receiver_nco is
   );
 end bpsk_receiver_nco;
 architecture structural of bpsk_receiver_nco is 
-  signal cos_rom_data_net : std_logic_vector( 16-1 downto 0 );
   signal neg_sin_rom_data_net : std_logic_vector( 16-1 downto 0 );
   signal register_q_net : std_logic_vector( 1-1 downto 0 );
+  signal cos_rom_data_net : std_logic_vector( 16-1 downto 0 );
   signal register3_q_net : std_logic_vector( 37-1 downto 0 );
-  signal register4_q_net : std_logic_vector( 1-1 downto 0 );
   signal src_clk_net : std_logic;
   signal src_ce_net : std_logic;
-  signal cmult1_p_net : std_logic_vector( 32-1 downto 0 );
-  signal addsub4_s_net : std_logic_vector( 32-1 downto 0 );
   signal register1_q_net : std_logic_vector( 32-1 downto 0 );
+  signal addsub4_s_net : std_logic_vector( 32-1 downto 0 );
+  signal cmult1_p_net : std_logic_vector( 32-1 downto 0 );
+  signal register4_q_net : std_logic_vector( 1-1 downto 0 );
   signal convert1_dout_net : std_logic_vector( 8-1 downto 0 );
 begin
   cos <= cos_rom_data_net;
@@ -2934,16 +2934,16 @@ entity bpsk_receiver_generate_nco is
   );
 end bpsk_receiver_generate_nco;
 architecture structural of bpsk_receiver_generate_nco is 
-  signal reset_phase_sync_net : std_logic_vector( 1-1 downto 0 );
-  signal cos_rom_data_net : std_logic_vector( 16-1 downto 0 );
-  signal register_q_net : std_logic_vector( 1-1 downto 0 );
-  signal delay23_q_net : std_logic_vector( 20-1 downto 0 );
   signal neg_sin_rom_data_net : std_logic_vector( 16-1 downto 0 );
+  signal cos_rom_data_net : std_logic_vector( 16-1 downto 0 );
+  signal delay23_q_net : std_logic_vector( 20-1 downto 0 );
+  signal register_q_net : std_logic_vector( 1-1 downto 0 );
   signal delay_q_net : std_logic_vector( 1-1 downto 0 );
-  signal register3_q_net : std_logic_vector( 37-1 downto 0 );
-  signal register4_q_net : std_logic_vector( 1-1 downto 0 );
+  signal reset_phase_sync_net : std_logic_vector( 1-1 downto 0 );
   signal src_clk_net : std_logic;
+  signal register3_q_net : std_logic_vector( 37-1 downto 0 );
   signal src_ce_net : std_logic;
+  signal register4_q_net : std_logic_vector( 1-1 downto 0 );
 begin
   imag_out <= neg_sin_rom_data_net;
   real_out <= cos_rom_data_net;
@@ -2995,24 +2995,24 @@ entity bpsk_receiver_carrier_synchronisation is
   );
 end bpsk_receiver_carrier_synchronisation;
 architecture structural of bpsk_receiver_carrier_synchronisation is 
-  signal register_q_net_x0 : std_logic_vector( 1-1 downto 0 );
-  signal delay1_q_net : std_logic_vector( 16-1 downto 0 );
-  signal clk_net : std_logic;
-  signal neg_sin_rom_data_net : std_logic_vector( 16-1 downto 0 );
   signal src_ce_net : std_logic;
-  signal register_q_net : std_logic_vector( 33-1 downto 0 );
-  signal reset_phase_sync_net : std_logic_vector( 1-1 downto 0 );
-  signal register1_q_net : std_logic_vector( 33-1 downto 0 );
-  signal register4_q_net : std_logic_vector( 1-1 downto 0 );
-  signal delay3_q_net : std_logic_vector( 1-1 downto 0 );
-  signal delay2_q_net : std_logic_vector( 16-1 downto 0 );
+  signal register_q_net_x0 : std_logic_vector( 1-1 downto 0 );
   signal delay_q_net : std_logic_vector( 1-1 downto 0 );
+  signal neg_sin_rom_data_net : std_logic_vector( 16-1 downto 0 );
   signal cos_rom_data_net : std_logic_vector( 16-1 downto 0 );
-  signal ce_net : std_logic;
-  signal delay23_q_net : std_logic_vector( 20-1 downto 0 );
-  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
   signal src_clk_net : std_logic;
+  signal clk_net : std_logic;
+  signal register1_q_net : std_logic_vector( 33-1 downto 0 );
+  signal delay23_q_net : std_logic_vector( 20-1 downto 0 );
+  signal ce_net : std_logic;
+  signal register_q_net : std_logic_vector( 33-1 downto 0 );
   signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
+  signal register4_q_net : std_logic_vector( 1-1 downto 0 );
+  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
+  signal reset_phase_sync_net : std_logic_vector( 1-1 downto 0 );
+  signal delay3_q_net : std_logic_vector( 1-1 downto 0 );
+  signal delay1_q_net : std_logic_vector( 16-1 downto 0 );
+  signal delay2_q_net : std_logic_vector( 16-1 downto 0 );
 begin
   valid_out <= register4_q_net;
   real_out <= convert1_dout_net;
@@ -3126,17 +3126,17 @@ entity bpsk_receiver_apply_frequency_offset_correction is
 end bpsk_receiver_apply_frequency_offset_correction;
 architecture structural of bpsk_receiver_apply_frequency_offset_correction is 
   signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
-  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
-  signal cmult2_p_net : std_logic_vector( 16-1 downto 0 );
   signal cos_rom_data_net : std_logic_vector( 16-1 downto 0 );
-  signal sin_rom_data_net : std_logic_vector( 16-1 downto 0 );
-  signal clk_net : std_logic;
   signal cmult1_p_net : std_logic_vector( 16-1 downto 0 );
-  signal ce_5_net : std_logic;
+  signal sin_rom_data_net : std_logic_vector( 16-1 downto 0 );
   signal ce_net : std_logic;
-  signal product_p_im_net : std_logic_vector( 33-1 downto 0 );
-  signal clk_5_net : std_logic;
+  signal ce_5_net : std_logic;
   signal product_p_re_net : std_logic_vector( 33-1 downto 0 );
+  signal cmult2_p_net : std_logic_vector( 16-1 downto 0 );
+  signal clk_5_net : std_logic;
+  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
+  signal clk_net : std_logic;
+  signal product_p_im_net : std_logic_vector( 33-1 downto 0 );
 begin
   imag_out <= convert1_dout_net;
   real_out <= convert_dout_net;
@@ -3219,20 +3219,20 @@ entity bpsk_receiver_get_frequency_offset is
   );
 end bpsk_receiver_get_frequency_offset;
 architecture structural of bpsk_receiver_get_frequency_offset is 
-  signal register2_q_net : std_logic_vector( 10-1 downto 0 );
-  signal rom_data_net : std_logic_vector( 32-1 downto 0 );
-  signal clk_5_net : std_logic;
-  signal constant_op_net : std_logic_vector( 10-1 downto 0 );
-  signal counter_op_net : std_logic_vector( 10-1 downto 0 );
-  signal shift_op_net : std_logic_vector( 32-1 downto 0 );
-  signal ce_5_net : std_logic;
   signal register_q_net : std_logic_vector( 1-1 downto 0 );
-  signal register4_q_net : std_logic_vector( 32-1 downto 0 );
-  signal register1_q_net : std_logic_vector( 10-1 downto 0 );
-  signal relational_op_net : std_logic_vector( 1-1 downto 0 );
-  signal register3_q_net : std_logic_vector( 1-1 downto 0 );
-  signal register_q_net_x0 : std_logic_vector( 32-1 downto 0 );
+  signal clk_5_net : std_logic;
+  signal counter_op_net : std_logic_vector( 10-1 downto 0 );
   signal relational1_op_net : std_logic_vector( 1-1 downto 0 );
+  signal ce_5_net : std_logic;
+  signal register_q_net_x0 : std_logic_vector( 32-1 downto 0 );
+  signal register1_q_net : std_logic_vector( 10-1 downto 0 );
+  signal shift_op_net : std_logic_vector( 32-1 downto 0 );
+  signal rom_data_net : std_logic_vector( 32-1 downto 0 );
+  signal register2_q_net : std_logic_vector( 10-1 downto 0 );
+  signal register4_q_net : std_logic_vector( 32-1 downto 0 );
+  signal relational_op_net : std_logic_vector( 1-1 downto 0 );
+  signal constant_op_net : std_logic_vector( 10-1 downto 0 );
+  signal register3_q_net : std_logic_vector( 1-1 downto 0 );
 begin
   offset_out <= rom_data_net;
   shift_op_net <= mag_in;
@@ -3381,12 +3381,12 @@ entity bpsk_receiver_rising_edge_detector is
   );
 end bpsk_receiver_rising_edge_detector;
 architecture structural of bpsk_receiver_rising_edge_detector is 
-  signal register1_q_net : std_logic_vector( 1-1 downto 0 );
+  signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
   signal logical_y_net : std_logic_vector( 1-1 downto 0 );
   signal ce_5_net : std_logic;
-  signal clk_5_net : std_logic;
-  signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
   signal relational_op_net : std_logic_vector( 1-1 downto 0 );
+  signal clk_5_net : std_logic;
+  signal register1_q_net : std_logic_vector( 1-1 downto 0 );
 begin
   output <= logical_y_net;
   relational_op_net <= input;
@@ -3439,24 +3439,24 @@ entity bpsk_receiver_get_spectrum_magnitude is
   );
 end bpsk_receiver_get_spectrum_magnitude;
 architecture structural of bpsk_receiver_get_spectrum_magnitude is 
-  signal fft_op_re_net : std_logic_vector( 32-1 downto 0 );
+  signal register_q_net : std_logic_vector( 1-1 downto 0 );
+  signal shift_op_net : std_logic_vector( 32-1 downto 0 );
+  signal counter_op_net : std_logic_vector( 10-1 downto 0 );
+  signal delay_q_net : std_logic_vector( 1-1 downto 0 );
+  signal mult4_p_net : std_logic_vector( 63-1 downto 0 );
+  signal ce_5_net : std_logic;
+  signal mult1_p_net : std_logic_vector( 63-1 downto 0 );
+  signal constant_op_net : std_logic_vector( 1-1 downto 0 );
+  signal convert1_dout_net : std_logic_vector( 32-1 downto 0 );
+  signal clk_5_net : std_logic;
+  signal relational_op_net : std_logic_vector( 1-1 downto 0 );
+  signal addsub_s_net : std_logic_vector( 64-1 downto 0 );
+  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
+  signal convert3_dout_net : std_logic_vector( 32-1 downto 0 );
+  signal fft_start_frame_out_net : std_logic_vector( 1-1 downto 0 );
   signal fft_op_im_net : std_logic_vector( 32-1 downto 0 );
   signal register2_q_net : std_logic_vector( 32-1 downto 0 );
-  signal convert1_dout_net : std_logic_vector( 32-1 downto 0 );
-  signal relational_op_net : std_logic_vector( 1-1 downto 0 );
-  signal clk_5_net : std_logic;
-  signal convert3_dout_net : std_logic_vector( 32-1 downto 0 );
-  signal addsub_s_net : std_logic_vector( 64-1 downto 0 );
-  signal constant_op_net : std_logic_vector( 1-1 downto 0 );
-  signal register_q_net : std_logic_vector( 1-1 downto 0 );
-  signal mult4_p_net : std_logic_vector( 63-1 downto 0 );
-  signal counter_op_net : std_logic_vector( 10-1 downto 0 );
-  signal ce_5_net : std_logic;
-  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
-  signal delay_q_net : std_logic_vector( 1-1 downto 0 );
-  signal shift_op_net : std_logic_vector( 32-1 downto 0 );
-  signal mult1_p_net : std_logic_vector( 63-1 downto 0 );
-  signal fft_start_frame_out_net : std_logic_vector( 1-1 downto 0 );
+  signal fft_op_re_net : std_logic_vector( 32-1 downto 0 );
   signal register1_q_net : std_logic_vector( 32-1 downto 0 );
 begin
   mag_out <= shift_op_net;
@@ -3704,20 +3704,20 @@ entity bpsk_receiver_increase_signal_power is
   );
 end bpsk_receiver_increase_signal_power;
 architecture structural of bpsk_receiver_increase_signal_power is 
-  signal cmult1_p_net : std_logic_vector( 16-1 downto 0 );
-  signal cmult2_p_net : std_logic_vector( 16-1 downto 0 );
-  signal convert1_dout_net : std_logic_vector( 32-1 downto 0 );
   signal clk_net : std_logic;
   signal convert3_dout_net : std_logic_vector( 32-1 downto 0 );
+  signal cmult1_p_net : std_logic_vector( 16-1 downto 0 );
+  signal convert1_dout_net : std_logic_vector( 32-1 downto 0 );
   signal ce_net : std_logic;
+  signal cmult2_p_net : std_logic_vector( 16-1 downto 0 );
+  signal clk_5_net : std_logic;
+  signal ce_5_net : std_logic;
+  signal convert_dout_net : std_logic_vector( 18-1 downto 0 );
+  signal product_p_re_net : std_logic_vector( 33-1 downto 0 );
   signal convert2_dout_net : std_logic_vector( 18-1 downto 0 );
   signal product_p_im_net : std_logic_vector( 33-1 downto 0 );
-  signal convert_dout_net : std_logic_vector( 18-1 downto 0 );
-  signal ce_5_net : std_logic;
-  signal product_p_re_net : std_logic_vector( 33-1 downto 0 );
-  signal clk_5_net : std_logic;
-  signal product1_p_im_net : std_logic_vector( 37-1 downto 0 );
   signal product1_p_re_net : std_logic_vector( 37-1 downto 0 );
+  signal product1_p_im_net : std_logic_vector( 37-1 downto 0 );
 begin
   imag_out <= convert3_dout_net;
   real_out <= convert1_dout_net;
@@ -3853,15 +3853,15 @@ entity bpsk_receiver_nco_x0 is
   );
 end bpsk_receiver_nco_x0;
 architecture structural of bpsk_receiver_nco_x0 is 
-  signal clk_5_net : std_logic;
   signal sin_rom_data_net : std_logic_vector( 16-1 downto 0 );
-  signal cos_rom_data_net : std_logic_vector( 16-1 downto 0 );
-  signal rom_data_net : std_logic_vector( 32-1 downto 0 );
-  signal addsub_s_net : std_logic_vector( 41-1 downto 0 );
-  signal delay2_q_net : std_logic_vector( 41-1 downto 0 );
   signal ce_5_net : std_logic;
+  signal rom_data_net : std_logic_vector( 32-1 downto 0 );
+  signal clk_5_net : std_logic;
+  signal cos_rom_data_net : std_logic_vector( 16-1 downto 0 );
   signal cmult_p_net : std_logic_vector( 42-1 downto 0 );
   signal convert4_dout_net : std_logic_vector( 10-1 downto 0 );
+  signal delay2_q_net : std_logic_vector( 41-1 downto 0 );
+  signal addsub_s_net : std_logic_vector( 41-1 downto 0 );
 begin
   cos <= cos_rom_data_net;
   sin <= sin_rom_data_net;
@@ -4027,28 +4027,28 @@ entity bpsk_receiver_coarse_frequency_synchronisation is
   );
 end bpsk_receiver_coarse_frequency_synchronisation;
 architecture structural of bpsk_receiver_coarse_frequency_synchronisation is 
-  signal coarse_passthrough_net : std_logic_vector( 1-1 downto 0 );
-  signal cic_decimator_real_m_axis_data_tvalid_net : std_logic;
-  signal cmult2_p_net : std_logic_vector( 16-1 downto 0 );
   signal mux_y_net : std_logic_vector( 16-1 downto 0 );
-  signal rom_data_net : std_logic_vector( 32-1 downto 0 );
-  signal cmult1_p_net : std_logic_vector( 16-1 downto 0 );
-  signal mux1_y_net : std_logic_vector( 16-1 downto 0 );
   signal delay_q_net : std_logic_vector( 1-1 downto 0 );
+  signal mux1_y_net : std_logic_vector( 16-1 downto 0 );
   signal convert3_dout_net : std_logic_vector( 32-1 downto 0 );
-  signal cos_rom_data_net : std_logic_vector( 16-1 downto 0 );
-  signal register_q_net : std_logic_vector( 1-1 downto 0 );
-  signal clk_5_net : std_logic;
-  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
-  signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
-  signal delay1_q_net : std_logic_vector( 16-1 downto 0 );
-  signal shift_op_net : std_logic_vector( 32-1 downto 0 );
-  signal sin_rom_data_net : std_logic_vector( 16-1 downto 0 );
-  signal clk_net : std_logic;
-  signal ce_5_net : std_logic;
-  signal convert1_dout_net_x0 : std_logic_vector( 32-1 downto 0 );
   signal ce_net : std_logic;
+  signal convert1_dout_net_x0 : std_logic_vector( 32-1 downto 0 );
+  signal cic_decimator_real_m_axis_data_tvalid_net : std_logic;
+  signal ce_5_net : std_logic;
+  signal cmult1_p_net : std_logic_vector( 16-1 downto 0 );
   signal delay2_q_net : std_logic_vector( 16-1 downto 0 );
+  signal register_q_net : std_logic_vector( 1-1 downto 0 );
+  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
+  signal rom_data_net : std_logic_vector( 32-1 downto 0 );
+  signal clk_net : std_logic;
+  signal cmult2_p_net : std_logic_vector( 16-1 downto 0 );
+  signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
+  signal clk_5_net : std_logic;
+  signal shift_op_net : std_logic_vector( 32-1 downto 0 );
+  signal delay1_q_net : std_logic_vector( 16-1 downto 0 );
+  signal cos_rom_data_net : std_logic_vector( 16-1 downto 0 );
+  signal coarse_passthrough_net : std_logic_vector( 1-1 downto 0 );
+  signal sin_rom_data_net : std_logic_vector( 16-1 downto 0 );
 begin
   valid_out <= delay_q_net;
   real_out <= mux1_y_net;
@@ -4233,9 +4233,9 @@ entity bpsk_receiver_scalar2vector1 is
   );
 end bpsk_receiver_scalar2vector1;
 architecture structural of bpsk_receiver_scalar2vector1 is 
-  signal slice0_y_net : std_logic_vector( 16-1 downto 0 );
-  signal slice1_y_net : std_logic_vector( 16-1 downto 0 );
   signal s_axis_tdata_im_net : std_logic_vector( 32-1 downto 0 );
+  signal slice1_y_net : std_logic_vector( 16-1 downto 0 );
+  signal slice0_y_net : std_logic_vector( 16-1 downto 0 );
 begin
   o_1 <= slice0_y_net;
   o_2 <= slice1_y_net;
@@ -4277,8 +4277,8 @@ entity bpsk_receiver_vector_reinterpret is
   );
 end bpsk_receiver_vector_reinterpret;
 architecture structural of bpsk_receiver_vector_reinterpret is 
-  signal slice1_y_net : std_logic_vector( 16-1 downto 0 );
   signal reinterpret0_output_port_net : std_logic_vector( 16-1 downto 0 );
+  signal slice1_y_net : std_logic_vector( 16-1 downto 0 );
   signal reinterpret1_output_port_net : std_logic_vector( 16-1 downto 0 );
   signal slice0_y_net : std_logic_vector( 16-1 downto 0 );
 begin
@@ -4318,9 +4318,9 @@ entity bpsk_receiver_vector_reinterpret1 is
 end bpsk_receiver_vector_reinterpret1;
 architecture structural of bpsk_receiver_vector_reinterpret1 is 
   signal slice0_y_net : std_logic_vector( 16-1 downto 0 );
+  signal reinterpret0_output_port_net : std_logic_vector( 16-1 downto 0 );
   signal reinterpret1_output_port_net : std_logic_vector( 16-1 downto 0 );
   signal slice1_y_net : std_logic_vector( 16-1 downto 0 );
-  signal reinterpret0_output_port_net : std_logic_vector( 16-1 downto 0 );
 begin
   out_1 <= reinterpret0_output_port_net;
   out_2 <= reinterpret1_output_port_net;
@@ -4361,18 +4361,18 @@ entity bpsk_receiver_complex_axi_stream_slave_interface is
   );
 end bpsk_receiver_complex_axi_stream_slave_interface;
 architecture structural of bpsk_receiver_complex_axi_stream_slave_interface is 
-  signal fir_compiler_7_2_s_axis_data_tready_net : std_logic;
-  signal reinterpret1_output_port_net : std_logic_vector( 16-1 downto 0 );
-  signal s_axis_tdata_im_net : std_logic_vector( 32-1 downto 0 );
-  signal s_axis_tvalid_re_net : std_logic_vector( 1-1 downto 0 );
   signal reinterpret0_output_port_net_x0 : std_logic_vector( 16-1 downto 0 );
-  signal reinterpret1_output_port_net_x0 : std_logic_vector( 16-1 downto 0 );
+  signal fir_compiler_7_2_s_axis_data_tready_net : std_logic;
+  signal s_axis_tdata_im_net : std_logic_vector( 32-1 downto 0 );
   signal s_axis_tdata_re_net : std_logic_vector( 32-1 downto 0 );
+  signal reinterpret1_output_port_net : std_logic_vector( 16-1 downto 0 );
+  signal reinterpret1_output_port_net_x0 : std_logic_vector( 16-1 downto 0 );
+  signal reinterpret0_output_port_net : std_logic_vector( 16-1 downto 0 );
+  signal s_axis_tvalid_re_net : std_logic_vector( 1-1 downto 0 );
   signal slice0_y_net_x0 : std_logic_vector( 16-1 downto 0 );
   signal slice1_y_net_x0 : std_logic_vector( 16-1 downto 0 );
-  signal reinterpret0_output_port_net : std_logic_vector( 16-1 downto 0 );
-  signal slice1_y_net : std_logic_vector( 16-1 downto 0 );
   signal slice0_y_net : std_logic_vector( 16-1 downto 0 );
+  signal slice1_y_net : std_logic_vector( 16-1 downto 0 );
 begin
   real_out_1 <= reinterpret0_output_port_net_x0;
   imag_out_1 <= reinterpret0_output_port_net;
@@ -4428,28 +4428,28 @@ entity bpsk_receiver_convert_to_axi_stream is
   );
 end bpsk_receiver_convert_to_axi_stream;
 architecture structural of bpsk_receiver_convert_to_axi_stream is 
-  signal src_clk_net : std_logic;
-  signal relational2_op_net : std_logic_vector( 1-1 downto 0 );
-  signal concat_y_net : std_logic_vector( 8-1 downto 0 );
-  signal constant1_op_net : std_logic_vector( 1-1 downto 0 );
-  signal constant_op_net : std_logic_vector( 1-1 downto 0 );
   signal counter_op_net : std_logic_vector( 32-1 downto 0 );
-  signal register2_q_net : std_logic_vector( 1-1 downto 0 );
-  signal register5_q_net : std_logic_vector( 8-1 downto 0 );
-  signal relational_op_net_x0 : std_logic_vector( 1-1 downto 0 );
+  signal constant1_op_net : std_logic_vector( 1-1 downto 0 );
   signal logical2_y_net : std_logic_vector( 1-1 downto 0 );
-  signal counter1_op_net : std_logic_vector( 32-1 downto 0 );
-  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
-  signal logical1_y_net : std_logic_vector( 1-1 downto 0 );
-  signal register6_q_net : std_logic_vector( 8-1 downto 0 );
-  signal src_ce_net : std_logic;
+  signal src_clk_net : std_logic;
+  signal constant_op_net : std_logic_vector( 1-1 downto 0 );
   signal register3_q_net : std_logic_vector( 1-1 downto 0 );
+  signal concat_y_net : std_logic_vector( 8-1 downto 0 );
+  signal register6_q_net : std_logic_vector( 8-1 downto 0 );
+  signal relational_op_net_x0 : std_logic_vector( 1-1 downto 0 );
+  signal src_ce_net : std_logic;
+  signal register5_q_net : std_logic_vector( 8-1 downto 0 );
+  signal relational2_op_net : std_logic_vector( 1-1 downto 0 );
+  signal relational3_op_net : std_logic_vector( 1-1 downto 0 );
+  signal relational1_op_net : std_logic_vector( 1-1 downto 0 );
+  signal counter1_op_net : std_logic_vector( 32-1 downto 0 );
+  signal register2_q_net : std_logic_vector( 1-1 downto 0 );
+  signal register_q_net : std_logic_vector( 8-1 downto 0 );
+  signal logical1_y_net : std_logic_vector( 1-1 downto 0 );
   signal relational_op_net : std_logic_vector( 1-1 downto 0 );
+  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
   signal register4_q_net : std_logic_vector( 8-1 downto 0 );
   signal register1_q_net : std_logic_vector( 8-1 downto 0 );
-  signal relational1_op_net : std_logic_vector( 1-1 downto 0 );
-  signal register_q_net : std_logic_vector( 8-1 downto 0 );
-  signal relational3_op_net : std_logic_vector( 1-1 downto 0 );
 begin
   data_out <= register5_q_net;
   valid_out <= register3_q_net;
@@ -4670,11 +4670,11 @@ entity bpsk_receiver_dbpsk_convert is
   );
 end bpsk_receiver_dbpsk_convert;
 architecture structural of bpsk_receiver_dbpsk_convert is 
+  signal register4_q_net : std_logic_vector( 1-1 downto 0 );
   signal register5_q_net : std_logic_vector( 1-1 downto 0 );
+  signal mux_y_net : std_logic_vector( 2-1 downto 0 );
   signal constant_op_net : std_logic_vector( 2-1 downto 0 );
   signal constant1_op_net : std_logic_vector( 2-1 downto 0 );
-  signal mux_y_net : std_logic_vector( 2-1 downto 0 );
-  signal register4_q_net : std_logic_vector( 1-1 downto 0 );
 begin
   data_out <= mux_y_net;
   register4_q_net <= data_in;
@@ -4720,15 +4720,15 @@ entity bpsk_receiver_dbpsk_decision is
   );
 end bpsk_receiver_dbpsk_decision;
 architecture structural of bpsk_receiver_dbpsk_decision is 
-  signal slice_y_net : std_logic_vector( 1-1 downto 0 );
-  signal register_q_net : std_logic_vector( 1-1 downto 0 );
   signal register4_q_net_x0 : std_logic_vector( 1-1 downto 0 );
-  signal src_ce_net : std_logic;
-  signal src_clk_net : std_logic;
-  signal register4_q_net : std_logic_vector( 1-1 downto 0 );
   signal register5_q_net : std_logic_vector( 1-1 downto 0 );
+  signal slice_y_net : std_logic_vector( 1-1 downto 0 );
+  signal src_clk_net : std_logic;
+  signal src_ce_net : std_logic;
   signal logical1_y_net : std_logic_vector( 1-1 downto 0 );
+  signal register_q_net : std_logic_vector( 1-1 downto 0 );
   signal register3_q_net : std_logic_vector( 1-1 downto 0 );
+  signal register4_q_net : std_logic_vector( 1-1 downto 0 );
   signal register2_q_net : std_logic_vector( 1-1 downto 0 );
 begin
   data_out <= register4_q_net;
@@ -4826,12 +4826,12 @@ entity bpsk_receiver_rising_edge_detector_x0 is
   );
 end bpsk_receiver_rising_edge_detector_x0;
 architecture structural of bpsk_receiver_rising_edge_detector_x0 is 
-  signal register2_q_net : std_logic_vector( 1-1 downto 0 );
   signal logical1_y_net : std_logic_vector( 1-1 downto 0 );
-  signal src_clk_net : std_logic;
-  signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
   signal relational1_op_net : std_logic_vector( 1-1 downto 0 );
   signal src_ce_net : std_logic;
+  signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
+  signal src_clk_net : std_logic;
+  signal register2_q_net : std_logic_vector( 1-1 downto 0 );
 begin
   output <= logical1_y_net;
   relational1_op_net <= input;
@@ -4884,22 +4884,22 @@ entity bpsk_receiver_shift_register is
   );
 end bpsk_receiver_shift_register;
 architecture structural of bpsk_receiver_shift_register is 
-  signal concat_y_net : std_logic_vector( 8-1 downto 0 );
-  signal relational_op_net : std_logic_vector( 1-1 downto 0 );
-  signal delay1_q_net : std_logic_vector( 1-1 downto 0 );
-  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
-  signal register5_q_net : std_logic_vector( 1-1 downto 0 );
-  signal register1_q_net : std_logic_vector( 1-1 downto 0 );
-  signal constant_op_net : std_logic_vector( 4-1 downto 0 );
-  signal register4_q_net : std_logic_vector( 1-1 downto 0 );
-  signal register_q_net : std_logic_vector( 1-1 downto 0 );
-  signal register6_q_net : std_logic_vector( 1-1 downto 0 );
   signal register7_q_net : std_logic_vector( 1-1 downto 0 );
+  signal register6_q_net : std_logic_vector( 1-1 downto 0 );
+  signal register5_q_net : std_logic_vector( 1-1 downto 0 );
+  signal register4_q_net : std_logic_vector( 1-1 downto 0 );
+  signal register1_q_net : std_logic_vector( 1-1 downto 0 );
   signal register3_q_net : std_logic_vector( 1-1 downto 0 );
-  signal counter_op_net : std_logic_vector( 4-1 downto 0 );
+  signal constant_op_net : std_logic_vector( 4-1 downto 0 );
   signal register2_q_net : std_logic_vector( 1-1 downto 0 );
+  signal register_q_net : std_logic_vector( 1-1 downto 0 );
+  signal counter_op_net : std_logic_vector( 4-1 downto 0 );
+  signal relational_op_net : std_logic_vector( 1-1 downto 0 );
   signal src_clk_net : std_logic;
   signal src_ce_net : std_logic;
+  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
+  signal concat_y_net : std_logic_vector( 8-1 downto 0 );
+  signal delay1_q_net : std_logic_vector( 1-1 downto 0 );
 begin
   data_out <= concat_y_net;
   valid_out <= relational_op_net;
@@ -5084,32 +5084,32 @@ entity bpsk_receiver_frame_sync is
   );
 end bpsk_receiver_frame_sync;
 architecture structural of bpsk_receiver_frame_sync is 
-  signal logical2_y_net : std_logic_vector( 1-1 downto 0 );
-  signal mux_y_net : std_logic_vector( 2-1 downto 0 );
-  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
-  signal reset_frame_sync_net : std_logic_vector( 1-1 downto 0 );
-  signal src_ce_net : std_logic;
-  signal delay1_q_net : std_logic_vector( 1-1 downto 0 );
-  signal relational_op_net : std_logic_vector( 1-1 downto 0 );
-  signal logical1_y_net_x0 : std_logic_vector( 1-1 downto 0 );
-  signal concat_y_net : std_logic_vector( 8-1 downto 0 );
-  signal ce_net : std_logic;
-  signal register4_q_net : std_logic_vector( 1-1 downto 0 );
-  signal src_clk_net : std_logic;
-  signal clk_net : std_logic;
-  signal register5_q_net : std_logic_vector( 1-1 downto 0 );
-  signal counter1_op_net : std_logic_vector( 32-1 downto 0 );
-  signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
-  signal threshold_net : std_logic_vector( 32-1 downto 0 );
-  signal slice_y_net : std_logic_vector( 1-1 downto 0 );
-  signal relational1_op_net : std_logic_vector( 1-1 downto 0 );
-  signal register4_q_net_x0 : std_logic_vector( 1-1 downto 0 );
+  signal fir_compiler_7_2_s_axis_data_tready_net : std_logic;
   signal fir_compiler_7_2_m_axis_data_tvalid_net : std_logic;
+  signal fir_compiler_7_2_m_axis_data_tdata_real_net : std_logic_vector( 8-1 downto 0 );
   signal register1_q_net : std_logic_vector( 1-1 downto 0 );
   signal logical1_y_net : std_logic_vector( 1-1 downto 0 );
-  signal fir_compiler_7_2_s_axis_data_tready_net : std_logic;
+  signal logical2_y_net : std_logic_vector( 1-1 downto 0 );
+  signal counter1_op_net : std_logic_vector( 32-1 downto 0 );
+  signal reset_frame_sync_net : std_logic_vector( 1-1 downto 0 );
+  signal ce_net : std_logic;
+  signal clk_net : std_logic;
+  signal concat_y_net : std_logic_vector( 8-1 downto 0 );
+  signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
+  signal relational_op_net : std_logic_vector( 1-1 downto 0 );
+  signal threshold_net : std_logic_vector( 32-1 downto 0 );
+  signal register4_q_net_x0 : std_logic_vector( 1-1 downto 0 );
+  signal register5_q_net : std_logic_vector( 1-1 downto 0 );
+  signal register4_q_net : std_logic_vector( 1-1 downto 0 );
+  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
+  signal logical1_y_net_x0 : std_logic_vector( 1-1 downto 0 );
+  signal slice_y_net : std_logic_vector( 1-1 downto 0 );
+  signal mux_y_net : std_logic_vector( 2-1 downto 0 );
+  signal src_clk_net : std_logic;
+  signal relational1_op_net : std_logic_vector( 1-1 downto 0 );
+  signal src_ce_net : std_logic;
+  signal delay1_q_net : std_logic_vector( 1-1 downto 0 );
   signal delay_q_net : std_logic_vector( 1-1 downto 0 );
-  signal fir_compiler_7_2_m_axis_data_tdata_real_net : std_logic_vector( 8-1 downto 0 );
 begin
   data_out <= concat_y_net;
   valid_out <= relational_op_net;
@@ -5289,21 +5289,21 @@ entity bpsk_receiver_frame_synchronisation is
   );
 end bpsk_receiver_frame_synchronisation;
 architecture structural of bpsk_receiver_frame_synchronisation is 
-  signal logical2_y_net : std_logic_vector( 1-1 downto 0 );
   signal register3_q_net : std_logic_vector( 1-1 downto 0 );
+  signal logical2_y_net : std_logic_vector( 1-1 downto 0 );
   signal register5_q_net : std_logic_vector( 8-1 downto 0 );
-  signal relational_op_net : std_logic_vector( 1-1 downto 0 );
-  signal concat_y_net : std_logic_vector( 8-1 downto 0 );
   signal register4_q_net : std_logic_vector( 1-1 downto 0 );
-  signal ce_net : std_logic;
-  signal threshold_net : std_logic_vector( 32-1 downto 0 );
-  signal src_ce_net : std_logic;
   signal clk_net : std_logic;
   signal src_clk_net : std_logic;
-  signal counter1_op_net : std_logic_vector( 32-1 downto 0 );
   signal reset_frame_sync_net : std_logic_vector( 1-1 downto 0 );
-  signal register6_q_net : std_logic_vector( 8-1 downto 0 );
   signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
+  signal register6_q_net : std_logic_vector( 8-1 downto 0 );
+  signal threshold_net : std_logic_vector( 32-1 downto 0 );
+  signal ce_net : std_logic;
+  signal src_ce_net : std_logic;
+  signal counter1_op_net : std_logic_vector( 32-1 downto 0 );
+  signal concat_y_net : std_logic_vector( 8-1 downto 0 );
+  signal relational_op_net : std_logic_vector( 1-1 downto 0 );
 begin
   valid_out <= register3_q_net;
   data_out <= register5_q_net;
@@ -5380,50 +5380,50 @@ entity bpsk_receiver_observation_point is
   );
 end bpsk_receiver_observation_point;
 architecture structural of bpsk_receiver_observation_point is 
-  signal delay1_q_net : std_logic_vector( 16-1 downto 0 );
-  signal register4_q_net : std_logic_vector( 1-1 downto 0 );
-  signal convert_dout_net_x0 : std_logic_vector( 16-1 downto 0 );
-  signal delay_q_net : std_logic_vector( 1-1 downto 0 );
-  signal mux_y_net : std_logic_vector( 16-1 downto 0 );
-  signal ce_net : std_logic;
-  signal cmult1_p_net : std_logic_vector( 16-1 downto 0 );
-  signal cic_decimator_real_m_axis_data_tvalid_net : std_logic;
-  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
-  signal mux1_y_net : std_logic_vector( 16-1 downto 0 );
+  signal clk_net : std_logic;
   signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
-  signal delay3_q_net : std_logic_vector( 1-1 downto 0 );
-  signal delay2_q_net : std_logic_vector( 16-1 downto 0 );
-  signal convert1_dout_net_x0 : std_logic_vector( 16-1 downto 0 );
+  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
   signal observation_point_net : std_logic_vector( 32-1 downto 0 );
-  signal cmult2_p_net : std_logic_vector( 16-1 downto 0 );
   signal concat_y_net : std_logic_vector( 32-1 downto 0 );
   signal mux_valid_y_net : std_logic_vector( 1-1 downto 0 );
-  signal clk_net : std_logic;
-  signal fir_compiler_7_2_m_axis_data_tvalid_net : std_logic;
-  signal mux_re_y_net : std_logic_vector( 16-1 downto 0 );
-  signal up_sample5_q_net : std_logic_vector( 16-1 downto 0 );
-  signal up_sample6_q_net : std_logic_vector( 16-1 downto 0 );
-  signal up_sample4_q_net : std_logic_vector( 16-1 downto 0 );
-  signal up_sample10_q_net : std_logic_vector( 1-1 downto 0 );
-  signal up_sample1_q_net : std_logic_vector( 16-1 downto 0 );
-  signal up_sample3_q_net : std_logic_vector( 16-1 downto 0 );
-  signal up_sample2_q_net : std_logic_vector( 16-1 downto 0 );
-  signal up_sample14_q_net : std_logic_vector( 16-1 downto 0 );
-  signal reinterpret_output_port_net : std_logic_vector( 16-1 downto 0 );
-  signal up_sample9_q_net : std_logic_vector( 1-1 downto 0 );
-  signal src_ce_net : std_logic;
-  signal up_sample11_q_net : std_logic_vector( 1-1 downto 0 );
-  signal up_sample7_q_net : std_logic_vector( 16-1 downto 0 );
-  signal up_sample12_q_net : std_logic_vector( 1-1 downto 0 );
-  signal reinterpret1_output_port_net : std_logic_vector( 16-1 downto 0 );
-  signal up_sample15_q_net : std_logic_vector( 1-1 downto 0 );
-  signal clk_5_net : std_logic;
-  signal up_sample8_q_net : std_logic_vector( 16-1 downto 0 );
-  signal mux_im_y_net : std_logic_vector( 16-1 downto 0 );
-  signal src_clk_net : std_logic;
-  signal up_sample13_q_net : std_logic_vector( 16-1 downto 0 );
   signal ce_5_net : std_logic;
   signal slice_y_net : std_logic_vector( 3-1 downto 0 );
+  signal up_sample13_q_net : std_logic_vector( 16-1 downto 0 );
+  signal ce_net : std_logic;
+  signal clk_5_net : std_logic;
+  signal src_clk_net : std_logic;
+  signal reinterpret_output_port_net : std_logic_vector( 16-1 downto 0 );
+  signal src_ce_net : std_logic;
+  signal up_sample8_q_net : std_logic_vector( 16-1 downto 0 );
+  signal reinterpret1_output_port_net : std_logic_vector( 16-1 downto 0 );
+  signal up_sample4_q_net : std_logic_vector( 16-1 downto 0 );
+  signal mux_im_y_net : std_logic_vector( 16-1 downto 0 );
+  signal up_sample6_q_net : std_logic_vector( 16-1 downto 0 );
+  signal up_sample7_q_net : std_logic_vector( 16-1 downto 0 );
+  signal cmult2_p_net : std_logic_vector( 16-1 downto 0 );
+  signal register4_q_net : std_logic_vector( 1-1 downto 0 );
+  signal cic_decimator_real_m_axis_data_tvalid_net : std_logic;
+  signal convert_dout_net_x0 : std_logic_vector( 16-1 downto 0 );
+  signal delay_q_net : std_logic_vector( 1-1 downto 0 );
+  signal delay1_q_net : std_logic_vector( 16-1 downto 0 );
+  signal fir_compiler_7_2_m_axis_data_tvalid_net : std_logic;
+  signal mux1_y_net : std_logic_vector( 16-1 downto 0 );
+  signal delay3_q_net : std_logic_vector( 1-1 downto 0 );
+  signal delay2_q_net : std_logic_vector( 16-1 downto 0 );
+  signal cmult1_p_net : std_logic_vector( 16-1 downto 0 );
+  signal mux_y_net : std_logic_vector( 16-1 downto 0 );
+  signal convert1_dout_net_x0 : std_logic_vector( 16-1 downto 0 );
+  signal mux_re_y_net : std_logic_vector( 16-1 downto 0 );
+  signal up_sample5_q_net : std_logic_vector( 16-1 downto 0 );
+  signal up_sample14_q_net : std_logic_vector( 16-1 downto 0 );
+  signal up_sample1_q_net : std_logic_vector( 16-1 downto 0 );
+  signal up_sample2_q_net : std_logic_vector( 16-1 downto 0 );
+  signal up_sample3_q_net : std_logic_vector( 16-1 downto 0 );
+  signal up_sample10_q_net : std_logic_vector( 1-1 downto 0 );
+  signal up_sample15_q_net : std_logic_vector( 1-1 downto 0 );
+  signal up_sample12_q_net : std_logic_vector( 1-1 downto 0 );
+  signal up_sample11_q_net : std_logic_vector( 1-1 downto 0 );
+  signal up_sample9_q_net : std_logic_vector( 1-1 downto 0 );
 begin
   delay3_q_net <= valid_b;
   cic_decimator_real_m_axis_data_tvalid_net <= valid_e;
@@ -5471,19 +5471,6 @@ begin
     ce => ce_net,
     y => mux_im_y_net
   );
-  mux_valid : entity xil_defaultlib.sysgen_mux_9acf3e3f4e 
-  port map (
-    clr => '0',
-    sel => slice_y_net,
-    d0 => up_sample9_q_net,
-    d1 => up_sample10_q_net,
-    d2 => up_sample11_q_net,
-    d3 => up_sample12_q_net,
-    d4 => up_sample15_q_net,
-    clk => clk_net,
-    ce => ce_net,
-    y => mux_valid_y_net
-  );
   mux_re : entity xil_defaultlib.sysgen_mux_d235603cfd 
   port map (
     clr => '0',
@@ -5496,6 +5483,19 @@ begin
     clk => clk_net,
     ce => ce_net,
     y => mux_re_y_net
+  );
+  mux_valid : entity xil_defaultlib.sysgen_mux_9acf3e3f4e 
+  port map (
+    clr => '0',
+    sel => slice_y_net,
+    d0 => up_sample9_q_net,
+    d1 => up_sample10_q_net,
+    d2 => up_sample11_q_net,
+    d3 => up_sample12_q_net,
+    d4 => up_sample15_q_net,
+    clk => clk_net,
+    ce => ce_net,
+    y => mux_valid_y_net
   );
   reinterpret : entity xil_defaultlib.sysgen_reinterpret_88664dc28e 
   port map (
@@ -5611,6 +5611,72 @@ begin
     dest_clk => clk_net,
     dest_ce => ce_net,
     q => up_sample12_q_net
+  );
+  up_sample13 : entity xil_defaultlib.bpsk_receiver_xlusamp 
+  generic map (
+    copy_samples => 1,
+    d_arith => xlSigned,
+    d_bin_pt => 14,
+    d_width => 16,
+    latency => 0,
+    q_arith => xlSigned,
+    q_bin_pt => 14,
+    q_width => 16
+  )
+  port map (
+    src_clr => '0',
+    dest_clr => '0',
+    en => "1",
+    d => cmult1_p_net,
+    src_clk => clk_5_net,
+    src_ce => ce_5_net,
+    dest_clk => clk_net,
+    dest_ce => ce_net,
+    q => up_sample13_q_net
+  );
+  up_sample14 : entity xil_defaultlib.bpsk_receiver_xlusamp 
+  generic map (
+    copy_samples => 1,
+    d_arith => xlSigned,
+    d_bin_pt => 14,
+    d_width => 16,
+    latency => 0,
+    q_arith => xlSigned,
+    q_bin_pt => 14,
+    q_width => 16
+  )
+  port map (
+    src_clr => '0',
+    dest_clr => '0',
+    en => "1",
+    d => cmult2_p_net,
+    src_clk => clk_5_net,
+    src_ce => ce_5_net,
+    dest_clk => clk_net,
+    dest_ce => ce_net,
+    q => up_sample14_q_net
+  );
+  up_sample15 : entity xil_defaultlib.bpsk_receiver_xlusamp 
+  generic map (
+    copy_samples => 0,
+    d_arith => xlUnsigned,
+    d_bin_pt => 0,
+    d_width => 1,
+    latency => 0,
+    q_arith => xlUnsigned,
+    q_bin_pt => 0,
+    q_width => 1
+  )
+  port map (
+    src_clr => '0',
+    dest_clr => '0',
+    en => "1",
+    d(0) => cic_decimator_real_m_axis_data_tvalid_net,
+    src_clk => clk_5_net,
+    src_ce => ce_5_net,
+    dest_clk => clk_net,
+    dest_ce => ce_net,
+    q => up_sample15_q_net
   );
   up_sample2 : entity xil_defaultlib.bpsk_receiver_xlusamp 
   generic map (
@@ -5788,72 +5854,6 @@ begin
     dest_ce => ce_net,
     q => up_sample9_q_net
   );
-  up_sample13 : entity xil_defaultlib.bpsk_receiver_xlusamp 
-  generic map (
-    copy_samples => 1,
-    d_arith => xlSigned,
-    d_bin_pt => 14,
-    d_width => 16,
-    latency => 0,
-    q_arith => xlSigned,
-    q_bin_pt => 14,
-    q_width => 16
-  )
-  port map (
-    src_clr => '0',
-    dest_clr => '0',
-    en => "1",
-    d => cmult1_p_net,
-    src_clk => clk_5_net,
-    src_ce => ce_5_net,
-    dest_clk => clk_net,
-    dest_ce => ce_net,
-    q => up_sample13_q_net
-  );
-  up_sample14 : entity xil_defaultlib.bpsk_receiver_xlusamp 
-  generic map (
-    copy_samples => 1,
-    d_arith => xlSigned,
-    d_bin_pt => 14,
-    d_width => 16,
-    latency => 0,
-    q_arith => xlSigned,
-    q_bin_pt => 14,
-    q_width => 16
-  )
-  port map (
-    src_clr => '0',
-    dest_clr => '0',
-    en => "1",
-    d => cmult2_p_net,
-    src_clk => clk_5_net,
-    src_ce => ce_5_net,
-    dest_clk => clk_net,
-    dest_ce => ce_net,
-    q => up_sample14_q_net
-  );
-  up_sample15 : entity xil_defaultlib.bpsk_receiver_xlusamp 
-  generic map (
-    copy_samples => 0,
-    d_arith => xlUnsigned,
-    d_bin_pt => 0,
-    d_width => 1,
-    latency => 0,
-    q_arith => xlUnsigned,
-    q_bin_pt => 0,
-    q_width => 1
-  )
-  port map (
-    src_clr => '0',
-    dest_clr => '0',
-    en => "1",
-    d(0) => cic_decimator_real_m_axis_data_tvalid_net,
-    src_clk => clk_5_net,
-    src_ce => ce_5_net,
-    dest_clk => clk_net,
-    dest_ce => ce_net,
-    q => up_sample15_q_net
-  );
 end structural;
 -- Generated from Simulink block bpsk_receiver/RRC Receive Filter
 library IEEE;
@@ -5877,20 +5877,20 @@ entity bpsk_receiver_rrc_receive_filter is
   );
 end bpsk_receiver_rrc_receive_filter;
 architecture structural of bpsk_receiver_rrc_receive_filter is 
-  signal ce_5_net : std_logic;
-  signal mux1_y_net : std_logic_vector( 16-1 downto 0 );
-  signal fir_compiler_7_2_m_axis_data_tdata_path0_net : std_logic_vector( 33-1 downto 0 );
-  signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
-  signal fir_compiler_7_2_m_axis_data_tvalid_net : std_logic;
-  signal src_clk_net : std_logic;
   signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
-  signal clk_net : std_logic;
+  signal fir_compiler_7_2_m_axis_data_tvalid_net : std_logic;
+  signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
   signal delay_q_net : std_logic_vector( 1-1 downto 0 );
-  signal mux_y_net : std_logic_vector( 16-1 downto 0 );
   signal clk_5_net : std_logic;
-  signal src_ce_net : std_logic;
-  signal ce_net : std_logic;
+  signal mux_y_net : std_logic_vector( 16-1 downto 0 );
+  signal ce_5_net : std_logic;
+  signal src_clk_net : std_logic;
+  signal clk_net : std_logic;
   signal fir_compiler_7_2_m_axis_data_tdata_path1_net : std_logic_vector( 33-1 downto 0 );
+  signal fir_compiler_7_2_m_axis_data_tdata_path0_net : std_logic_vector( 33-1 downto 0 );
+  signal mux1_y_net : std_logic_vector( 16-1 downto 0 );
+  signal ce_net : std_logic;
+  signal src_ce_net : std_logic;
   signal fir_compiler_7_2_s_axis_data_tready_net : std_logic;
 begin
   valid_out <= fir_compiler_7_2_m_axis_data_tvalid_net;
@@ -5983,14 +5983,14 @@ entity bpsk_receiver_vector_fir_im is
   );
 end bpsk_receiver_vector_fir_im;
 architecture structural of bpsk_receiver_vector_fir_im is 
-  signal fir_compiler_7_2_m_axis_data_tvalid_net : std_logic;
-  signal reinterpret1_output_port_net : std_logic_vector( 16-1 downto 0 );
   signal fir_compiler_7_2_s_axis_data_tready_net : std_logic;
-  signal ce_net : std_logic;
-  signal fir_compiler_7_2_m_axis_data_tdata_real_net : std_logic_vector( 31-1 downto 0 );
-  signal reinterpret0_output_port_net : std_logic_vector( 16-1 downto 0 );
-  signal s_axis_tvalid_re_net : std_logic_vector( 1-1 downto 0 );
   signal clk_net : std_logic;
+  signal fir_compiler_7_2_m_axis_data_tvalid_net : std_logic;
+  signal ce_net : std_logic;
+  signal s_axis_tvalid_re_net : std_logic_vector( 1-1 downto 0 );
+  signal reinterpret1_output_port_net : std_logic_vector( 16-1 downto 0 );
+  signal reinterpret0_output_port_net : std_logic_vector( 16-1 downto 0 );
+  signal fir_compiler_7_2_m_axis_data_tdata_real_net : std_logic_vector( 31-1 downto 0 );
 begin
   tdo <= fir_compiler_7_2_m_axis_data_tdata_real_net;
   s_axis_tvalid_re_net <= tvi;
@@ -6029,14 +6029,14 @@ entity bpsk_receiver_vector_fir_re is
   );
 end bpsk_receiver_vector_fir_re;
 architecture structural of bpsk_receiver_vector_fir_re is 
-  signal fir_compiler_7_2_m_axis_data_tvalid_net : std_logic;
-  signal ce_net : std_logic;
-  signal s_axis_tvalid_re_net : std_logic_vector( 1-1 downto 0 );
-  signal reinterpret1_output_port_net : std_logic_vector( 16-1 downto 0 );
   signal fir_compiler_7_2_s_axis_data_tready_net : std_logic;
-  signal reinterpret0_output_port_net : std_logic_vector( 16-1 downto 0 );
-  signal clk_net : std_logic;
   signal fir_compiler_7_2_m_axis_data_tdata_real_net : std_logic_vector( 31-1 downto 0 );
+  signal s_axis_tvalid_re_net : std_logic_vector( 1-1 downto 0 );
+  signal reinterpret0_output_port_net : std_logic_vector( 16-1 downto 0 );
+  signal reinterpret1_output_port_net : std_logic_vector( 16-1 downto 0 );
+  signal clk_net : std_logic;
+  signal ce_net : std_logic;
+  signal fir_compiler_7_2_m_axis_data_tvalid_net : std_logic;
 begin
   trdyo <= fir_compiler_7_2_s_axis_data_tready_net;
   tdo <= fir_compiler_7_2_m_axis_data_tdata_real_net;
@@ -6079,18 +6079,18 @@ entity bpsk_receiver_ssr_halfband_lowpass_decimator is
   );
 end bpsk_receiver_ssr_halfband_lowpass_decimator;
 architecture structural of bpsk_receiver_ssr_halfband_lowpass_decimator is 
-  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
-  signal reinterpret1_output_port_net : std_logic_vector( 16-1 downto 0 );
   signal fir_compiler_7_2_s_axis_data_tready_net : std_logic;
-  signal reinterpret1_output_port_net_x0 : std_logic_vector( 16-1 downto 0 );
   signal reinterpret0_output_port_net : std_logic_vector( 16-1 downto 0 );
-  signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
-  signal s_axis_tvalid_re_net : std_logic_vector( 1-1 downto 0 );
-  signal fir_compiler_7_2_m_axis_data_tdata_real_net : std_logic_vector( 31-1 downto 0 );
+  signal reinterpret1_output_port_net_x0 : std_logic_vector( 16-1 downto 0 );
+  signal reinterpret0_output_port_net_x0 : std_logic_vector( 16-1 downto 0 );
+  signal reinterpret1_output_port_net : std_logic_vector( 16-1 downto 0 );
   signal clk_net : std_logic;
   signal ce_net : std_logic;
-  signal reinterpret0_output_port_net_x0 : std_logic_vector( 16-1 downto 0 );
   signal fir_compiler_7_2_m_axis_data_tdata_real_net_x0 : std_logic_vector( 31-1 downto 0 );
+  signal fir_compiler_7_2_m_axis_data_tdata_real_net : std_logic_vector( 31-1 downto 0 );
+  signal s_axis_tvalid_re_net : std_logic_vector( 1-1 downto 0 );
+  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
+  signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
 begin
   real_out <= convert_dout_net;
   imag_out <= convert1_dout_net;
@@ -6173,7 +6173,7 @@ entity bpsk_receiver_loop_filter_x0 is
   port (
     real_in : in std_logic_vector( 16-1 downto 0 );
     imag_in : in std_logic_vector( 16-1 downto 0 );
-    signal_in : in std_logic_vector( 34-1 downto 0 );
+    signal_in : in std_logic_vector( 32-1 downto 0 );
     valid_in : in std_logic_vector( 1-1 downto 0 );
     reset : in std_logic_vector( 1-1 downto 0 );
     clk_20 : in std_logic;
@@ -6181,26 +6181,26 @@ entity bpsk_receiver_loop_filter_x0 is
     real_out : out std_logic_vector( 16-1 downto 0 );
     imag_out : out std_logic_vector( 16-1 downto 0 );
     valid_out : out std_logic_vector( 1-1 downto 0 );
-    error_out : out std_logic_vector( 53-1 downto 0 )
+    error_out : out std_logic_vector( 64-1 downto 0 )
   );
 end bpsk_receiver_loop_filter_x0;
 architecture structural of bpsk_receiver_loop_filter_x0 is 
   signal delay1_q_net : std_logic_vector( 16-1 downto 0 );
   signal delay2_q_net : std_logic_vector( 16-1 downto 0 );
-  signal delay3_q_net : std_logic_vector( 1-1 downto 0 );
-  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
   signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
-  signal addsub2_s_net : std_logic_vector( 34-1 downto 0 );
-  signal reset_time_sync_net : std_logic_vector( 1-1 downto 0 );
+  signal cmult_p_net : std_logic_vector( 32-1 downto 0 );
   signal relational_op_net : std_logic_vector( 1-1 downto 0 );
+  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
+  signal addsub1_s_net : std_logic_vector( 64-1 downto 0 );
+  signal delay3_q_net : std_logic_vector( 1-1 downto 0 );
+  signal addsub_s_net : std_logic_vector( 64-1 downto 0 );
+  signal reset_time_sync_net : std_logic_vector( 1-1 downto 0 );
   signal src_ce_net : std_logic;
-  signal addsub1_s_net : std_logic_vector( 53-1 downto 0 );
-  signal addsub_s_net : std_logic_vector( 52-1 downto 0 );
-  signal k2_gain_p_net : std_logic_vector( 52-1 downto 0 );
   signal src_clk_net : std_logic;
-  signal register1_q_net : std_logic_vector( 34-1 downto 0 );
-  signal register_q_net : std_logic_vector( 52-1 downto 0 );
-  signal k1_gain_p_net : std_logic_vector( 52-1 downto 0 );
+  signal k2_gain_p_net : std_logic_vector( 64-1 downto 0 );
+  signal register_q_net : std_logic_vector( 64-1 downto 0 );
+  signal k1_gain_p_net : std_logic_vector( 64-1 downto 0 );
+  signal register1_q_net : std_logic_vector( 32-1 downto 0 );
 begin
   real_out <= delay1_q_net;
   imag_out <= delay2_q_net;
@@ -6208,7 +6208,7 @@ begin
   error_out <= addsub1_s_net;
   convert_dout_net <= real_in;
   convert1_dout_net <= imag_in;
-  addsub2_s_net <= signal_in;
+  cmult_p_net <= signal_in;
   relational_op_net <= valid_in;
   reset_time_sync_net <= reset;
   src_clk_net <= clk_20;
@@ -6216,24 +6216,24 @@ begin
   addsub : entity xil_defaultlib.bpsk_receiver_xladdsub 
   generic map (
     a_arith => xlSigned,
-    a_bin_pt => 44,
-    a_width => 52,
+    a_bin_pt => 60,
+    a_width => 64,
     b_arith => xlSigned,
-    b_bin_pt => 44,
-    b_width => 52,
+    b_bin_pt => 60,
+    b_width => 64,
     c_has_c_out => 0,
     c_latency => 0,
-    c_output_width => 53,
+    c_output_width => 65,
     core_name0 => "bpsk_receiver_c_addsub_v12_0_i4",
     extra_registers => 0,
     full_s_arith => 2,
-    full_s_width => 53,
+    full_s_width => 65,
     latency => 0,
-    overflow => 3,
+    overflow => 2,
     quantization => 1,
     s_arith => xlSigned,
-    s_bin_pt => 44,
-    s_width => 52
+    s_bin_pt => 60,
+    s_width => 64
   )
   port map (
     clr => '0',
@@ -6247,24 +6247,24 @@ begin
   addsub1 : entity xil_defaultlib.bpsk_receiver_xladdsub 
   generic map (
     a_arith => xlSigned,
-    a_bin_pt => 44,
-    a_width => 52,
+    a_bin_pt => 60,
+    a_width => 64,
     b_arith => xlSigned,
-    b_bin_pt => 44,
-    b_width => 52,
+    b_bin_pt => 60,
+    b_width => 64,
     c_has_c_out => 0,
     c_latency => 0,
-    c_output_width => 53,
+    c_output_width => 65,
     core_name0 => "bpsk_receiver_c_addsub_v12_0_i4",
     extra_registers => 0,
     full_s_arith => 2,
-    full_s_width => 53,
+    full_s_width => 65,
     latency => 0,
-    overflow => 1,
+    overflow => 2,
     quantization => 1,
     s_arith => xlSigned,
-    s_bin_pt => 44,
-    s_width => 53
+    s_bin_pt => 60,
+    s_width => 64
   )
   port map (
     clr => '0',
@@ -6323,21 +6323,21 @@ begin
   k1_gain : entity xil_defaultlib.bpsk_receiver_xlcmult 
   generic map (
     a_arith => xlSigned,
-    a_bin_pt => 28,
-    a_width => 34,
-    b_bin_pt => 16,
+    a_bin_pt => 30,
+    a_width => 32,
+    b_bin_pt => 30,
     c_a_type => 0,
-    c_a_width => 34,
+    c_a_width => 32,
     c_b_type => 1,
-    c_b_width => 18,
-    c_output_width => 52,
+    c_b_width => 32,
+    c_output_width => 64,
     core_name0 => "bpsk_receiver_mult_gen_v12_0_i6",
     extra_registers => 0,
     multsign => 2,
     overflow => 1,
     p_arith => xlSigned,
-    p_bin_pt => 44,
-    p_width => 52,
+    p_bin_pt => 60,
+    p_width => 64,
     quantization => 1,
     zero_const => 0
   )
@@ -6356,21 +6356,21 @@ begin
   k2_gain : entity xil_defaultlib.bpsk_receiver_xlcmult 
   generic map (
     a_arith => xlSigned,
-    a_bin_pt => 28,
-    a_width => 34,
-    b_bin_pt => 16,
+    a_bin_pt => 30,
+    a_width => 32,
+    b_bin_pt => 30,
     c_a_type => 0,
-    c_a_width => 34,
+    c_a_width => 32,
     c_b_type => 1,
-    c_b_width => 18,
-    c_output_width => 52,
+    c_b_width => 32,
+    c_output_width => 64,
     core_name0 => "bpsk_receiver_mult_gen_v12_0_i7",
     extra_registers => 0,
     multsign => 2,
     overflow => 1,
     p_arith => xlSigned,
-    p_bin_pt => 44,
-    p_width => 52,
+    p_bin_pt => 60,
+    p_width => 64,
     quantization => 1,
     zero_const => 0
   )
@@ -6388,8 +6388,8 @@ begin
   );
   register_x0 : entity xil_defaultlib.bpsk_receiver_xlregister 
   generic map (
-    d_width => 52,
-    init_value => b"0000000000000000000000000000000000000000000000000000"
+    d_width => 64,
+    init_value => b"0000000000000000000000000000000000000000000000000000000000000000"
   )
   port map (
     d => addsub_s_net,
@@ -6401,11 +6401,11 @@ begin
   );
   register1 : entity xil_defaultlib.bpsk_receiver_xlregister 
   generic map (
-    d_width => 34,
-    init_value => b"0000000000000000000000000000000000"
+    d_width => 32,
+    init_value => b"00000000000000000000000000000000"
   )
   port map (
-    d => addsub2_s_net,
+    d => cmult_p_net,
     rst => reset_time_sync_net,
     en => relational_op_net,
     clk => src_clk_net,
@@ -6420,21 +6420,25 @@ library xil_defaultlib;
 use xil_defaultlib.conv_pkg.all;
 entity bpsk_receiver_ncc is
   port (
-    error : in std_logic_vector( 53-1 downto 0 );
+    error : in std_logic_vector( 64-1 downto 0 );
     clk_20 : in std_logic;
     ce_20 : in std_logic;
     strobe : out std_logic_vector( 1-1 downto 0 )
   );
 end bpsk_receiver_ncc;
 architecture structural of bpsk_receiver_ncc is 
+  signal mux_y_net : std_logic_vector( 65-1 downto 0 );
   signal relational_op_net : std_logic_vector( 1-1 downto 0 );
-  signal addsub1_s_net : std_logic_vector( 54-1 downto 0 );
-  signal register_q_net : std_logic_vector( 49-1 downto 0 );
-  signal src_ce_net : std_logic;
   signal src_clk_net : std_logic;
-  signal addsub1_s_net_x0 : std_logic_vector( 53-1 downto 0 );
-  signal addsub_s_net : std_logic_vector( 49-1 downto 0 );
+  signal addsub_s_net : std_logic_vector( 64-1 downto 0 );
+  signal src_ce_net : std_logic;
+  signal addsub1_s_net : std_logic_vector( 64-1 downto 0 );
   signal constant_op_net : std_logic_vector( 1-1 downto 0 );
+  signal addsub1_s_net_x0 : std_logic_vector( 64-1 downto 0 );
+  signal register_q_net : std_logic_vector( 64-1 downto 0 );
+  signal relational1_op_net : std_logic_vector( 1-1 downto 0 );
+  signal addsub2_s_net : std_logic_vector( 64-1 downto 0 );
+  signal constant1_op_net : std_logic_vector( 6-1 downto 0 );
 begin
   strobe <= relational_op_net;
   addsub1_s_net_x0 <= error;
@@ -6442,30 +6446,30 @@ begin
   src_ce_net <= ce_20;
   addsub : entity xil_defaultlib.bpsk_receiver_xladdsub 
   generic map (
-    a_arith => xlUnsigned,
-    a_bin_pt => 44,
-    a_width => 49,
+    a_arith => xlSigned,
+    a_bin_pt => 58,
+    a_width => 65,
     b_arith => xlSigned,
-    b_bin_pt => 44,
-    b_width => 54,
+    b_bin_pt => 58,
+    b_width => 64,
     c_has_c_out => 0,
     c_latency => 0,
-    c_output_width => 55,
+    c_output_width => 66,
     core_name0 => "bpsk_receiver_c_addsub_v12_0_i5",
     extra_registers => 0,
     full_s_arith => 2,
-    full_s_width => 55,
+    full_s_width => 66,
     latency => 0,
     overflow => 1,
     quantization => 1,
     s_arith => xlUnsigned,
-    s_bin_pt => 44,
-    s_width => 49
+    s_bin_pt => 58,
+    s_width => 64
   )
   port map (
     clr => '0',
     en => "1",
-    a => register_q_net,
+    a => mux_y_net,
     b => addsub1_s_net,
     clk => src_clk_net,
     ce => src_ce_net,
@@ -6477,21 +6481,21 @@ begin
     a_bin_pt => 0,
     a_width => 1,
     b_arith => xlSigned,
-    b_bin_pt => 44,
-    b_width => 53,
+    b_bin_pt => 60,
+    b_width => 64,
     c_has_c_out => 0,
     c_latency => 0,
-    c_output_width => 54,
-    core_name0 => "bpsk_receiver_c_addsub_v12_0_i6",
+    c_output_width => 65,
+    core_name0 => "bpsk_receiver_c_addsub_v12_0_i4",
     extra_registers => 0,
     full_s_arith => 2,
-    full_s_width => 54,
+    full_s_width => 65,
     latency => 0,
-    overflow => 3,
+    overflow => 2,
     quantization => 1,
     s_arith => xlSigned,
-    s_bin_pt => 44,
-    s_width => 54
+    s_bin_pt => 58,
+    s_width => 64
   )
   port map (
     clr => '0',
@@ -6502,6 +6506,37 @@ begin
     ce => src_ce_net,
     s => addsub1_s_net
   );
+  addsub2 : entity xil_defaultlib.bpsk_receiver_xladdsub 
+  generic map (
+    a_arith => xlUnsigned,
+    a_bin_pt => 58,
+    a_width => 64,
+    b_arith => xlUnsigned,
+    b_bin_pt => 0,
+    b_width => 6,
+    c_has_c_out => 0,
+    c_latency => 0,
+    c_output_width => 65,
+    core_name0 => "bpsk_receiver_c_addsub_v12_0_i6",
+    extra_registers => 0,
+    full_s_arith => 2,
+    full_s_width => 65,
+    latency => 0,
+    overflow => 3,
+    quantization => 1,
+    s_arith => xlSigned,
+    s_bin_pt => 58,
+    s_width => 64
+  )
+  port map (
+    clr => '0',
+    en => "1",
+    a => register_q_net,
+    b => constant1_op_net,
+    clk => src_clk_net,
+    ce => src_ce_net,
+    s => addsub2_s_net
+  );
   constant_x0 : entity xil_defaultlib.sysgen_constant_68b1d293da 
   port map (
     clk => '0',
@@ -6509,10 +6544,27 @@ begin
     clr => '0',
     op => constant_op_net
   );
+  constant1 : entity xil_defaultlib.sysgen_constant_f27017238e 
+  port map (
+    clk => '0',
+    ce => '0',
+    clr => '0',
+    op => constant1_op_net
+  );
+  mux : entity xil_defaultlib.sysgen_mux_ca444b551c 
+  port map (
+    clk => '0',
+    ce => '0',
+    clr => '0',
+    sel => relational1_op_net,
+    d0 => register_q_net,
+    d1 => addsub2_s_net,
+    y => mux_y_net
+  );
   register_x0 : entity xil_defaultlib.bpsk_receiver_xlregister 
   generic map (
-    d_width => 49,
-    init_value => b"0000000000000000000000000000000000000000000000000"
+    d_width => 64,
+    init_value => b"0000000000000000000000000000000000000000000000000000000000000000"
   )
   port map (
     en => "1",
@@ -6522,14 +6574,23 @@ begin
     ce => src_ce_net,
     q => register_q_net
   );
-  relational : entity xil_defaultlib.sysgen_relational_3e3afcc8b6 
+  relational : entity xil_defaultlib.sysgen_relational_456af8de30 
   port map (
     clk => '0',
     ce => '0',
     clr => '0',
-    a => addsub_s_net,
-    b => register_q_net,
+    a => register_q_net,
+    b => addsub_s_net,
     op => relational_op_net
+  );
+  relational1 : entity xil_defaultlib.sysgen_relational_93b79cb2ae 
+  port map (
+    clk => '0',
+    ce => '0',
+    clr => '0',
+    a => register_q_net,
+    b => constant1_op_net,
+    op => relational1_op_net
   );
 end structural;
 -- Generated from Simulink block bpsk_receiver/Time Synchronisation/Timing Error Detector
@@ -6543,48 +6604,51 @@ entity bpsk_receiver_timing_error_detector is
     imag_in : in std_logic_vector( 16-1 downto 0 );
     clk_20 : in std_logic;
     ce_20 : in std_logic;
-    error : out std_logic_vector( 34-1 downto 0 )
+    error : out std_logic_vector( 32-1 downto 0 )
   );
 end bpsk_receiver_timing_error_detector;
 architecture structural of bpsk_receiver_timing_error_detector is 
-  signal addsub2_s_net : std_logic_vector( 34-1 downto 0 );
-  signal src_clk_net : std_logic;
-  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
   signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
-  signal addsub_s_net : std_logic_vector( 33-1 downto 0 );
+  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
+  signal src_clk_net : std_logic;
+  signal addsub_s_net : std_logic_vector( 31-1 downto 0 );
+  signal delay_q_net : std_logic_vector( 31-1 downto 0 );
+  signal cmult_p_net : std_logic_vector( 32-1 downto 0 );
   signal src_ce_net : std_logic;
-  signal delay_q_net : std_logic_vector( 32-1 downto 0 );
-  signal mult1_p_net : std_logic_vector( 32-1 downto 0 );
-  signal addsub1_s_net : std_logic_vector( 33-1 downto 0 );
-  signal mult2_p_net : std_logic_vector( 32-1 downto 0 );
-  signal delay1_q_net : std_logic_vector( 32-1 downto 0 );
+  signal mult1_p_net : std_logic_vector( 31-1 downto 0 );
+  signal addsub1_s_net : std_logic_vector( 31-1 downto 0 );
+  signal delay1_q_net : std_logic_vector( 31-1 downto 0 );
+  signal addsub2_s_net : std_logic_vector( 32-1 downto 0 );
+  signal mult2_p_net : std_logic_vector( 31-1 downto 0 );
+  signal reinterpret_output_port_net : std_logic_vector( 16-1 downto 0 );
+  signal reinterpret1_output_port_net : std_logic_vector( 16-1 downto 0 );
 begin
-  error <= addsub2_s_net;
+  error <= cmult_p_net;
   convert_dout_net <= real_in;
   convert1_dout_net <= imag_in;
   src_clk_net <= clk_20;
   src_ce_net <= ce_20;
   addsub : entity xil_defaultlib.bpsk_receiver_xladdsub 
   generic map (
-    a_arith => xlSigned,
-    a_bin_pt => 28,
-    a_width => 32,
-    b_arith => xlSigned,
-    b_bin_pt => 28,
-    b_width => 32,
+    a_arith => xlUnsigned,
+    a_bin_pt => 30,
+    a_width => 31,
+    b_arith => xlUnsigned,
+    b_bin_pt => 30,
+    b_width => 31,
     c_has_c_out => 0,
     c_latency => 0,
-    c_output_width => 33,
+    c_output_width => 32,
     core_name0 => "bpsk_receiver_c_addsub_v12_0_i7",
     extra_registers => 0,
     full_s_arith => 2,
-    full_s_width => 33,
+    full_s_width => 32,
     latency => 0,
-    overflow => 1,
+    overflow => 2,
     quantization => 1,
     s_arith => xlSigned,
-    s_bin_pt => 28,
-    s_width => 33
+    s_bin_pt => 30,
+    s_width => 31
   )
   port map (
     clr => '0',
@@ -6595,58 +6659,27 @@ begin
     ce => src_ce_net,
     s => addsub_s_net
   );
-  addsub1 : entity xil_defaultlib.bpsk_receiver_xladdsub 
-  generic map (
-    a_arith => xlSigned,
-    a_bin_pt => 28,
-    a_width => 32,
-    b_arith => xlSigned,
-    b_bin_pt => 28,
-    b_width => 32,
-    c_has_c_out => 0,
-    c_latency => 0,
-    c_output_width => 33,
-    core_name0 => "bpsk_receiver_c_addsub_v12_0_i7",
-    extra_registers => 0,
-    full_s_arith => 2,
-    full_s_width => 33,
-    latency => 0,
-    overflow => 1,
-    quantization => 1,
-    s_arith => xlSigned,
-    s_bin_pt => 28,
-    s_width => 33
-  )
-  port map (
-    clr => '0',
-    en => "1",
-    a => mult2_p_net,
-    b => delay1_q_net,
-    clk => src_clk_net,
-    ce => src_ce_net,
-    s => addsub1_s_net
-  );
   addsub2 : entity xil_defaultlib.bpsk_receiver_xladdsub 
   generic map (
     a_arith => xlSigned,
-    a_bin_pt => 28,
-    a_width => 33,
+    a_bin_pt => 30,
+    a_width => 31,
     b_arith => xlSigned,
-    b_bin_pt => 28,
-    b_width => 33,
+    b_bin_pt => 30,
+    b_width => 31,
     c_has_c_out => 0,
     c_latency => 0,
-    c_output_width => 34,
+    c_output_width => 32,
     core_name0 => "bpsk_receiver_c_addsub_v12_0_i8",
     extra_registers => 0,
     full_s_arith => 2,
-    full_s_width => 34,
+    full_s_width => 32,
     latency => 0,
     overflow => 2,
     quantization => 2,
     s_arith => xlSigned,
-    s_bin_pt => 28,
-    s_width => 34
+    s_bin_pt => 30,
+    s_width => 32
   )
   port map (
     clr => '0',
@@ -6662,7 +6695,7 @@ begin
     latency => 32,
     reg_retiming => 0,
     reset => 0,
-    width => 32
+    width => 31
   )
   port map (
     en => '1',
@@ -6677,7 +6710,7 @@ begin
     latency => 32,
     reg_retiming => 0,
     reset => 0,
-    width => 32
+    width => 31
   )
   port map (
     en => '1',
@@ -6690,10 +6723,10 @@ begin
   mult1 : entity xil_defaultlib.bpsk_receiver_xlmult 
   generic map (
     a_arith => xlSigned,
-    a_bin_pt => 14,
+    a_bin_pt => 15,
     a_width => 16,
     b_arith => xlSigned,
-    b_bin_pt => 14,
+    b_bin_pt => 15,
     b_width => 16,
     c_a_type => 0,
     c_a_width => 16,
@@ -6705,10 +6738,10 @@ begin
     core_name0 => "bpsk_receiver_mult_gen_v12_0_i8",
     extra_registers => 0,
     multsign => 2,
-    overflow => 1,
-    p_arith => xlSigned,
-    p_bin_pt => 28,
-    p_width => 32,
+    overflow => 2,
+    p_arith => xlUnsigned,
+    p_bin_pt => 30,
+    p_width => 31,
     quantization => 1
   )
   port map (
@@ -6716,8 +6749,8 @@ begin
     core_clr => '1',
     en => "1",
     rst => "0",
-    a => convert_dout_net,
-    b => convert_dout_net,
+    a => reinterpret1_output_port_net,
+    b => reinterpret1_output_port_net,
     clk => src_clk_net,
     ce => src_ce_net,
     core_clk => src_clk_net,
@@ -6727,10 +6760,10 @@ begin
   mult2 : entity xil_defaultlib.bpsk_receiver_xlmult 
   generic map (
     a_arith => xlSigned,
-    a_bin_pt => 14,
+    a_bin_pt => 15,
     a_width => 16,
     b_arith => xlSigned,
-    b_bin_pt => 14,
+    b_bin_pt => 15,
     b_width => 16,
     c_a_type => 0,
     c_a_width => 16,
@@ -6742,10 +6775,10 @@ begin
     core_name0 => "bpsk_receiver_mult_gen_v12_0_i8",
     extra_registers => 0,
     multsign => 2,
-    overflow => 1,
-    p_arith => xlSigned,
-    p_bin_pt => 28,
-    p_width => 32,
+    overflow => 2,
+    p_arith => xlUnsigned,
+    p_bin_pt => 30,
+    p_width => 31,
     quantization => 1
   )
   port map (
@@ -6753,13 +6786,93 @@ begin
     core_clr => '1',
     en => "1",
     rst => "0",
-    a => convert1_dout_net,
-    b => convert1_dout_net,
+    a => reinterpret_output_port_net,
+    b => reinterpret_output_port_net,
     clk => src_clk_net,
     ce => src_ce_net,
     core_clk => src_clk_net,
     core_ce => src_ce_net,
     p => mult2_p_net
+  );
+  reinterpret : entity xil_defaultlib.sysgen_reinterpret_018687879c 
+  port map (
+    clk => '0',
+    ce => '0',
+    clr => '0',
+    input_port => convert1_dout_net,
+    output_port => reinterpret_output_port_net
+  );
+  reinterpret1 : entity xil_defaultlib.sysgen_reinterpret_018687879c 
+  port map (
+    clk => '0',
+    ce => '0',
+    clr => '0',
+    input_port => convert_dout_net,
+    output_port => reinterpret1_output_port_net
+  );
+  cmult : entity xil_defaultlib.bpsk_receiver_xlcmult 
+  generic map (
+    a_arith => xlSigned,
+    a_bin_pt => 30,
+    a_width => 32,
+    b_bin_pt => 0,
+    c_a_type => 0,
+    c_a_width => 32,
+    c_b_type => 1,
+    c_b_width => 4,
+    c_output_width => 36,
+    core_name0 => "bpsk_receiver_mult_gen_v12_0_i9",
+    extra_registers => 0,
+    multsign => 2,
+    overflow => 2,
+    p_arith => xlSigned,
+    p_bin_pt => 30,
+    p_width => 32,
+    quantization => 1,
+    zero_const => 0
+  )
+  port map (
+    clr => '0',
+    core_clr => '1',
+    en => "1",
+    rst => "0",
+    a => addsub2_s_net,
+    clk => src_clk_net,
+    ce => src_ce_net,
+    core_clk => src_clk_net,
+    core_ce => src_ce_net,
+    p => cmult_p_net
+  );
+  addsub1 : entity xil_defaultlib.bpsk_receiver_xladdsub 
+  generic map (
+    a_arith => xlUnsigned,
+    a_bin_pt => 30,
+    a_width => 31,
+    b_arith => xlUnsigned,
+    b_bin_pt => 30,
+    b_width => 31,
+    c_has_c_out => 0,
+    c_latency => 0,
+    c_output_width => 32,
+    core_name0 => "bpsk_receiver_c_addsub_v12_0_i7",
+    extra_registers => 0,
+    full_s_arith => 2,
+    full_s_width => 32,
+    latency => 0,
+    overflow => 2,
+    quantization => 1,
+    s_arith => xlSigned,
+    s_bin_pt => 30,
+    s_width => 31
+  )
+  port map (
+    clr => '0',
+    en => "1",
+    a => mult2_p_net,
+    b => delay1_q_net,
+    clk => src_clk_net,
+    ce => src_ce_net,
+    s => addsub1_s_net
   );
 end structural;
 -- Generated from Simulink block bpsk_receiver/Time Synchronisation
@@ -6781,18 +6894,18 @@ entity bpsk_receiver_time_synchronisation is
   );
 end bpsk_receiver_time_synchronisation;
 architecture structural of bpsk_receiver_time_synchronisation is 
-  signal src_clk_net : std_logic;
-  signal delay2_q_net : std_logic_vector( 16-1 downto 0 );
-  signal delay3_q_net : std_logic_vector( 1-1 downto 0 );
-  signal delay1_q_net : std_logic_vector( 16-1 downto 0 );
   signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
   signal fir_compiler_7_2_m_axis_data_tvalid_net : std_logic;
-  signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
+  signal src_clk_net : std_logic;
   signal reset_time_sync_net : std_logic_vector( 1-1 downto 0 );
-  signal addsub1_s_net : std_logic_vector( 53-1 downto 0 );
+  signal delay1_q_net : std_logic_vector( 16-1 downto 0 );
+  signal addsub1_s_net : std_logic_vector( 64-1 downto 0 );
+  signal delay3_q_net : std_logic_vector( 1-1 downto 0 );
+  signal delay2_q_net : std_logic_vector( 16-1 downto 0 );
   signal src_ce_net : std_logic;
   signal relational_op_net : std_logic_vector( 1-1 downto 0 );
-  signal addsub2_s_net : std_logic_vector( 34-1 downto 0 );
+  signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
+  signal cmult_p_net : std_logic_vector( 32-1 downto 0 );
 begin
   valid_out <= delay3_q_net;
   real_out <= delay1_q_net;
@@ -6807,7 +6920,7 @@ begin
   port map (
     real_in => convert_dout_net,
     imag_in => convert1_dout_net,
-    signal_in => addsub2_s_net,
+    signal_in => cmult_p_net,
     valid_in => relational_op_net,
     reset => reset_time_sync_net,
     clk_20 => src_clk_net,
@@ -6830,7 +6943,7 @@ begin
     imag_in => convert1_dout_net,
     clk_20 => src_clk_net,
     ce_20 => src_ce_net,
-    error => addsub2_s_net
+    error => cmult_p_net
   );
 end structural;
 -- Generated from Simulink block bpsk_receiver_struct
@@ -6858,9 +6971,9 @@ entity bpsk_receiver_struct is
     ce_5 : in std_logic;
     clk_20 : in std_logic;
     ce_20 : in std_logic;
-    freq_offset : out std_logic_vector( 32-1 downto 0 );
     data_count : out std_logic_vector( 12-1 downto 0 );
     frame_size : out std_logic_vector( 8-1 downto 0 );
+    freq_offset : out std_logic_vector( 32-1 downto 0 );
     packet_count : out std_logic_vector( 32-1 downto 0 );
     packet_size : out std_logic_vector( 8-1 downto 0 );
     irq : out std_logic_vector( 1-1 downto 0 );
@@ -6874,66 +6987,66 @@ entity bpsk_receiver_struct is
   );
 end bpsk_receiver_struct;
 architecture structural of bpsk_receiver_struct is 
-  signal reset_phase_sync_net : std_logic_vector( 1-1 downto 0 );
-  signal s_axis_tvalid_re_net : std_logic_vector( 1-1 downto 0 );
-  signal register6_q_net : std_logic_vector( 8-1 downto 0 );
   signal slice_y_net : std_logic_vector( 1-1 downto 0 );
-  signal mux_valid_y_net : std_logic_vector( 1-1 downto 0 );
-  signal enable_transfer_net : std_logic_vector( 1-1 downto 0 );
-  signal s_axis_tvalid_im_net : std_logic_vector( 1-1 downto 0 );
-  signal concat_y_net : std_logic_vector( 32-1 downto 0 );
-  signal reset_frame_sync_net : std_logic_vector( 1-1 downto 0 );
-  signal ce_net : std_logic;
-  signal clk_5_net : std_logic;
-  signal fifo_dcount_net : std_logic_vector( 12-1 downto 0 );
   signal observation_point_net : std_logic_vector( 32-1 downto 0 );
-  signal threshold_net : std_logic_vector( 32-1 downto 0 );
-  signal register_q_net : std_logic_vector( 1-1 downto 0 );
-  signal coarse_passthrough_net : std_logic_vector( 1-1 downto 0 );
-  signal clk_net : std_logic;
-  signal reset_time_sync_net : std_logic_vector( 1-1 downto 0 );
-  signal ce_5_net : std_logic;
-  signal inverter3_op_net : std_logic_vector( 1-1 downto 0 );
-  signal rom_data_net : std_logic_vector( 32-1 downto 0 );
-  signal m_axis_tready_net : std_logic_vector( 1-1 downto 0 );
-  signal s_axis_tdata_re_net : std_logic_vector( 32-1 downto 0 );
-  signal fir_compiler_7_2_s_axis_data_tready_net : std_logic_vector( 1-1 downto 0 );
-  signal slice1_y_net : std_logic_vector( 8-1 downto 0 );
-  signal mux1_y_net_x0 : std_logic_vector( 8-1 downto 0 );
+  signal reset_frame_sync_net : std_logic_vector( 1-1 downto 0 );
   signal counter1_op_net : std_logic_vector( 32-1 downto 0 );
+  signal fifo_dcount_net : std_logic_vector( 12-1 downto 0 );
+  signal coarse_passthrough_net : std_logic_vector( 1-1 downto 0 );
+  signal reset_phase_sync_net : std_logic_vector( 1-1 downto 0 );
+  signal enable_transfer_net : std_logic_vector( 1-1 downto 0 );
+  signal inverter3_op_net : std_logic_vector( 1-1 downto 0 );
+  signal slice1_y_net : std_logic_vector( 8-1 downto 0 );
+  signal reset_time_sync_net : std_logic_vector( 1-1 downto 0 );
+  signal m_axis_tready_net : std_logic_vector( 1-1 downto 0 );
+  signal mux1_y_net_x0 : std_logic_vector( 8-1 downto 0 );
+  signal threshold_net : std_logic_vector( 32-1 downto 0 );
+  signal rom_data_net : std_logic_vector( 32-1 downto 0 );
+  signal register_q_net : std_logic_vector( 1-1 downto 0 );
+  signal register6_q_net : std_logic_vector( 8-1 downto 0 );
   signal s_axis_tdata_im_net : std_logic_vector( 32-1 downto 0 );
-  signal reinterpret1_output_port_net : std_logic_vector( 16-1 downto 0 );
-  signal convert_dout_net_x1 : std_logic_vector( 16-1 downto 0 );
-  signal delay_q_net : std_logic_vector( 1-1 downto 0 );
-  signal src_clk_net : std_logic;
-  signal cmult1_p_net : std_logic_vector( 16-1 downto 0 );
-  signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
-  signal mux1_y_net : std_logic_vector( 16-1 downto 0 );
+  signal register4_q_net : std_logic_vector( 1-1 downto 0 );
   signal delay1_q_net : std_logic_vector( 16-1 downto 0 );
-  signal reinterpret0_output_port_net : std_logic_vector( 16-1 downto 0 );
-  signal register5_q_net : std_logic_vector( 8-1 downto 0 );
+  signal reinterpret1_output_port_net : std_logic_vector( 16-1 downto 0 );
   signal fir_compiler_7_2_m_axis_data_tvalid_net_x0 : std_logic;
+  signal mux_y_net : std_logic_vector( 16-1 downto 0 );
+  signal mux1_y_net : std_logic_vector( 16-1 downto 0 );
+  signal convert_dout_net_x0 : std_logic_vector( 16-1 downto 0 );
+  signal s_axis_tdata_re_net : std_logic_vector( 32-1 downto 0 );
   signal logical2_y_net : std_logic_vector( 1-1 downto 0 );
   signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
   signal cic_decimator_real_m_axis_data_tvalid_net : std_logic;
-  signal convert_dout_net_x0 : std_logic_vector( 16-1 downto 0 );
-  signal reinterpret1_output_port_net_x0 : std_logic_vector( 16-1 downto 0 );
-  signal register3_q_net : std_logic_vector( 1-1 downto 0 );
+  signal s_axis_tvalid_re_net : std_logic_vector( 1-1 downto 0 );
+  signal convert1_dout_net_x1 : std_logic_vector( 16-1 downto 0 );
+  signal register5_q_net : std_logic_vector( 8-1 downto 0 );
+  signal ce_net : std_logic;
+  signal delay3_q_net : std_logic_vector( 1-1 downto 0 );
+  signal delay_q_net : std_logic_vector( 1-1 downto 0 );
   signal reinterpret0_output_port_net_x0 : std_logic_vector( 16-1 downto 0 );
-  signal mux_y_net : std_logic_vector( 16-1 downto 0 );
-  signal register4_q_net : std_logic_vector( 1-1 downto 0 );
+  signal reinterpret0_output_port_net : std_logic_vector( 16-1 downto 0 );
+  signal convert1_dout_net : std_logic_vector( 16-1 downto 0 );
+  signal clk_net : std_logic;
+  signal fir_compiler_7_2_s_axis_data_tready_net : std_logic_vector( 1-1 downto 0 );
+  signal concat_y_net : std_logic_vector( 32-1 downto 0 );
+  signal s_axis_tvalid_im_net : std_logic_vector( 1-1 downto 0 );
+  signal clk_5_net : std_logic;
+  signal ce_5_net : std_logic;
+  signal src_clk_net : std_logic;
+  signal delay2_q_net : std_logic_vector( 16-1 downto 0 );
+  signal cmult1_p_net : std_logic_vector( 16-1 downto 0 );
   signal src_ce_net : std_logic;
   signal convert1_dout_net_x0 : std_logic_vector( 16-1 downto 0 );
+  signal mux_valid_y_net : std_logic_vector( 1-1 downto 0 );
   signal cmult2_p_net : std_logic_vector( 16-1 downto 0 );
-  signal delay3_q_net : std_logic_vector( 1-1 downto 0 );
-  signal convert1_dout_net_x1 : std_logic_vector( 16-1 downto 0 );
-  signal delay2_q_net : std_logic_vector( 16-1 downto 0 );
+  signal reinterpret1_output_port_net_x0 : std_logic_vector( 16-1 downto 0 );
+  signal register3_q_net : std_logic_vector( 1-1 downto 0 );
+  signal convert_dout_net_x1 : std_logic_vector( 16-1 downto 0 );
 begin
-  freq_offset <= rom_data_net;
   coarse_passthrough_net <= coarse_passthrough;
   data_count <= fifo_dcount_net;
   enable_transfer_net <= enable_transfer;
   frame_size <= register6_q_net;
+  freq_offset <= rom_data_net;
   observation_point_net <= observation_point;
   packet_count <= counter1_op_net;
   packet_size <= mux1_y_net_x0;
@@ -7216,32 +7329,32 @@ entity bpsk_receiver is
 end bpsk_receiver;
 architecture structural of bpsk_receiver is 
   attribute core_generation_info : string;
-  attribute core_generation_info of structural : architecture is "bpsk_receiver,sysgen_core_2019_1,{,compilation=IP Catalog,block_icon_display=Default,family=zynquplusRFSOC,part=xczu28dr,speed=-2-e,package=ffvg1517,synthesis_language=vhdl,hdl_library=xil_defaultlib,synthesis_strategy=Vivado Synthesis Defaults,implementation_strategy=Vivado Implementation Defaults,testbench=0,interface_doc=1,ce_clr=0,clock_period=15.625,system_simulink_period=1.5625e-08,waveform_viewer=0,axilite_interface=1,ip_catalog_plugin=0,hwcosim_burst_mode=0,simulation_time=0.003125,addsub=36,cic_compiler_v4_0=2,cmult=8,concat=3,constant=20,convert=14,counter=6,delay=36,fifo=2,fir_compiler_v7_2=4,inv=16,logical=24,mult=4,mux=8,product_macro=4,register=55,reinterpret=6,relational=11,shift=19,slice=24,sprom=5,usamp=19,xfft_forward=1,}";
-  signal ce_1_net : std_logic;
-  signal coarse_passthrough : std_logic_vector( 1-1 downto 0 );
-  signal observation_point : std_logic_vector( 32-1 downto 0 );
-  signal data_count : std_logic_vector( 12-1 downto 0 );
+  attribute core_generation_info of structural : architecture is "bpsk_receiver,sysgen_core_2019_1,{,compilation=IP Catalog,block_icon_display=Default,family=zynquplusRFSOC,part=xczu28dr,speed=-2-e,package=ffvg1517,synthesis_language=vhdl,hdl_library=xil_defaultlib,synthesis_strategy=Vivado Synthesis Defaults,implementation_strategy=Vivado Implementation Defaults,testbench=0,interface_doc=1,ce_clr=0,clock_period=15.625,system_simulink_period=1.5625e-08,waveform_viewer=0,axilite_interface=1,ip_catalog_plugin=0,hwcosim_burst_mode=0,simulation_time=0.003125,addsub=37,cic_compiler_v4_0=2,cmult=9,concat=3,constant=21,convert=14,counter=6,delay=36,fifo=2,fir_compiler_v7_2=4,inv=16,logical=24,mult=4,mux=9,product_macro=4,register=55,reinterpret=8,relational=12,shift=19,slice=24,sprom=5,usamp=19,xfft_forward=1,}";
+  signal enable_transfer : std_logic_vector( 1-1 downto 0 );
   signal freq_offset : std_logic_vector( 32-1 downto 0 );
-  signal clk_5_net : std_logic;
+  signal observation_point : std_logic_vector( 32-1 downto 0 );
+  signal reset_time_sync : std_logic_vector( 1-1 downto 0 );
   signal packet_size : std_logic_vector( 8-1 downto 0 );
-  signal ce_20_net : std_logic;
+  signal threshold : std_logic_vector( 32-1 downto 0 );
+  signal coarse_passthrough : std_logic_vector( 1-1 downto 0 );
+  signal data_count : std_logic_vector( 12-1 downto 0 );
+  signal frame_size : std_logic_vector( 8-1 downto 0 );
   signal reset_frame_sync : std_logic_vector( 1-1 downto 0 );
   signal reset_phase_sync : std_logic_vector( 1-1 downto 0 );
-  signal frame_size : std_logic_vector( 8-1 downto 0 );
-  signal reset_time_sync : std_logic_vector( 1-1 downto 0 );
-  signal threshold : std_logic_vector( 32-1 downto 0 );
+  signal packet_count : std_logic_vector( 32-1 downto 0 );
+  signal ce_1_net : std_logic;
+  signal clk_5_net : std_logic;
   signal clk_1_net : std_logic;
+  signal ce_20_net : std_logic;
   signal ce_5_net : std_logic;
   signal clk_20_net : std_logic;
-  signal enable_transfer : std_logic_vector( 1-1 downto 0 );
-  signal packet_count : std_logic_vector( 32-1 downto 0 );
   signal clk_net : std_logic;
 begin
   bpsk_receiver_axi_lite_interface : entity xil_defaultlib.bpsk_receiver_axi_lite_interface 
   port map (
-    freq_offset => freq_offset,
     data_count => data_count,
     frame_size => frame_size,
+    freq_offset => freq_offset,
     packet_count => packet_count,
     packet_size => packet_size,
     bpsk_receiver_s_axi_awaddr => bpsk_receiver_s_axi_awaddr,
@@ -7304,9 +7417,9 @@ begin
     ce_5 => ce_5_net,
     clk_20 => clk_20_net,
     ce_20 => ce_20_net,
-    freq_offset => freq_offset,
     data_count => data_count,
     frame_size => frame_size,
+    freq_offset => freq_offset,
     packet_count => packet_count,
     packet_size => packet_size,
     irq => irq,

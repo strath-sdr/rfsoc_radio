@@ -13,8 +13,8 @@
 #define BPSK_RECEIVER_OBSERVATION_POINT 0x24/**< observation_point */
 #define BPSK_RECEIVER_ENABLE_TRANSFER 0x1c/**< enable_transfer */
 #define BPSK_RECEIVER_COARSE_PASSTHROUGH 0x2c/**< coarse_passthrough */
-#define BPSK_RECEIVER_FREQ_OFFSET 0x28/**< freq_offset */
 #define BPSK_RECEIVER_DATA_COUNT 0x20/**< data_count */
 #define BPSK_RECEIVER_FRAME_SIZE 0x10/**< frame_size */
+#define BPSK_RECEIVER_FREQ_OFFSET 0x28/**< freq_offset */
 #define BPSK_RECEIVER_PACKET_COUNT 0x18/**< packet_count */
 #define BPSK_RECEIVER_PACKET_SIZE 0x14/**< packet_size */

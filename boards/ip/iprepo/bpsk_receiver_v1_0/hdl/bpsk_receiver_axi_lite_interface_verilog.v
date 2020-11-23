@@ -43,9 +43,9 @@ module bpsk_receiver_axi_lite_interface_verilog#(parameter C_S_AXI_DATA_WIDTH = 
   output wire[31:0] observation_point,
   output wire[0:0] enable_transfer,
   output wire[0:0] coarse_passthrough,
-  input wire[31:0] freq_offset,
   input wire[11:0] data_count,
   input wire[7:0] frame_size,
+  input wire[31:0] freq_offset,
   input wire[31:0] packet_count,
   input wire[7:0] packet_size,
   output wire clk,
@@ -127,11 +127,11 @@ assign enable_transfer = slv_wire_array[5][0];
 assign slv_wire_array[6] = slv_reg_array[6];
 assign coarse_passthrough = slv_wire_array[6][0];
 // map output 7
-assign slv_wire_array[7] = freq_offset[31:0];
+assign slv_wire_array[7] = {20'h0, data_count[11:0]};
 // map output 8
-assign slv_wire_array[8] = {20'h0, data_count[11:0]};
+assign slv_wire_array[8] = {24'h0, frame_size[7:0]};
 // map output 9
-assign slv_wire_array[9] = {24'h0, frame_size[7:0]};
+assign slv_wire_array[9] = freq_offset[31:0];
 // map output 10
 assign slv_wire_array[10] = packet_count[31:0];
 // map output 11
@@ -156,9 +156,9 @@ assign slv_wire_array[11] = {24'h0, packet_size[7:0]};
       6'd36 : dec_w = 4;
       6'd28 : dec_w = 5;
       6'd44 : dec_w = 6;
-      6'd40 : dec_w = 7;
-      6'd32 : dec_w = 8;
-      6'd16 : dec_w = 9;
+      6'd32 : dec_w = 7;
+      6'd16 : dec_w = 8;
+      6'd40 : dec_w = 9;
       6'd24 : dec_w = 10;
       6'd20 : dec_w = 11;
       default : dec_w = 0;
@@ -174,9 +174,9 @@ assign slv_wire_array[11] = {24'h0, packet_size[7:0]};
       6'd36 : dec_r = 4;
       6'd28 : dec_r = 5;
       6'd44 : dec_r = 6;
-      6'd40 : dec_r = 7;
-      6'd32 : dec_r = 8;
-      6'd16 : dec_r = 9;
+      6'd32 : dec_r = 7;
+      6'd16 : dec_r = 8;
+      6'd40 : dec_r = 9;
       6'd24 : dec_r = 10;
       6'd20 : dec_r = 11;
       default : dec_r = 0;

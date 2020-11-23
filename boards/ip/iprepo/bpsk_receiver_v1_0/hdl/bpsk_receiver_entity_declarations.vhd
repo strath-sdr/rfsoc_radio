@@ -2872,25 +2872,136 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_relational_3e3afcc8b6 is
+entity sysgen_constant_f27017238e is
   port (
-    a : in std_logic_vector((49 - 1) downto 0);
-    b : in std_logic_vector((49 - 1) downto 0);
+    op : out std_logic_vector((6 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_constant_f27017238e;
+architecture behavior of sysgen_constant_f27017238e
+is
+begin
+  op <= "100000";
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_mux_ca444b551c is
+  port (
+    sel : in std_logic_vector((1 - 1) downto 0);
+    d0 : in std_logic_vector((64 - 1) downto 0);
+    d1 : in std_logic_vector((64 - 1) downto 0);
+    y : out std_logic_vector((65 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_mux_ca444b551c;
+architecture behavior of sysgen_mux_ca444b551c
+is
+  signal sel_1_20: std_logic;
+  signal d0_1_24: std_logic_vector((64 - 1) downto 0);
+  signal d1_1_27: std_logic_vector((64 - 1) downto 0);
+  signal sel_internal_2_1_convert: std_logic_vector((1 - 1) downto 0);
+  signal unregy_join_6_1: std_logic_vector((65 - 1) downto 0);
+begin
+  sel_1_20 <= sel(0);
+  d0_1_24 <= d0;
+  d1_1_27 <= d1;
+  sel_internal_2_1_convert <= cast(std_logic_to_vector(sel_1_20), 0, 1, 0, xlUnsigned);
+  proc_switch_6_1: process (d0_1_24, d1_1_27, sel_internal_2_1_convert)
+  is
+  begin
+    case sel_internal_2_1_convert is 
+      when "0" =>
+        unregy_join_6_1 <= cast(d0_1_24, 58, 65, 58, xlUnsigned);
+      when others =>
+        unregy_join_6_1 <= cast(d1_1_27, 58, 65, 58, xlSigned);
+    end case;
+  end process proc_switch_6_1;
+  y <= unregy_join_6_1;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_relational_456af8de30 is
+  port (
+    a : in std_logic_vector((64 - 1) downto 0);
+    b : in std_logic_vector((64 - 1) downto 0);
     op : out std_logic_vector((1 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_relational_3e3afcc8b6;
-architecture behavior of sysgen_relational_3e3afcc8b6
+end sysgen_relational_456af8de30;
+architecture behavior of sysgen_relational_456af8de30
 is
-  signal a_1_31: unsigned((49 - 1) downto 0);
-  signal b_1_34: unsigned((49 - 1) downto 0);
-  signal result_16_3_rel: boolean;
+  signal a_1_31: unsigned((64 - 1) downto 0);
+  signal b_1_34: unsigned((64 - 1) downto 0);
+  signal result_18_3_rel: boolean;
 begin
   a_1_31 <= std_logic_vector_to_unsigned(a);
   b_1_34 <= std_logic_vector_to_unsigned(b);
-  result_16_3_rel <= a_1_31 < b_1_34;
-  op <= boolean_to_vector(result_16_3_rel);
+  result_18_3_rel <= a_1_31 > b_1_34;
+  op <= boolean_to_vector(result_18_3_rel);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_relational_93b79cb2ae is
+  port (
+    a : in std_logic_vector((64 - 1) downto 0);
+    b : in std_logic_vector((6 - 1) downto 0);
+    op : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_relational_93b79cb2ae;
+architecture behavior of sysgen_relational_93b79cb2ae
+is
+  signal a_1_31: unsigned((64 - 1) downto 0);
+  signal b_1_34: unsigned((6 - 1) downto 0);
+  signal cast_18_16: unsigned((64 - 1) downto 0);
+  signal result_18_3_rel: boolean;
+begin
+  a_1_31 <= std_logic_vector_to_unsigned(a);
+  b_1_34 <= std_logic_vector_to_unsigned(b);
+  cast_18_16 <= u2u_cast(b_1_34, 0, 64, 58);
+  result_18_3_rel <= a_1_31 > cast_18_16;
+  op <= boolean_to_vector(result_18_3_rel);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_reinterpret_018687879c is
+  port (
+    input_port : in std_logic_vector((16 - 1) downto 0);
+    output_port : out std_logic_vector((16 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_reinterpret_018687879c;
+architecture behavior of sysgen_reinterpret_018687879c
+is
+  signal input_port_1_40: signed((16 - 1) downto 0);
+begin
+  input_port_1_40 <= std_logic_vector_to_signed(input_port);
+  output_port <= signed_to_std_logic_vector(input_port_1_40);
 end behavior;
 
 library xil_defaultlib;
@@ -2908,9 +3019,9 @@ entity bpsk_receiver_axi_lite_interface is
         observation_point : out std_logic_vector(31 downto 0);
         enable_transfer : out std_logic_vector(0 downto 0);
         coarse_passthrough : out std_logic_vector(0 downto 0);
-        freq_offset : in std_logic_vector(31 downto 0);
         data_count : in std_logic_vector(11 downto 0);
         frame_size : in std_logic_vector(7 downto 0);
+        freq_offset : in std_logic_vector(31 downto 0);
         packet_count : in std_logic_vector(31 downto 0);
         packet_size : in std_logic_vector(7 downto 0);
         clk : out std_logic;
@@ -2945,9 +3056,9 @@ component bpsk_receiver_axi_lite_interface_verilog is
         observation_point : out std_logic_vector(31 downto 0);
         enable_transfer : out std_logic_vector(0 downto 0);
         coarse_passthrough : out std_logic_vector(0 downto 0);
-        freq_offset : in std_logic_vector(31 downto 0);
         data_count : in std_logic_vector(11 downto 0);
         frame_size : in std_logic_vector(7 downto 0);
+        freq_offset : in std_logic_vector(31 downto 0);
         packet_count : in std_logic_vector(31 downto 0);
         packet_size : in std_logic_vector(7 downto 0);
         clk : out std_logic;
@@ -2982,9 +3093,9 @@ inst : bpsk_receiver_axi_lite_interface_verilog
     observation_point => observation_point,
     enable_transfer => enable_transfer,
     coarse_passthrough => coarse_passthrough,
-    freq_offset => freq_offset,
     data_count => data_count,
     frame_size => frame_size,
+    freq_offset => freq_offset,
     packet_count => packet_count,
     packet_size => packet_size,
     clk => clk,
@@ -3186,41 +3297,41 @@ entity bpsk_receiver_xladdsub is
 
  component bpsk_receiver_c_addsub_v12_0_i4
     port ( 
-    a: in std_logic_vector(53 - 1 downto 0);
+    a: in std_logic_vector(65 - 1 downto 0);
     s: out std_logic_vector(c_output_width - 1 downto 0);
-    b: in std_logic_vector(53 - 1 downto 0) 
+    b: in std_logic_vector(65 - 1 downto 0) 
  		  ); 
  end component;
 
  component bpsk_receiver_c_addsub_v12_0_i5
     port ( 
-    a: in std_logic_vector(55 - 1 downto 0);
+    a: in std_logic_vector(66 - 1 downto 0);
     s: out std_logic_vector(c_output_width - 1 downto 0);
-    b: in std_logic_vector(55 - 1 downto 0) 
+    b: in std_logic_vector(66 - 1 downto 0) 
  		  ); 
  end component;
 
  component bpsk_receiver_c_addsub_v12_0_i6
     port ( 
-    a: in std_logic_vector(54 - 1 downto 0);
+    a: in std_logic_vector(65 - 1 downto 0);
     s: out std_logic_vector(c_output_width - 1 downto 0);
-    b: in std_logic_vector(54 - 1 downto 0) 
+    b: in std_logic_vector(65 - 1 downto 0) 
  		  ); 
  end component;
 
  component bpsk_receiver_c_addsub_v12_0_i7
     port ( 
-    a: in std_logic_vector(33 - 1 downto 0);
+    a: in std_logic_vector(32 - 1 downto 0);
     s: out std_logic_vector(c_output_width - 1 downto 0);
-    b: in std_logic_vector(33 - 1 downto 0) 
+    b: in std_logic_vector(32 - 1 downto 0) 
  		  ); 
  end component;
 
  component bpsk_receiver_c_addsub_v12_0_i8
     port ( 
-    a: in std_logic_vector(34 - 1 downto 0);
+    a: in std_logic_vector(32 - 1 downto 0);
     s: out std_logic_vector(c_output_width - 1 downto 0);
-    b: in std_logic_vector(34 - 1 downto 0) 
+    b: in std_logic_vector(32 - 1 downto 0) 
  		  ); 
  end component;
 
@@ -3548,6 +3659,13 @@ entity bpsk_receiver_xlcmult is
  		  ); 
  end component;
 
+ component bpsk_receiver_mult_gen_v12_0_i9
+    port ( 
+      p: out std_logic_vector(c_output_width - 1 downto 0);
+      a: in std_logic_vector(c_a_width - 1 downto 0) 
+ 		  ); 
+ end component;
+
 begin
  -- synthesis translate_off
  -- synthesis translate_on
@@ -3623,6 +3741,14 @@ begin
 
  comp6: if ((core_name0 = "bpsk_receiver_mult_gen_v12_0_i7")) generate 
   core_instance6:bpsk_receiver_mult_gen_v12_0_i7
+   port map ( 
+      p => tmp_p,
+      a => tmp_a
+  ); 
+   end generate;
+
+ comp7: if ((core_name0 = "bpsk_receiver_mult_gen_v12_0_i9")) generate 
+  core_instance7:bpsk_receiver_mult_gen_v12_0_i9
    port map ( 
       p => tmp_p,
       a => tmp_a

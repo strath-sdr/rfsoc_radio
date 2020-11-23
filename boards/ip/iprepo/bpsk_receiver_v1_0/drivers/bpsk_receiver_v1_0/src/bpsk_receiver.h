@@ -234,17 +234,6 @@ void bpsk_receiver_coarse_passthrough_write(bpsk_receiver *InstancePtr, u32 Data
 */
 u32 bpsk_receiver_coarse_passthrough_read(bpsk_receiver *InstancePtr);
 /**
-* Read from freq_offset gateway of bpsk_receiver. Assignments are LSB-justified.
-*
-* @param	InstancePtr is the freq_offset instance to operate on.
-*
-* @return	int
-*
-* @note    .
-*
-*/
-int bpsk_receiver_freq_offset_read(bpsk_receiver *InstancePtr);
-/**
 * Read from data_count gateway of bpsk_receiver. Assignments are LSB-justified.
 *
 * @param	InstancePtr is the data_count instance to operate on.
@@ -266,6 +255,17 @@ u32 bpsk_receiver_data_count_read(bpsk_receiver *InstancePtr);
 *
 */
 u8 bpsk_receiver_frame_size_read(bpsk_receiver *InstancePtr);
+/**
+* Read from freq_offset gateway of bpsk_receiver. Assignments are LSB-justified.
+*
+* @param	InstancePtr is the freq_offset instance to operate on.
+*
+* @return	int
+*
+* @note    .
+*
+*/
+int bpsk_receiver_freq_offset_read(bpsk_receiver *InstancePtr);
 /**
 * Read from packet_count gateway of bpsk_receiver. Assignments are LSB-justified.
 *

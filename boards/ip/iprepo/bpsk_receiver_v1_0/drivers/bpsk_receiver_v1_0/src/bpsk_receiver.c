@@ -108,14 +108,6 @@ u32 bpsk_receiver_coarse_passthrough_read(bpsk_receiver *InstancePtr) {
     Data = bpsk_receiver_ReadReg(InstancePtr->bpsk_receiver_BaseAddress, 44);
     return Data;
 }
-int bpsk_receiver_freq_offset_read(bpsk_receiver *InstancePtr) {
-
-    int Data;
-    Xil_AssertVoid(InstancePtr != NULL);
-
-    Data = bpsk_receiver_ReadReg(InstancePtr->bpsk_receiver_BaseAddress, 40);
-    return Data;
-}
 u32 bpsk_receiver_data_count_read(bpsk_receiver *InstancePtr) {
 
     u32 Data;
@@ -130,6 +122,14 @@ u8 bpsk_receiver_frame_size_read(bpsk_receiver *InstancePtr) {
     Xil_AssertVoid(InstancePtr != NULL);
 
     Data = bpsk_receiver_ReadReg(InstancePtr->bpsk_receiver_BaseAddress, 16);
+    return Data;
+}
+int bpsk_receiver_freq_offset_read(bpsk_receiver *InstancePtr) {
+
+    int Data;
+    Xil_AssertVoid(InstancePtr != NULL);
+
+    Data = bpsk_receiver_ReadReg(InstancePtr->bpsk_receiver_BaseAddress, 40);
     return Data;
 }
 u32 bpsk_receiver_packet_count_read(bpsk_receiver *InstancePtr) {
