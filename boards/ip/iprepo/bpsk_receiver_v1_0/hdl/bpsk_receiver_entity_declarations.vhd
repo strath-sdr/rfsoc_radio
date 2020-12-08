@@ -1,7 +1,7 @@
 -------------------------------------------------------------------
--- System Generator version 2019.1 VHDL source file.
+-- System Generator version 2020.1 VHDL source file.
 --
--- Copyright(C) 2019 by Xilinx, Inc.  All rights reserved.  This
+-- Copyright(C) 2020 by Xilinx, Inc.  All rights reserved.  This
 -- text/file contains proprietary, confidential information of Xilinx,
 -- Inc., is distributed under license from Xilinx, Inc., and may be used,
 -- copied and/or disclosed only pursuant to the terms of a valid license
@@ -30,7 +30,7 @@
 -- sole risk and will be unsupported.
 --
 -- This copyright and support notice must be retained as part of this
--- text at all times.  (c) Copyright 1995-2019 Xilinx, Inc.  All rights
+-- text at all times.  (c) Copyright 1995-2020 Xilinx, Inc.  All rights
 -- reserved.
 -------------------------------------------------------------------
 
@@ -2113,106 +2113,77 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity xlbpsk_receiver_xfft_v9_1_i0_3d1edced8406803b4d08989e855d8f73_wrapper is 
-  port(
-    op_re : out std_logic_vector(31 downto 0);
-    in_re : in std_logic_vector(31 downto 0);
-    op_im : out std_logic_vector(31 downto 0);
-    in_im : in std_logic_vector(31 downto 0);
-    start_frame_in : in std_logic_vector(0 downto 0);
-    start_frame_out : out std_logic_vector(0 downto 0);
+entity sysgen_constant_0d4132aa90 is
+  port (
+    op : out std_logic_vector((10 - 1) downto 0);
     clk : in std_logic;
-    ce : in std_logic
-  );
-end xlbpsk_receiver_xfft_v9_1_i0_3d1edced8406803b4d08989e855d8f73_wrapper;
-architecture structural of xlbpsk_receiver_xfft_v9_1_i0_3d1edced8406803b4d08989e855d8f73_wrapper is 
-  signal op_re_net : std_logic_vector(31 downto 0);
-  signal in_re_net : std_logic_vector(31 downto 0);
-  signal op_im_net : std_logic_vector(31 downto 0);
-  signal in_im_net : std_logic_vector(31 downto 0);
-  signal start_frame_in_net : std_logic_vector(0 downto 0);
-  signal start_frame_out_net : std_logic_vector(0 downto 0);
-  signal clk_net : std_logic;
-  signal ce_net : std_logic;
-  component xlbpsk_receiver_xfft_v9_1_i0_3d1edced8406803b4d08989e855d8f73 is
-    port(
-      op_re : out std_logic_vector(31 downto 0);
-      in_re : in std_logic_vector(31 downto 0);
-      op_im : out std_logic_vector(31 downto 0);
-      in_im : in std_logic_vector(31 downto 0);
-      start_frame_in : in std_logic_vector(0 downto 0);
-      start_frame_out : out std_logic_vector(0 downto 0);
-      clk : in std_logic;
-      ce : in std_logic
-    );
-  end component;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_constant_0d4132aa90;
+architecture behavior of sysgen_constant_0d4132aa90
+is
 begin
-  op_re <= op_re_net;
-  in_re_net <= in_re;
-  op_im <= op_im_net;
-  in_im_net <= in_im;
-  start_frame_in_net <= start_frame_in;
-  start_frame_out <= start_frame_out_net;
-  clk_net <= clk;
-  ce_net <= ce;
-  xlbpsk_receiver_xfft_v9_1_i0_3d1edced8406803b4d08989e855d8f73_inst : xlbpsk_receiver_xfft_v9_1_i0_3d1edced8406803b4d08989e855d8f73
-    port map(
-      op_re => op_re_net,
-      in_re => in_re_net,
-      op_im => op_im_net,
-      in_im => in_im_net,
-      start_frame_in => start_frame_in_net,
-      start_frame_out => start_frame_out_net,
-      clk => clk_net,
-      ce => ce_net
-    );
-end structural;
+  op <= "0000000000";
+end behavior;
+
 library xil_defaultlib;
 use xil_defaultlib.conv_pkg.all;
 
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_relational_1bfb613ad3 is
+entity sysgen_constant_f392e17b46 is
   port (
-    a : in std_logic_vector((10 - 1) downto 0);
-    b : in std_logic_vector((1 - 1) downto 0);
-    op : out std_logic_vector((1 - 1) downto 0);
+    op : out std_logic_vector((32 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_relational_1bfb613ad3;
-architecture behavior of sysgen_relational_1bfb613ad3
+end sysgen_constant_f392e17b46;
+architecture behavior of sysgen_constant_f392e17b46
 is
-  signal a_1_31: unsigned((10 - 1) downto 0);
-  signal b_1_34: unsigned((1 - 1) downto 0);
-  type array_type_op_mem_37_22 is array (0 to (1 - 1)) of boolean;
-  signal op_mem_37_22: array_type_op_mem_37_22 := (
-    0 => false);
-  signal op_mem_37_22_front_din: boolean;
-  signal op_mem_37_22_back: boolean;
-  signal op_mem_37_22_push_front_pop_back_en: std_logic;
-  signal cast_12_17: unsigned((10 - 1) downto 0);
-  signal result_12_3_rel: boolean;
 begin
-  a_1_31 <= std_logic_vector_to_unsigned(a);
-  b_1_34 <= std_logic_vector_to_unsigned(b);
-  op_mem_37_22_back <= op_mem_37_22(0);
-  proc_op_mem_37_22: process (clk)
+  op <= "00000000000000000000000000000000";
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_mux_88e7543246 is
+  port (
+    sel : in std_logic_vector((1 - 1) downto 0);
+    d0 : in std_logic_vector((32 - 1) downto 0);
+    d1 : in std_logic_vector((32 - 1) downto 0);
+    y : out std_logic_vector((32 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_mux_88e7543246;
+architecture behavior of sysgen_mux_88e7543246
+is
+  signal sel_1_20: std_logic;
+  signal d0_1_24: std_logic_vector((32 - 1) downto 0);
+  signal d1_1_27: std_logic_vector((32 - 1) downto 0);
+  signal sel_internal_2_1_convert: std_logic_vector((1 - 1) downto 0);
+  signal unregy_join_6_1: std_logic_vector((32 - 1) downto 0);
+begin
+  sel_1_20 <= sel(0);
+  d0_1_24 <= d0;
+  d1_1_27 <= d1;
+  sel_internal_2_1_convert <= cast(std_logic_to_vector(sel_1_20), 0, 1, 0, xlUnsigned);
+  proc_switch_6_1: process (d0_1_24, d1_1_27, sel_internal_2_1_convert)
   is
-    variable i: integer;
   begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_37_22_push_front_pop_back_en = '1')) then
-        op_mem_37_22(0) <= op_mem_37_22_front_din;
-      end if;
-    end if;
-  end process proc_op_mem_37_22;
-  cast_12_17 <= u2u_cast(b_1_34, 0, 10, 0);
-  result_12_3_rel <= a_1_31 = cast_12_17;
-  op_mem_37_22_front_din <= result_12_3_rel;
-  op_mem_37_22_push_front_pop_back_en <= '1';
-  op <= boolean_to_vector(op_mem_37_22_back);
+    case sel_internal_2_1_convert is 
+      when "0" =>
+        unregy_join_6_1 <= d0_1_24;
+      when others =>
+        unregy_join_6_1 <= d1_1_27;
+    end case;
+  end process proc_switch_6_1;
+  y <= unregy_join_6_1;
 end behavior;
 
 library xil_defaultlib;
@@ -3659,7 +3630,7 @@ entity bpsk_receiver_xlcmult is
  		  ); 
  end component;
 
- component bpsk_receiver_mult_gen_v12_0_i9
+ component bpsk_receiver_mult_gen_v12_0_i8
     port ( 
       p: out std_logic_vector(c_output_width - 1 downto 0);
       a: in std_logic_vector(c_a_width - 1 downto 0) 
@@ -3747,8 +3718,8 @@ begin
   ); 
    end generate;
 
- comp7: if ((core_name0 = "bpsk_receiver_mult_gen_v12_0_i9")) generate 
-  core_instance7:bpsk_receiver_mult_gen_v12_0_i9
+ comp7: if ((core_name0 = "bpsk_receiver_mult_gen_v12_0_i8")) generate 
+  core_instance7:bpsk_receiver_mult_gen_v12_0_i8
    port map ( 
       p => tmp_p,
       a => tmp_a
@@ -4066,6 +4037,7 @@ entity bpsk_receiver_xlfifogen_u is
      has_ae : integer := 0;
      has_af : integer := 0;
      extra_registers: integer := 0;
+     ignore_din_for_gcd: boolean := false;
      has_rst : boolean := false
    );
    port (
@@ -4102,6 +4074,17 @@ entity bpsk_receiver_xlfifogen_u is
  o: out std_logic_vector(width - 1 downto 0)
  );
  end component;
+ component synth_reg_w_init 
+ generic (width : integer;
+ init_index : integer; 
+ init_value : bit_vector; 
+ latency : integer); 
+ port (i : in std_logic_vector(width-1 downto 0); 
+ ce : in std_logic; 
+ clr : in std_logic; 
+ clk : in std_logic; 
+ o : out std_logic_vector(width-1 downto 0)); 
+ end component; 
  
 
 
@@ -4144,6 +4127,10 @@ entity bpsk_receiver_xlfifogen_u is
    signal empty_net: std_logic; 
    signal ae_net: std_logic; 
    signal af_net: std_logic; 
+   signal ae_vec: std_logic_vector(0 downto 0); 
+   signal af_vec: std_logic_vector(0 downto 0); 
+   signal ae_out: std_logic_vector(0 downto 0); 
+   signal af_out: std_logic_vector(0 downto 0); 
  
  begin
  
@@ -4216,18 +4203,47 @@ latency_gt_0: if (extra_registers > 0) generate
      srst <= srst_vec(0);
  end generate;
  
+  ae_vec(0) <= ae_net;
+  af_vec(0) <= af_net;
+ multi_sample: if (ignore_din_for_gcd) generate 
+    reg1: synth_reg_w_init 
+    generic map (width      => 1, 
+    init_index => 2, 
+    init_value => "1", 
+    latency    => 1) 
+    port map (i   => ae_vec, 
+    ce  => ce, 
+    clr => srst_vec(0), 
+    clk => clk, 
+    o   => ae_out); 
+    reg2: synth_reg_w_init 
+    generic map (width      => 1, 
+    init_index => 2, 
+    init_value => "0", 
+    latency    => 1) 
+    port map (i   => af_vec, 
+    ce  => ce, 
+    clr => srst_vec(0), 
+    clk => clk, 
+    o   => af_out); 
+  end generate; 
+  not_multi: if (ignore_din_for_gcd = false) generate 
+ begin 
+ af_out <= af_vec; 
+  ae_out <= ae_vec; 
+  end generate; 
  latency_eq_0: if (extra_registers = 0) generate
    srst <= rst and ce;
  end generate;
  
-    process (dout_net, empty_net, core_full, core_dcount, ae_net, af_net, re, we, en, re_ce, we_ce) is 
+    process (dout_net, empty_net, core_full, core_dcount, ae_out(0), af_out(0), re, we, en, re_ce, we_ce) is 
     begin 
         dout <= dout_net; 
         empty <= empty_net; 
         full <= core_full; 
         dcount <= core_dcount;
-        ae <= ae_net;
-        af <= af_net;
+        ae <= ae_out(0);
+        af <= af_out(0);
         rd_en <= re and en and re_ce;
         wr_en <= we and en and we_ce;
     end process; 
@@ -4528,6 +4544,99 @@ begin
       s_axis_a_tvalid=>ce,
       s_axis_b_tdata=>s_axis_b_tdata_net,
       s_axis_b_tvalid=>ce
+    );
+end behavior;
+
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+entity xlfast_fourier_transform_b390f978b4c74774f03f6ff2c16022ef is 
+  port(
+    ce:in std_logic;
+    clk:in std_logic;
+    event_data_in_channel_halt:out std_logic;
+    event_data_out_channel_halt:out std_logic;
+    event_frame_started:out std_logic;
+    event_status_channel_halt:out std_logic;
+    event_tlast_missing:out std_logic;
+    event_tlast_unexpected:out std_logic;
+    m_axis_data_tdata_xn_im_0:out std_logic_vector(31 downto 0);
+    m_axis_data_tdata_xn_re_0:out std_logic_vector(31 downto 0);
+    m_axis_data_tlast:out std_logic;
+    m_axis_data_tready:in std_logic;
+    m_axis_data_tvalid:out std_logic;
+    s_axis_config_tdata_fwd_inv:in std_logic_vector(0 downto 0);
+    s_axis_config_tdata_scale_sch:in std_logic_vector(9 downto 0);
+    s_axis_config_tready:out std_logic;
+    s_axis_config_tvalid:in std_logic;
+    s_axis_data_tdata_xn_im_0:in std_logic_vector(31 downto 0);
+    s_axis_data_tdata_xn_re_0:in std_logic_vector(31 downto 0);
+    s_axis_data_tlast:in std_logic;
+    s_axis_data_tready:out std_logic;
+    s_axis_data_tvalid:in std_logic
+  );
+end xlfast_fourier_transform_b390f978b4c74774f03f6ff2c16022ef; 
+
+architecture behavior of xlfast_fourier_transform_b390f978b4c74774f03f6ff2c16022ef  is
+  component bpsk_receiver_xfft_v9_1_i0
+    port(
+      aclk:in std_logic;
+      aclken:in std_logic;
+      event_data_in_channel_halt:out std_logic;
+      event_data_out_channel_halt:out std_logic;
+      event_frame_started:out std_logic;
+      event_status_channel_halt:out std_logic;
+      event_tlast_missing:out std_logic;
+      event_tlast_unexpected:out std_logic;
+      m_axis_data_tdata:out std_logic_vector(63 downto 0);
+      m_axis_data_tlast:out std_logic;
+      m_axis_data_tready:in std_logic;
+      m_axis_data_tvalid:out std_logic;
+      s_axis_config_tdata:in std_logic_vector(15 downto 0);
+      s_axis_config_tready:out std_logic;
+      s_axis_config_tvalid:in std_logic;
+      s_axis_data_tdata:in std_logic_vector(63 downto 0);
+      s_axis_data_tlast:in std_logic;
+      s_axis_data_tready:out std_logic;
+      s_axis_data_tvalid:in std_logic
+    );
+end component;
+signal m_axis_data_tdata_net: std_logic_vector(63 downto 0) := (others=>'0');
+signal s_axis_config_tdata_net: std_logic_vector(15 downto 0) := (others=>'0');
+signal s_axis_data_tdata_net: std_logic_vector(63 downto 0) := (others=>'0');
+begin
+  m_axis_data_tdata_xn_im_0 <= m_axis_data_tdata_net(63 downto 32);
+  m_axis_data_tdata_xn_re_0 <= m_axis_data_tdata_net(31 downto 0);
+  s_axis_config_tdata_net(10 downto 1) <= s_axis_config_tdata_scale_sch;
+  s_axis_config_tdata_net(0 downto 0) <= s_axis_config_tdata_fwd_inv;
+  s_axis_data_tdata_net(63 downto 32) <= s_axis_data_tdata_xn_im_0;
+  s_axis_data_tdata_net(31 downto 0) <= s_axis_data_tdata_xn_re_0;
+  bpsk_receiver_xfft_v9_1_i0_instance : bpsk_receiver_xfft_v9_1_i0
+    port map(
+      aclk=>clk,
+      aclken=>ce,
+      event_data_in_channel_halt=>event_data_in_channel_halt,
+      event_data_out_channel_halt=>event_data_out_channel_halt,
+      event_frame_started=>event_frame_started,
+      event_status_channel_halt=>event_status_channel_halt,
+      event_tlast_missing=>event_tlast_missing,
+      event_tlast_unexpected=>event_tlast_unexpected,
+      m_axis_data_tdata=>m_axis_data_tdata_net,
+      m_axis_data_tlast=>m_axis_data_tlast,
+      m_axis_data_tready=>m_axis_data_tready,
+      m_axis_data_tvalid=>m_axis_data_tvalid,
+      s_axis_config_tdata=>s_axis_config_tdata_net,
+      s_axis_config_tready=>s_axis_config_tready,
+      s_axis_config_tvalid=>s_axis_config_tvalid,
+      s_axis_data_tdata=>s_axis_data_tdata_net,
+      s_axis_data_tlast=>s_axis_data_tlast,
+      s_axis_data_tready=>s_axis_data_tready,
+      s_axis_data_tvalid=>s_axis_data_tvalid
     );
 end behavior;
 
@@ -5019,7 +5128,7 @@ entity bpsk_receiver_xlmult is
  		  ); 
  end component;
 
- component bpsk_receiver_mult_gen_v12_0_i8
+ component bpsk_receiver_mult_gen_v12_0_i9
     port ( 
       b: in std_logic_vector(c_b_width - 1 downto 0);
       p: out std_logic_vector(c_output_width - 1 downto 0);
@@ -5073,8 +5182,8 @@ signal tmp_a: std_logic_vector(c_a_width - 1 downto 0);
   ); 
    end generate;
 
- comp1: if ((core_name0 = "bpsk_receiver_mult_gen_v12_0_i8")) generate 
-  core_instance1:bpsk_receiver_mult_gen_v12_0_i8
+ comp1: if ((core_name0 = "bpsk_receiver_mult_gen_v12_0_i9")) generate 
+  core_instance1:bpsk_receiver_mult_gen_v12_0_i9
    port map ( 
         a => tmp_a,
         p => tmp_p,

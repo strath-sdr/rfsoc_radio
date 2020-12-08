@@ -1,4 +1,4 @@
--- Generated from Simulink block Data_Inspector_Module/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/Rising Edge Detector
+-- Generated from Simulink block data_inspector_module/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/Rising Edge Detector
 library IEEE;
 use IEEE.std_logic_1164.all;
 library xil_defaultlib;
@@ -12,12 +12,12 @@ entity data_inspector_module_rising_edge_detector is
   );
 end data_inspector_module_rising_edge_detector;
 architecture structural of data_inspector_module_rising_edge_detector is 
-  signal register2_q_net : std_logic_vector( 1-1 downto 0 );
-  signal enable_dim_net : std_logic_vector( 1-1 downto 0 );
+  signal logical1_y_net : std_logic_vector( 1-1 downto 0 );
+  signal ce_net : std_logic;
   signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
   signal clk_net : std_logic;
-  signal ce_net : std_logic;
-  signal logical1_y_net : std_logic_vector( 1-1 downto 0 );
+  signal enable_dim_net : std_logic_vector( 1-1 downto 0 );
+  signal register2_q_net : std_logic_vector( 1-1 downto 0 );
 begin
   output <= logical1_y_net;
   enable_dim_net <= input;
@@ -54,7 +54,7 @@ begin
     q => register2_q_net
   );
 end structural;
--- Generated from Simulink block Data_Inspector_Module/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/TLAST Generation
+-- Generated from Simulink block data_inspector_module/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/TLAST Generation
 library IEEE;
 use IEEE.std_logic_1164.all;
 library xil_defaultlib;
@@ -70,13 +70,13 @@ entity data_inspector_module_tlast_generation is
   );
 end data_inspector_module_tlast_generation;
 architecture structural of data_inspector_module_tlast_generation is 
+  signal logical2_y_net_x0 : std_logic_vector( 1-1 downto 0 );
+  signal ce_net : std_logic;
   signal relational_op_net : std_logic_vector( 1-1 downto 0 );
   signal packetsize_dim_net : std_logic_vector( 32-1 downto 0 );
-  signal logical2_y_net_x0 : std_logic_vector( 1-1 downto 0 );
   signal reset_dim_net : std_logic_vector( 1-1 downto 0 );
-  signal counter_op_net : std_logic_vector( 32-1 downto 0 );
   signal clk_net : std_logic;
-  signal ce_net : std_logic;
+  signal counter_op_net : std_logic_vector( 32-1 downto 0 );
   signal logical2_y_net : std_logic_vector( 1-1 downto 0 );
 begin
   tlast_out <= relational_op_net;
@@ -118,7 +118,7 @@ begin
     op => relational_op_net
   );
 end structural;
--- Generated from Simulink block Data_Inspector_Module/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/TUSER Sync
+-- Generated from Simulink block data_inspector_module/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/TUSER Sync
 library IEEE;
 use IEEE.std_logic_1164.all;
 library xil_defaultlib;
@@ -133,12 +133,12 @@ entity data_inspector_module_tuser_sync is
   );
 end data_inspector_module_tuser_sync;
 architecture structural of data_inspector_module_tuser_sync is 
-  signal relational_op_net : std_logic_vector( 1-1 downto 0 );
   signal logical1_y_net : std_logic_vector( 1-1 downto 0 );
-  signal expression_dout_net : std_logic_vector( 1-1 downto 0 );
   signal clk_net : std_logic;
-  signal ce_net : std_logic;
   signal register2_q_net : std_logic_vector( 1-1 downto 0 );
+  signal ce_net : std_logic;
+  signal relational_op_net : std_logic_vector( 1-1 downto 0 );
+  signal expression_dout_net : std_logic_vector( 1-1 downto 0 );
 begin
   latch <= expression_dout_net;
   relational_op_net <= reset;
@@ -169,7 +169,7 @@ begin
     q => register2_q_net
   );
 end structural;
--- Generated from Simulink block Data_Inspector_Module/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface
+-- Generated from Simulink block data_inspector_module/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface
 library IEEE;
 use IEEE.std_logic_1164.all;
 library xil_defaultlib;
@@ -190,24 +190,24 @@ entity data_inspector_module_master_axi_stream_interface is
   );
 end data_inspector_module_master_axi_stream_interface;
 architecture structural of data_inspector_module_master_axi_stream_interface is 
-  signal logical1_y_net_x0 : std_logic_vector( 1-1 downto 0 );
-  signal fifo_dcount_net : std_logic_vector( 10-1 downto 0 );
-  signal logical_y_net : std_logic;
-  signal enable_dim_net : std_logic_vector( 1-1 downto 0 );
-  signal register1_q_net : std_logic_vector( 32-1 downto 0 );
-  signal m_axis_tready_net : std_logic_vector( 1-1 downto 0 );
-  signal register_q_net : std_logic_vector( 1-1 downto 0 );
   signal packetsize_dim_net : std_logic_vector( 32-1 downto 0 );
-  signal register3_q_net : std_logic_vector( 1-1 downto 0 );
-  signal clk_net : std_logic;
-  signal ce_net : std_logic;
-  signal logical2_y_net : std_logic_vector( 1-1 downto 0 );
-  signal logical1_y_net : std_logic_vector( 1-1 downto 0 );
-  signal reset_dim_net : std_logic_vector( 1-1 downto 0 );
   signal fifo_dout_net : std_logic_vector( 32-1 downto 0 );
   signal relational_op_net : std_logic_vector( 1-1 downto 0 );
-  signal expression_dout_net : std_logic_vector( 1-1 downto 0 );
+  signal m_axis_tready_net : std_logic_vector( 1-1 downto 0 );
+  signal register_q_net : std_logic_vector( 1-1 downto 0 );
+  signal clk_net : std_logic;
+  signal register1_q_net : std_logic_vector( 32-1 downto 0 );
+  signal ce_net : std_logic;
+  signal logical1_y_net : std_logic_vector( 1-1 downto 0 );
+  signal logical2_y_net : std_logic_vector( 1-1 downto 0 );
+  signal register3_q_net : std_logic_vector( 1-1 downto 0 );
+  signal enable_dim_net : std_logic_vector( 1-1 downto 0 );
+  signal reset_dim_net : std_logic_vector( 1-1 downto 0 );
+  signal logical_y_net : std_logic;
   signal fifo_empty_net : std_logic;
+  signal expression_dout_net : std_logic_vector( 1-1 downto 0 );
+  signal logical1_y_net_x0 : std_logic_vector( 1-1 downto 0 );
+  signal fifo_dcount_net : std_logic_vector( 10-1 downto 0 );
   signal fifo_full_net : std_logic;
   signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
 begin
@@ -255,6 +255,7 @@ begin
     has_ae => 0,
     has_af => 0,
     has_rst => true,
+    ignore_din_for_gcd => false,
     percent_full_width => 1
   )
   port map (
@@ -321,7 +322,7 @@ begin
     q => register_q_net
   );
 end structural;
--- Generated from Simulink block Data_Inspector_Module/Data Inspector Module/Data Inspector Core/Simple Slave AXI-Stream Interface
+-- Generated from Simulink block data_inspector_module/Data Inspector Module/Data Inspector Core/Simple Slave AXI-Stream Interface
 library IEEE;
 use IEEE.std_logic_1164.all;
 library xil_defaultlib;
@@ -337,12 +338,12 @@ entity data_inspector_module_simple_slave_axi_stream_interface is
   );
 end data_inspector_module_simple_slave_axi_stream_interface;
 architecture structural of data_inspector_module_simple_slave_axi_stream_interface is 
-  signal register3_q_net : std_logic_vector( 1-1 downto 0 );
-  signal register1_q_net : std_logic_vector( 32-1 downto 0 );
-  signal ce_net : std_logic;
-  signal s_axis_tvalid_net : std_logic_vector( 1-1 downto 0 );
   signal clk_net : std_logic;
+  signal register1_q_net : std_logic_vector( 32-1 downto 0 );
+  signal s_axis_tvalid_net : std_logic_vector( 1-1 downto 0 );
+  signal ce_net : std_logic;
   signal s_axis_tdata_net : std_logic_vector( 32-1 downto 0 );
+  signal register3_q_net : std_logic_vector( 1-1 downto 0 );
 begin
   tvalid_out <= register3_q_net;
   tdata_out <= register1_q_net;
@@ -377,7 +378,7 @@ begin
     q => register3_q_net
   );
 end structural;
--- Generated from Simulink block Data_Inspector_Module/Data Inspector Module/Data Inspector Core
+-- Generated from Simulink block data_inspector_module/Data Inspector Module/Data Inspector Core
 library IEEE;
 use IEEE.std_logic_1164.all;
 library xil_defaultlib;
@@ -398,19 +399,19 @@ entity data_inspector_module_data_inspector_core is
   );
 end data_inspector_module_data_inspector_core;
 architecture structural of data_inspector_module_data_inspector_core is 
-  signal enable_dim_net : std_logic_vector( 1-1 downto 0 );
-  signal packetsize_dim_net : std_logic_vector( 32-1 downto 0 );
-  signal m_axis_tready_net : std_logic_vector( 1-1 downto 0 );
-  signal reset_dim_net : std_logic_vector( 1-1 downto 0 );
-  signal fifo_dout_net : std_logic_vector( 32-1 downto 0 );
-  signal relational_op_net : std_logic_vector( 1-1 downto 0 );
   signal ce_net : std_logic;
-  signal s_axis_tdata_net : std_logic_vector( 32-1 downto 0 );
   signal s_axis_tvalid_net : std_logic_vector( 1-1 downto 0 );
+  signal reset_dim_net : std_logic_vector( 1-1 downto 0 );
+  signal m_axis_tready_net : std_logic_vector( 1-1 downto 0 );
+  signal fifo_dout_net : std_logic_vector( 32-1 downto 0 );
   signal clk_net : std_logic;
+  signal relational_op_net : std_logic_vector( 1-1 downto 0 );
   signal register3_q_net : std_logic_vector( 1-1 downto 0 );
+  signal packetsize_dim_net : std_logic_vector( 32-1 downto 0 );
   signal register_q_net : std_logic_vector( 1-1 downto 0 );
+  signal s_axis_tdata_net : std_logic_vector( 32-1 downto 0 );
   signal register1_q_net : std_logic_vector( 32-1 downto 0 );
+  signal enable_dim_net : std_logic_vector( 1-1 downto 0 );
 begin
   packetsize_dim_net <= packet_size;
   enable_dim_net <= enable;
@@ -447,7 +448,7 @@ begin
     tdata_out => register1_q_net
   );
 end structural;
--- Generated from Simulink block Data_Inspector_Module/Data Inspector Module
+-- Generated from Simulink block data_inspector_module/Data Inspector Module
 library IEEE;
 use IEEE.std_logic_1164.all;
 library xil_defaultlib;
@@ -468,17 +469,17 @@ entity data_inspector_module_data_inspector_module is
   );
 end data_inspector_module_data_inspector_module;
 architecture structural of data_inspector_module_data_inspector_module is 
-  signal clk_net : std_logic;
-  signal register_q_net : std_logic_vector( 1-1 downto 0 );
-  signal reset_dim_net : std_logic_vector( 1-1 downto 0 );
   signal packetsize_dim_net : std_logic_vector( 32-1 downto 0 );
+  signal enable_dim_net : std_logic_vector( 1-1 downto 0 );
+  signal s_axis_tvalid_net : std_logic_vector( 1-1 downto 0 );
+  signal register_q_net : std_logic_vector( 1-1 downto 0 );
+  signal clk_net : std_logic;
   signal fifo_dout_net : std_logic_vector( 32-1 downto 0 );
   signal m_axis_tready_net : std_logic_vector( 1-1 downto 0 );
-  signal s_axis_tdata_net : std_logic_vector( 32-1 downto 0 );
-  signal enable_dim_net : std_logic_vector( 1-1 downto 0 );
-  signal relational_op_net : std_logic_vector( 1-1 downto 0 );
-  signal s_axis_tvalid_net : std_logic_vector( 1-1 downto 0 );
   signal ce_net : std_logic;
+  signal s_axis_tdata_net : std_logic_vector( 32-1 downto 0 );
+  signal relational_op_net : std_logic_vector( 1-1 downto 0 );
+  signal reset_dim_net : std_logic_vector( 1-1 downto 0 );
 begin
   enable_dim_net <= enable_dim;
   packetsize_dim_net <= packetsize_dim;
@@ -506,7 +507,7 @@ begin
     m_axis_tvalid => register_q_net
   );
 end structural;
--- Generated from Simulink block Data_Inspector_Module_struct
+-- Generated from Simulink block data_inspector_module_struct
 library IEEE;
 use IEEE.std_logic_1164.all;
 library xil_defaultlib;
@@ -527,17 +528,17 @@ entity data_inspector_module_struct is
   );
 end data_inspector_module_struct;
 architecture structural of data_inspector_module_struct is 
-  signal fifo_dout_net : std_logic_vector( 32-1 downto 0 );
-  signal register_q_net : std_logic_vector( 1-1 downto 0 );
-  signal s_axis_tdata_net : std_logic_vector( 32-1 downto 0 );
+  signal packetsize_dim_net : std_logic_vector( 32-1 downto 0 );
   signal enable_dim_net : std_logic_vector( 1-1 downto 0 );
   signal m_axis_tready_net : std_logic_vector( 1-1 downto 0 );
+  signal register_q_net : std_logic_vector( 1-1 downto 0 );
+  signal clk_net : std_logic;
+  signal relational_op_net : std_logic_vector( 1-1 downto 0 );
   signal reset_dim_net : std_logic_vector( 1-1 downto 0 );
   signal ce_net : std_logic;
-  signal clk_net : std_logic;
+  signal s_axis_tdata_net : std_logic_vector( 32-1 downto 0 );
+  signal fifo_dout_net : std_logic_vector( 32-1 downto 0 );
   signal s_axis_tvalid_net : std_logic_vector( 1-1 downto 0 );
-  signal packetsize_dim_net : std_logic_vector( 32-1 downto 0 );
-  signal relational_op_net : std_logic_vector( 1-1 downto 0 );
 begin
   enable_dim_net <= enable_dim;
   packetsize_dim_net <= packetsize_dim;
@@ -630,12 +631,12 @@ entity data_inspector_module is
 end data_inspector_module;
 architecture structural of data_inspector_module is 
   attribute core_generation_info : string;
-  attribute core_generation_info of structural : architecture is "data_inspector_module,sysgen_core_2019_1,{,compilation=IP Catalog,block_icon_display=Default,family=zynquplusRFSOC,part=xczu28dr,speed=-2-e,package=ffvg1517,synthesis_language=vhdl,hdl_library=xil_defaultlib,synthesis_strategy=Vivado Synthesis Defaults,implementation_strategy=Vivado Implementation Defaults,testbench=0,interface_doc=0,ce_clr=0,clock_period=7.8125,system_simulink_period=7.8125e-09,waveform_viewer=0,axilite_interface=1,ip_catalog_plugin=0,hwcosim_burst_mode=0,simulation_time=inf,counter=1,expr=1,fifo=1,inv=2,logical=5,register=5,relational=1,}";
+  attribute core_generation_info of structural : architecture is "data_inspector_module,sysgen_core_2020_1,{,compilation=IP Catalog,block_icon_display=Default,family=zynquplusRFSOC,part=xczu28dr,speed=-2-e,package=ffvg1517,synthesis_language=vhdl,hdl_library=xil_defaultlib,synthesis_strategy=Vivado Synthesis Defaults,implementation_strategy=Vivado Implementation Defaults,testbench=0,interface_doc=0,ce_clr=0,clock_period=7.8125,system_simulink_period=7.8125e-09,waveform_viewer=0,axilite_interface=1,ip_catalog_plugin=0,hwcosim_burst_mode=0,simulation_time=inf,counter=1,expr=1,fifo=1,inv=2,logical=5,register=5,relational=1,}";
   signal ce_1_net : std_logic;
   signal enable_dim : std_logic_vector( 1-1 downto 0 );
-  signal clk_1_net : std_logic;
   signal reset_dim : std_logic_vector( 1-1 downto 0 );
   signal packetsize_dim : std_logic_vector( 32-1 downto 0 );
+  signal clk_1_net : std_logic;
   signal clk_net : std_logic;
 begin
   data_inspector_module_axi_lite_interface : entity xil_defaultlib.data_inspector_module_axi_lite_interface 

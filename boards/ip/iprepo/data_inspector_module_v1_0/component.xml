@@ -1041,11 +1041,11 @@ mmediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spi
         <xilinx:xpmLibrary>XPM_FIFO</xilinx:xpmLibrary>
         <xilinx:xpmLibrary>XPM_CDC</xilinx:xpmLibrary>
       </xilinx:xpmLibraries>
-      <xilinx:coreRevision>229906213</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2020-09-01T21:50:20Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>238334609</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2020-12-08T12:03:35Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
-      <xilinx:xilinxVersion>2019.1</xilinx:xilinxVersion>
+      <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>

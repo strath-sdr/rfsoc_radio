@@ -1,7 +1,7 @@
 -------------------------------------------------------------------
--- System Generator version 2019.1 VHDL source file.
+-- System Generator version 2020.1 VHDL source file.
 --
--- Copyright(C) 2019 by Xilinx, Inc.  All rights reserved.  This
+-- Copyright(C) 2020 by Xilinx, Inc.  All rights reserved.  This
 -- text/file contains proprietary, confidential information of Xilinx,
 -- Inc., is distributed under license from Xilinx, Inc., and may be used,
 -- copied and/or disclosed only pursuant to the terms of a valid license
@@ -30,7 +30,7 @@
 -- sole risk and will be unsupported.
 --
 -- This copyright and support notice must be retained as part of this
--- text at all times.  (c) Copyright 1995-2019 Xilinx, Inc.  All rights
+-- text at all times.  (c) Copyright 1995-2020 Xilinx, Inc.  All rights
 -- reserved.
 -------------------------------------------------------------------
 
@@ -701,20 +701,64 @@ end architecture behavior;
 library xil_defaultlib;
 use xil_defaultlib.conv_pkg.all;
 
+---------------------------------------------------------------------
+--
+--  Filename      : xlslice.vhd
+--
+--  Description   : VHDL description of a block that sets the output to a
+--                  specified range of the input bits. The output is always
+--                  set to an unsigned type with it's binary point at zero.
+--
+---------------------------------------------------------------------
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.std_logic_arith.all;
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+
+entity bpsk_transmitter_xlslice is
+    generic (
+        new_msb      : integer := 9;           -- position of new msb
+        new_lsb      : integer := 1;           -- position of new lsb
+        x_width      : integer := 16;          -- Width of x input
+        y_width      : integer := 8);          -- Width of y output
+    port (
+        x : in std_logic_vector (x_width-1 downto 0);
+        y : out std_logic_vector (y_width-1 downto 0));
+end bpsk_transmitter_xlslice;
+
+architecture behavior of bpsk_transmitter_xlslice is
+begin
+    y <= x(new_msb downto new_lsb);
+end  behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_constant_029b77768e is
+entity sysgen_concat_fa405ebb95 is
   port (
-    op : out std_logic_vector((16 - 1) downto 0);
+    in0 : in std_logic_vector((1 - 1) downto 0);
+    in1 : in std_logic_vector((8 - 1) downto 0);
+    y : out std_logic_vector((9 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_constant_029b77768e;
-architecture behavior of sysgen_constant_029b77768e
+end sysgen_concat_fa405ebb95;
+architecture behavior of sysgen_concat_fa405ebb95
 is
+  signal in0_1_23: unsigned((1 - 1) downto 0);
+  signal in1_1_27: unsigned((8 - 1) downto 0);
+  signal y_2_1_concat: unsigned((9 - 1) downto 0);
 begin
-  op <= "0100000000000000";
+  in0_1_23 <= std_logic_vector_to_unsigned(in0);
+  in1_1_27 <= std_logic_vector_to_unsigned(in1);
+  y_2_1_concat <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(in0_1_23) & unsigned_to_std_logic_vector(in1_1_27));
+  y <= unsigned_to_std_logic_vector(y_2_1_concat);
 end behavior;
 
 library xil_defaultlib;
@@ -723,17 +767,17 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_constant_78cef5479b is
+entity sysgen_constant_94d6a06f5e is
   port (
     op : out std_logic_vector((16 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_constant_78cef5479b;
-architecture behavior of sysgen_constant_78cef5479b
+end sysgen_constant_94d6a06f5e;
+architecture behavior of sysgen_constant_94d6a06f5e
 is
 begin
-  op <= "1100000000000000";
+  op <= "0101101010000010";
 end behavior;
 
 library xil_defaultlib;
@@ -879,6 +923,25 @@ begin
   pipe_16_22_front_din <= unregy_join_6_1;
   pipe_16_22_push_front_pop_back_en <= '1';
   y <= pipe_16_22_back;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_constant_c3a0b75c99 is
+  port (
+    op : out std_logic_vector((16 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_constant_c3a0b75c99;
+architecture behavior of sysgen_constant_c3a0b75c99
+is
+begin
+  op <= "1010010101111110";
 end behavior;
 
 library xil_defaultlib;
@@ -1601,24 +1664,24 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_shift_5d40c52eed is
+entity sysgen_shift_af1b327c8a is
   port (
     ip : in std_logic_vector((50 - 1) downto 0);
-    op : out std_logic_vector((50 - 1) downto 0);
+    op : out std_logic_vector((58 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_shift_5d40c52eed;
-architecture behavior of sysgen_shift_5d40c52eed
+end sysgen_shift_af1b327c8a;
+architecture behavior of sysgen_shift_af1b327c8a
 is
   signal ip_1_23: signed((50 - 1) downto 0);
-  type array_type_op_mem_46_20 is array (0 to (1 - 1)) of signed((50 - 1) downto 0);
+  type array_type_op_mem_46_20 is array (0 to (1 - 1)) of signed((58 - 1) downto 0);
   signal op_mem_46_20: array_type_op_mem_46_20 := (
-    0 => "00000000000000000000000000000000000000000000000000");
-  signal op_mem_46_20_front_din: signed((50 - 1) downto 0);
-  signal op_mem_46_20_back: signed((50 - 1) downto 0);
+    0 => "0000000000000000000000000000000000000000000000000000000000");
+  signal op_mem_46_20_front_din: signed((58 - 1) downto 0);
+  signal op_mem_46_20_back: signed((58 - 1) downto 0);
   signal op_mem_46_20_push_front_pop_back_en: std_logic;
-  signal cast_internal_ip_33_3_convert: signed((50 - 1) downto 0);
+  signal internal_ip_33_3_convert: signed((58 - 1) downto 0);
 begin
   ip_1_23 <= std_logic_vector_to_signed(ip);
   op_mem_46_20_back <= op_mem_46_20(0);
@@ -1632,9 +1695,9 @@ begin
       end if;
     end if;
   end process proc_op_mem_46_20;
-  cast_internal_ip_33_3_convert <= s2s_cast(ip_1_23, 47, 50, 48);
+  internal_ip_33_3_convert <= std_logic_vector_to_signed(convert_type(signed_to_std_logic_vector(ip_1_23), 50, 48, xlSigned, 58, 56, xlSigned, xlRound, xlSaturate));
   op_mem_46_20_push_front_pop_back_en <= '0';
-  op <= signed_to_std_logic_vector(cast_internal_ip_33_3_convert);
+  op <= signed_to_std_logic_vector(internal_ip_33_3_convert);
 end behavior;
 
 library xil_defaultlib;
@@ -1928,6 +1991,7 @@ entity bpsk_transmitter_xlfifogen_u is
      has_ae : integer := 0;
      has_af : integer := 0;
      extra_registers: integer := 0;
+     ignore_din_for_gcd: boolean := false;
      has_rst : boolean := false
    );
    port (
@@ -1964,22 +2028,21 @@ entity bpsk_transmitter_xlfifogen_u is
  o: out std_logic_vector(width - 1 downto 0)
  );
  end component;
+ component synth_reg_w_init 
+ generic (width : integer;
+ init_index : integer; 
+ init_value : bit_vector; 
+ latency : integer); 
+ port (i : in std_logic_vector(width-1 downto 0); 
+ ce : in std_logic; 
+ clr : in std_logic; 
+ clk : in std_logic; 
+ o : out std_logic_vector(width-1 downto 0)); 
+ end component; 
  
 
 
  component bpsk_transmitter_fifo_generator_i0
-    port ( 
-      clk: in std_logic;
-      din: in std_logic_vector(data_width - 1 downto 0);
-      wr_en: in std_logic;
-      rd_en: in std_logic;
-      dout: out std_logic_vector(data_width - 1 downto 0);
-      full: out std_logic;
-      empty: out std_logic 
- 		  ); 
- end component;
-
- component bpsk_transmitter_fifo_generator_i1
     port ( 
       clk: in std_logic;
       din: in std_logic_vector(data_width - 1 downto 0);
@@ -2002,26 +2065,16 @@ entity bpsk_transmitter_xlfifogen_u is
    signal empty_net: std_logic; 
    signal ae_net: std_logic; 
    signal af_net: std_logic; 
+   signal ae_vec: std_logic_vector(0 downto 0); 
+   signal af_vec: std_logic_vector(0 downto 0); 
+   signal ae_out: std_logic_vector(0 downto 0); 
+   signal af_out: std_logic_vector(0 downto 0); 
  
  begin
  
 
  comp0: if ((core_name0 = "bpsk_transmitter_fifo_generator_i0")) generate 
   core_instance0:bpsk_transmitter_fifo_generator_i0
-   port map ( 
-        clk => clk,
-        din => din,
-        wr_en => wr_en,
-        rd_en => rd_en,
-        full => core_full,
-        dout => dout_net,
-        empty => empty_net
-
-  ); 
-   end generate;
-
- comp1: if ((core_name0 = "bpsk_transmitter_fifo_generator_i1")) generate 
-  core_instance1:bpsk_transmitter_fifo_generator_i1
    port map ( 
         clk => clk,
         din => din,
@@ -2070,18 +2123,47 @@ latency_gt_0: if (extra_registers > 0) generate
      srst <= srst_vec(0);
  end generate;
  
+  ae_vec(0) <= ae_net;
+  af_vec(0) <= af_net;
+ multi_sample: if (ignore_din_for_gcd) generate 
+    reg1: synth_reg_w_init 
+    generic map (width      => 1, 
+    init_index => 2, 
+    init_value => "1", 
+    latency    => 1) 
+    port map (i   => ae_vec, 
+    ce  => ce, 
+    clr => srst_vec(0), 
+    clk => clk, 
+    o   => ae_out); 
+    reg2: synth_reg_w_init 
+    generic map (width      => 1, 
+    init_index => 2, 
+    init_value => "0", 
+    latency    => 1) 
+    port map (i   => af_vec, 
+    ce  => ce, 
+    clr => srst_vec(0), 
+    clk => clk, 
+    o   => af_out); 
+  end generate; 
+  not_multi: if (ignore_din_for_gcd = false) generate 
+ begin 
+ af_out <= af_vec; 
+  ae_out <= ae_vec; 
+  end generate; 
  latency_eq_0: if (extra_registers = 0) generate
    srst <= rst and ce;
  end generate;
  
-    process (dout_net, empty_net, core_full, core_dcount, ae_net, af_net, re, we, en, re_ce, we_ce) is 
+    process (dout_net, empty_net, core_full, core_dcount, ae_out(0), af_out(0), re, we, en, re_ce, we_ce) is 
     begin 
         dout <= dout_net; 
         empty <= empty_net; 
         full <= core_full; 
         dcount <= core_dcount;
-        ae <= ae_net;
-        af <= af_net;
+        ae <= ae_out(0);
+        af <= af_out(0);
         rd_en <= re and en and re_ce;
         wr_en <= we and en and we_ce;
     end process; 

@@ -1,22 +1,4 @@
--- Generated from Simulink block BPSK_Transmitter/AXI Slave Register
-library IEEE;
-use IEEE.std_logic_1164.all;
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-entity bpsk_transmitter_axi_slave_register is
-  port (
-    enable_data : in std_logic_vector( 1-1 downto 0 );
-    enable_tx : in std_logic_vector( 1-1 downto 0 )
-  );
-end bpsk_transmitter_axi_slave_register;
-architecture structural of bpsk_transmitter_axi_slave_register is 
-  signal enable_tx_net : std_logic_vector( 1-1 downto 0 );
-  signal enable_data_net : std_logic_vector( 1-1 downto 0 );
-begin
-  enable_data_net <= enable_data;
-  enable_tx_net <= enable_tx;
-end structural;
--- Generated from Simulink block BPSK_Transmitter/DUT/AXI-Stream Master Interface
+-- Generated from Simulink block bpsk_transmitter/DUT/AXI-Stream Master Interface
 library IEEE;
 use IEEE.std_logic_1164.all;
 library xil_defaultlib;
@@ -29,11 +11,11 @@ entity bpsk_transmitter_axi_stream_master_interface is
   );
 end bpsk_transmitter_axi_stream_master_interface;
 architecture structural of bpsk_transmitter_axi_stream_master_interface is 
-  signal cmult_p_net : std_logic_vector( 16-1 downto 0 );
-  signal constant_op_net : std_logic_vector( 16-1 downto 0 );
-  signal reinterpret_output_port_net : std_logic_vector( 16-1 downto 0 );
-  signal cic_compiler_4_0_m_axis_data_tvalid_net : std_logic;
   signal concat_y_net : std_logic_vector( 32-1 downto 0 );
+  signal reinterpret_output_port_net : std_logic_vector( 16-1 downto 0 );
+  signal constant_op_net : std_logic_vector( 16-1 downto 0 );
+  signal cmult_p_net : std_logic_vector( 16-1 downto 0 );
+  signal cic_compiler_4_0_m_axis_data_tvalid_net : std_logic;
 begin
   cmult_p_net <= s_tdata;
   cic_compiler_4_0_m_axis_data_tvalid_net <= s_tvalid;
@@ -63,7 +45,7 @@ begin
     output_port => reinterpret_output_port_net
   );
 end structural;
--- Generated from Simulink block BPSK_Transmitter/DUT/AXI-Stream Slave Interface
+-- Generated from Simulink block bpsk_transmitter/DUT/AXI-Stream Slave Interface
 library IEEE;
 use IEEE.std_logic_1164.all;
 library xil_defaultlib;
@@ -71,6 +53,7 @@ use xil_defaultlib.conv_pkg.all;
 entity bpsk_transmitter_axi_stream_slave_interface is
   port (
     s_axis_tdata : in std_logic_vector( 8-1 downto 0 );
+    s_axis_tlast : in std_logic_vector( 1-1 downto 0 );
     s_axis_tvalid : in std_logic_vector( 1-1 downto 0 );
     clk_1 : in std_logic;
     ce_1 : in std_logic;
@@ -82,25 +65,29 @@ entity bpsk_transmitter_axi_stream_slave_interface is
   );
 end bpsk_transmitter_axi_stream_slave_interface;
 architecture structural of bpsk_transmitter_axi_stream_slave_interface is 
-  signal fifo_dout_net : std_logic_vector( 8-1 downto 0 );
-  signal fifo_full_net : std_logic;
-  signal ce_net : std_logic;
-  signal inverter1_op_net : std_logic;
-  signal constant_op_net : std_logic_vector( 8-1 downto 0 );
-  signal fifo_empty_net : std_logic_vector( 1-1 downto 0 );
-  signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
-  signal register_q_net : std_logic_vector( 1-1 downto 0 );
-  signal s_axis_tdata_net : std_logic_vector( 8-1 downto 0 );
-  signal src_clk_net : std_logic;
-  signal s_axis_tvalid_net : std_logic_vector( 1-1 downto 0 );
-  signal src_ce_net : std_logic;
-  signal mux_y_net : std_logic_vector( 8-1 downto 0 );
-  signal clk_net : std_logic;
   signal down_sample_q_net : std_logic_vector( 1-1 downto 0 );
+  signal fifo_empty_net : std_logic_vector( 1-1 downto 0 );
+  signal concat_y_net : std_logic_vector( 9-1 downto 0 );
+  signal inverter1_op_net : std_logic;
+  signal slice1_y_net : std_logic_vector( 8-1 downto 0 );
+  signal fifo_dout_net : std_logic_vector( 9-1 downto 0 );
+  signal fifo_full_net : std_logic;
+  signal clk_net : std_logic;
+  signal constant_op_net : std_logic_vector( 8-1 downto 0 );
+  signal ce_net : std_logic;
+  signal src_ce_net : std_logic;
+  signal s_axis_tdata_net : std_logic_vector( 8-1 downto 0 );
+  signal s_axis_tlast_net : std_logic_vector( 1-1 downto 0 );
+  signal src_clk_net : std_logic;
+  signal mux_y_net : std_logic_vector( 8-1 downto 0 );
+  signal register_q_net : std_logic_vector( 1-1 downto 0 );
+  signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
+  signal s_axis_tvalid_net : std_logic_vector( 1-1 downto 0 );
 begin
   m_tdata <= mux_y_net;
   m_tvalid <= register_q_net;
   s_axis_tdata_net <= s_axis_tdata;
+  s_axis_tlast_net <= s_axis_tlast;
   s_axis_tready <= inverter_op_net;
   s_axis_tvalid_net <= s_axis_tvalid;
   src_clk_net <= clk_1;
@@ -142,17 +129,18 @@ begin
   generic map (
     core_name0 => "bpsk_transmitter_fifo_generator_i0",
     data_count_width => 10,
-    data_width => 8,
+    data_width => 9,
     extra_registers => 1,
     has_ae => 0,
     has_af => 0,
     has_rst => false,
+    ignore_din_for_gcd => false,
     percent_full_width => 2
   )
   port map (
     en => '1',
     rst => '0',
-    din => s_axis_tdata_net,
+    din => concat_y_net,
     we => s_axis_tvalid_net(0),
     re => inverter1_op_net,
     clk => src_clk_net,
@@ -186,7 +174,7 @@ begin
     clr => '0',
     sel => register_q_net,
     d0 => constant_op_net,
-    d1 => fifo_dout_net,
+    d1 => slice1_y_net,
     y => mux_y_net
   );
   register_x0 : entity xil_defaultlib.bpsk_transmitter_xlregister 
@@ -202,8 +190,28 @@ begin
     ce => ce_net,
     q => register_q_net
   );
+  concat : entity xil_defaultlib.sysgen_concat_fa405ebb95 
+  port map (
+    clk => '0',
+    ce => '0',
+    clr => '0',
+    in0 => s_axis_tlast_net,
+    in1 => s_axis_tdata_net,
+    y => concat_y_net
+  );
+  slice1 : entity xil_defaultlib.bpsk_transmitter_xlslice 
+  generic map (
+    new_lsb => 0,
+    new_msb => 7,
+    x_width => 9,
+    y_width => 8
+  )
+  port map (
+    x => fifo_dout_net,
+    y => slice1_y_net
+  );
 end structural;
--- Generated from Simulink block BPSK_Transmitter/DUT/Algorithm/BPSK Differential Encoder
+-- Generated from Simulink block bpsk_transmitter/DUT/Algorithm/BPSK Differential Encoder
 library IEEE;
 use IEEE.std_logic_1164.all;
 library xil_defaultlib;
@@ -219,35 +227,35 @@ entity bpsk_transmitter_bpsk_differential_encoder is
 end bpsk_transmitter_bpsk_differential_encoder;
 architecture structural of bpsk_transmitter_bpsk_differential_encoder is 
   signal clk_net : std_logic;
-  signal constant1_op_net : std_logic_vector( 16-1 downto 0 );
   signal mux1_y_net : std_logic_vector( 1-1 downto 0 );
   signal constant_op_net : std_logic_vector( 16-1 downto 0 );
-  signal mux_y_net : std_logic_vector( 16-1 downto 0 );
-  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
-  signal ce_net : std_logic;
-  signal register_q_net : std_logic_vector( 1-1 downto 0 );
   signal mux1_y_net_x0 : std_logic_vector( 16-1 downto 0 );
+  signal register_q_net : std_logic_vector( 1-1 downto 0 );
+  signal logical_y_net : std_logic_vector( 1-1 downto 0 );
+  signal mux_y_net : std_logic_vector( 16-1 downto 0 );
+  signal constant1_op_net : std_logic_vector( 16-1 downto 0 );
   signal enable_tx_net : std_logic_vector( 1-1 downto 0 );
   signal constant2_op_net : std_logic_vector( 16-1 downto 0 );
+  signal ce_net : std_logic;
 begin
   m_tdata <= mux1_y_net_x0;
   enable_tx_net <= tx_output;
   mux1_y_net <= s_tdata;
   clk_net <= clk_1280;
   ce_net <= ce_1280;
-  constant_x0 : entity xil_defaultlib.sysgen_constant_029b77768e 
+  constant_x0 : entity xil_defaultlib.sysgen_constant_94d6a06f5e 
   port map (
     clk => '0',
     ce => '0',
     clr => '0',
     op => constant_op_net
   );
-  constant1 : entity xil_defaultlib.sysgen_constant_78cef5479b 
+  constant2 : entity xil_defaultlib.sysgen_constant_f9c9d9805e 
   port map (
     clk => '0',
     ce => '0',
     clr => '0',
-    op => constant1_op_net
+    op => constant2_op_net
   );
   logical : entity xil_defaultlib.sysgen_logical_e3bab90d9a 
   port map (
@@ -268,6 +276,16 @@ begin
     ce => ce_net,
     y => mux_y_net
   );
+  mux1 : entity xil_defaultlib.sysgen_mux_2693ea3e45 
+  port map (
+    clr => '0',
+    sel => enable_tx_net,
+    d0 => constant2_op_net,
+    d1 => mux_y_net,
+    clk => clk_net,
+    ce => ce_net,
+    y => mux1_y_net_x0
+  );
   register_x0 : entity xil_defaultlib.bpsk_transmitter_xlregister 
   generic map (
     d_width => 1,
@@ -281,25 +299,15 @@ begin
     ce => ce_net,
     q => register_q_net
   );
-  mux1 : entity xil_defaultlib.sysgen_mux_2693ea3e45 
-  port map (
-    clr => '0',
-    sel => enable_tx_net,
-    d0 => constant2_op_net,
-    d1 => mux_y_net,
-    clk => clk_net,
-    ce => ce_net,
-    y => mux1_y_net_x0
-  );
-  constant2 : entity xil_defaultlib.sysgen_constant_f9c9d9805e 
+  constant1 : entity xil_defaultlib.sysgen_constant_c3a0b75c99 
   port map (
     clk => '0',
     ce => '0',
     clr => '0',
-    op => constant2_op_net
+    op => constant1_op_net
   );
 end structural;
--- Generated from Simulink block BPSK_Transmitter/DUT/Algorithm/BPSK LFSR
+-- Generated from Simulink block bpsk_transmitter/DUT/Algorithm/BPSK LFSR
 library IEEE;
 use IEEE.std_logic_1164.all;
 library xil_defaultlib;
@@ -317,18 +325,18 @@ entity bpsk_transmitter_bpsk_lfsr is
   );
 end bpsk_transmitter_bpsk_lfsr;
 architecture structural of bpsk_transmitter_bpsk_lfsr is 
-  signal up_sample_q_net : std_logic_vector( 1-1 downto 0 );
-  signal ce_net_x0 : std_logic;
-  signal mux1_y_net : std_logic_vector( 1-1 downto 0 );
-  signal clk_net_x0 : std_logic;
-  signal parallel_to_serial_dout_net : std_logic_vector( 1-1 downto 0 );
+  signal lfsr_dout_net : std_logic_vector( 1-1 downto 0 );
   signal mux_y_net : std_logic_vector( 8-1 downto 0 );
   signal register_q_net : std_logic_vector( 8-1 downto 0 );
+  signal up_sample_q_net : std_logic_vector( 1-1 downto 0 );
   signal clk_net : std_logic;
-  signal lfsr_dout_net : std_logic_vector( 1-1 downto 0 );
+  signal clk_net_x0 : std_logic;
   signal register_q_net_x0 : std_logic_vector( 1-1 downto 0 );
-  signal enable_data_net : std_logic_vector( 1-1 downto 0 );
+  signal mux1_y_net : std_logic_vector( 1-1 downto 0 );
+  signal ce_net_x0 : std_logic;
   signal ce_net : std_logic;
+  signal enable_data_net : std_logic_vector( 1-1 downto 0 );
+  signal parallel_to_serial_dout_net : std_logic_vector( 1-1 downto 0 );
 begin
   m_tdata <= mux1_y_net;
   enable_data_net <= enable;
@@ -416,7 +424,7 @@ begin
     q => up_sample_q_net
   );
 end structural;
--- Generated from Simulink block BPSK_Transmitter/DUT/Algorithm/Interpolation
+-- Generated from Simulink block bpsk_transmitter/DUT/Algorithm/Interpolation
 library IEEE;
 use IEEE.std_logic_1164.all;
 library xil_defaultlib;
@@ -433,16 +441,16 @@ entity bpsk_transmitter_interpolation is
   );
 end bpsk_transmitter_interpolation;
 architecture structural of bpsk_transmitter_interpolation is 
-  signal cic_compiler_4_0_m_axis_data_tdata_real_net : std_logic_vector( 50-1 downto 0 );
+  signal cmult_p_net : std_logic_vector( 16-1 downto 0 );
+  signal cic_compiler_4_0_m_axis_data_tvalid_net : std_logic;
+  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
+  signal clk_320_net : std_logic;
+  signal shift_op_net : std_logic_vector( 58-1 downto 0 );
   signal src_ce_net : std_logic;
   signal ce_320_net : std_logic;
   signal src_clk_net : std_logic;
   signal cic_compiler_4_0_s_axis_data_tready_net : std_logic;
-  signal clk_320_net : std_logic;
-  signal cmult_p_net : std_logic_vector( 16-1 downto 0 );
-  signal cic_compiler_4_0_m_axis_data_tvalid_net : std_logic;
-  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
-  signal shift_op_net : std_logic_vector( 50-1 downto 0 );
+  signal cic_compiler_4_0_m_axis_data_tdata_real_net : std_logic_vector( 50-1 downto 0 );
 begin
   m_tdata <= cmult_p_net;
   m_tvalid <= cic_compiler_4_0_m_axis_data_tvalid_net;
@@ -467,22 +475,22 @@ begin
   cmult : entity xil_defaultlib.bpsk_transmitter_xlcmult 
   generic map (
     a_arith => xlSigned,
-    a_bin_pt => 48,
-    a_width => 50,
+    a_bin_pt => 56,
+    a_width => 58,
     b_bin_pt => 15,
     c_a_type => 0,
-    c_a_width => 50,
+    c_a_width => 58,
     c_b_type => 1,
     c_b_width => 16,
-    c_output_width => 66,
+    c_output_width => 74,
     core_name0 => "bpsk_transmitter_mult_gen_v12_0_i0",
     extra_registers => 0,
     multsign => 2,
-    overflow => 1,
+    overflow => 2,
     p_arith => xlSigned,
-    p_bin_pt => 14,
+    p_bin_pt => 15,
     p_width => 16,
-    quantization => 1,
+    quantization => 2,
     zero_const => 0
   )
   port map (
@@ -497,7 +505,7 @@ begin
     core_ce => src_ce_net,
     p => cmult_p_net
   );
-  shift : entity xil_defaultlib.sysgen_shift_5d40c52eed 
+  shift : entity xil_defaultlib.sysgen_shift_af1b327c8a 
   port map (
     clr => '0',
     ip => cic_compiler_4_0_m_axis_data_tdata_real_net,
@@ -506,7 +514,7 @@ begin
     op => shift_op_net
   );
 end structural;
--- Generated from Simulink block BPSK_Transmitter/DUT/Algorithm/RRC
+-- Generated from Simulink block bpsk_transmitter/DUT/Algorithm/RRC
 library IEEE;
 use IEEE.std_logic_1164.all;
 library xil_defaultlib;
@@ -524,16 +532,16 @@ entity bpsk_transmitter_rrc is
   );
 end bpsk_transmitter_rrc;
 architecture structural of bpsk_transmitter_rrc is 
+  signal clk_net : std_logic;
+  signal src_clk_net : std_logic;
+  signal src_ce_net : std_logic;
+  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
+  signal clk_320_net : std_logic;
+  signal ce_320_net : std_logic;
   signal ce_net : std_logic;
   signal mux1_y_net : std_logic_vector( 16-1 downto 0 );
-  signal clk_net : std_logic;
-  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
-  signal ce_320_net : std_logic;
-  signal src_clk_net : std_logic;
-  signal clk_320_net : std_logic;
-  signal src_ce_net : std_logic;
-  signal fir_compiler_7_2_s_axis_data_tready_net : std_logic;
   signal fir_compiler_7_2_m_axis_data_tdata_real_net : std_logic_vector( 31-1 downto 0 );
+  signal fir_compiler_7_2_s_axis_data_tready_net : std_logic;
   signal fir_compiler_7_2_m_axis_data_tvalid_net : std_logic;
 begin
   m_tdata <= convert_dout_net;
@@ -548,14 +556,14 @@ begin
   generic map (
     bool_conversion => 0,
     din_arith => 2,
-    din_bin_pt => 28,
+    din_bin_pt => 29,
     din_width => 31,
     dout_arith => 2,
-    dout_bin_pt => 14,
+    dout_bin_pt => 15,
     dout_width => 16,
     latency => 0,
-    overflow => xlWrap,
-    quantization => xlTruncate
+    overflow => xlSaturate,
+    quantization => xlRound
   )
   port map (
     clr => '0',
@@ -583,7 +591,7 @@ begin
     m_axis_data_tdata_real => fir_compiler_7_2_m_axis_data_tdata_real_net
   );
 end structural;
--- Generated from Simulink block BPSK_Transmitter/DUT/Algorithm
+-- Generated from Simulink block bpsk_transmitter/DUT/Algorithm
 library IEEE;
 use IEEE.std_logic_1164.all;
 library xil_defaultlib;
@@ -607,23 +615,23 @@ entity bpsk_transmitter_algorithm is
   );
 end bpsk_transmitter_algorithm;
 architecture structural of bpsk_transmitter_algorithm is 
-  signal register_q_net : std_logic_vector( 1-1 downto 0 );
   signal cic_compiler_4_0_m_axis_data_tvalid_net : std_logic;
-  signal src_ce_net : std_logic;
-  signal ce_net : std_logic;
-  signal ce_net_x0 : std_logic;
-  signal src_clk_net : std_logic;
-  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
-  signal mux_y_net : std_logic_vector( 8-1 downto 0 );
-  signal enable_data_net : std_logic_vector( 1-1 downto 0 );
-  signal clk_net : std_logic;
-  signal clk_net_x0 : std_logic;
   signal enable_tx_net : std_logic_vector( 1-1 downto 0 );
   signal cmult_p_net : std_logic_vector( 16-1 downto 0 );
-  signal clk_320_net : std_logic;
-  signal ce_320_net : std_logic;
-  signal mux1_y_net_x0 : std_logic_vector( 16-1 downto 0 );
+  signal ce_net_x0 : std_logic;
   signal mux1_y_net : std_logic_vector( 1-1 downto 0 );
+  signal clk_net : std_logic;
+  signal src_ce_net : std_logic;
+  signal enable_data_net : std_logic_vector( 1-1 downto 0 );
+  signal clk_net_x0 : std_logic;
+  signal register_q_net : std_logic_vector( 1-1 downto 0 );
+  signal clk_320_net : std_logic;
+  signal mux1_y_net_x0 : std_logic_vector( 16-1 downto 0 );
+  signal ce_net : std_logic;
+  signal convert_dout_net : std_logic_vector( 16-1 downto 0 );
+  signal mux_y_net : std_logic_vector( 8-1 downto 0 );
+  signal src_clk_net : std_logic;
+  signal ce_320_net : std_logic;
 begin
   m_tdata <= cmult_p_net;
   m_tvalid <= cic_compiler_4_0_m_axis_data_tvalid_net;
@@ -680,7 +688,7 @@ begin
     m_tdata => convert_dout_net
   );
 end structural;
--- Generated from Simulink block BPSK_Transmitter/DUT
+-- Generated from Simulink block bpsk_transmitter/DUT
 library IEEE;
 use IEEE.std_logic_1164.all;
 library xil_defaultlib;
@@ -690,6 +698,7 @@ entity bpsk_transmitter_dut is
     s_reg_enable : in std_logic_vector( 1-1 downto 0 );
     s_enable_tx : in std_logic_vector( 1-1 downto 0 );
     s_axis_tdata : in std_logic_vector( 8-1 downto 0 );
+    s_axis_tlast : in std_logic_vector( 1-1 downto 0 );
     s_axis_tvalid : in std_logic_vector( 1-1 downto 0 );
     clk_1 : in std_logic;
     ce_1 : in std_logic;
@@ -705,30 +714,32 @@ entity bpsk_transmitter_dut is
   );
 end bpsk_transmitter_dut;
 architecture structural of bpsk_transmitter_dut is 
-  signal enable_tx_net : std_logic_vector( 1-1 downto 0 );
-  signal concat_y_net : std_logic_vector( 32-1 downto 0 );
-  signal cic_compiler_4_0_m_axis_data_tvalid_net : std_logic_vector( 1-1 downto 0 );
-  signal enable_data_net : std_logic_vector( 1-1 downto 0 );
-  signal s_axis_tdata_net : std_logic_vector( 8-1 downto 0 );
-  signal src_clk_net : std_logic;
-  signal s_axis_tvalid_net : std_logic_vector( 1-1 downto 0 );
-  signal ce_320_net : std_logic;
-  signal clk_net : std_logic;
-  signal clk_net_x0 : std_logic;
-  signal register_q_net : std_logic_vector( 1-1 downto 0 );
   signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
-  signal src_ce_net : std_logic;
-  signal ce_net_x0 : std_logic;
+  signal enable_tx_net : std_logic_vector( 1-1 downto 0 );
+  signal enable_data_net : std_logic_vector( 1-1 downto 0 );
+  signal concat_y_net : std_logic_vector( 32-1 downto 0 );
+  signal s_axis_tvalid_net : std_logic_vector( 1-1 downto 0 );
+  signal src_clk_net : std_logic;
+  signal s_axis_tlast_net : std_logic_vector( 1-1 downto 0 );
+  signal cic_compiler_4_0_m_axis_data_tvalid_net : std_logic_vector( 1-1 downto 0 );
+  signal s_axis_tdata_net : std_logic_vector( 8-1 downto 0 );
   signal cmult_p_net : std_logic_vector( 16-1 downto 0 );
+  signal clk_net_x0 : std_logic;
+  signal src_ce_net : std_logic;
+  signal ce_net : std_logic;
+  signal register_q_net : std_logic_vector( 1-1 downto 0 );
+  signal clk_net : std_logic;
   signal clk_320_net : std_logic;
   signal mux_y_net : std_logic_vector( 8-1 downto 0 );
-  signal ce_net : std_logic;
+  signal ce_net_x0 : std_logic;
+  signal ce_320_net : std_logic;
 begin
   enable_data_net <= s_reg_enable;
   enable_tx_net <= s_enable_tx;
   m_axis_tdata <= concat_y_net;
   m_axis_tvalid <= cic_compiler_4_0_m_axis_data_tvalid_net;
   s_axis_tdata_net <= s_axis_tdata;
+  s_axis_tlast_net <= s_axis_tlast;
   s_axis_tready <= inverter_op_net;
   s_axis_tvalid_net <= s_axis_tvalid;
   src_clk_net <= clk_1;
@@ -748,6 +759,7 @@ begin
   axi_stream_slave_interface : entity xil_defaultlib.bpsk_transmitter_axi_stream_slave_interface 
   port map (
     s_axis_tdata => s_axis_tdata_net,
+    s_axis_tlast => s_axis_tlast_net,
     s_axis_tvalid => s_axis_tvalid_net,
     clk_1 => src_clk_net,
     ce_1 => src_ce_net,
@@ -775,7 +787,7 @@ begin
     m_tvalid => cic_compiler_4_0_m_axis_data_tvalid_net(0)
   );
 end structural;
--- Generated from Simulink block BPSK_Transmitter_struct
+-- Generated from Simulink block bpsk_transmitter_struct
 library IEEE;
 use IEEE.std_logic_1164.all;
 library xil_defaultlib;
@@ -802,23 +814,23 @@ entity bpsk_transmitter_struct is
   );
 end bpsk_transmitter_struct;
 architecture structural of bpsk_transmitter_struct is 
-  signal s_axis_tvalid_net : std_logic_vector( 1-1 downto 0 );
-  signal src_ce_net : std_logic;
-  signal cic_compiler_4_0_m_axis_data_tvalid_net : std_logic_vector( 1-1 downto 0 );
-  signal clk_320_net : std_logic;
-  signal concat_y_net : std_logic_vector( 32-1 downto 0 );
-  signal s_axis_tdata_net : std_logic_vector( 8-1 downto 0 );
-  signal enable_tx_net : std_logic_vector( 1-1 downto 0 );
-  signal clk_net : std_logic;
-  signal s_axis_tlast_net : std_logic_vector( 1-1 downto 0 );
   signal ce_320_net : std_logic;
-  signal ce_net : std_logic;
-  signal m_axis_tready_net : std_logic_vector( 1-1 downto 0 );
+  signal clk_net_x0 : std_logic;
   signal ce_net_x0 : std_logic;
   signal src_clk_net : std_logic;
+  signal s_axis_tdata_net : std_logic_vector( 8-1 downto 0 );
+  signal clk_320_net : std_logic;
+  signal m_axis_tready_net : std_logic_vector( 1-1 downto 0 );
   signal inverter_op_net : std_logic_vector( 1-1 downto 0 );
-  signal clk_net_x0 : std_logic;
+  signal concat_y_net : std_logic_vector( 32-1 downto 0 );
+  signal s_axis_tvalid_net : std_logic_vector( 1-1 downto 0 );
+  signal enable_tx_net : std_logic_vector( 1-1 downto 0 );
   signal enable_data_net : std_logic_vector( 1-1 downto 0 );
+  signal cic_compiler_4_0_m_axis_data_tvalid_net : std_logic_vector( 1-1 downto 0 );
+  signal s_axis_tlast_net : std_logic_vector( 1-1 downto 0 );
+  signal src_ce_net : std_logic;
+  signal ce_net : std_logic;
+  signal clk_net : std_logic;
 begin
   enable_data_net <= enable_data;
   enable_tx_net <= enable_tx;
@@ -837,16 +849,12 @@ begin
   ce_net <= ce_1280;
   clk_net_x0 <= clk_10240;
   ce_net_x0 <= ce_10240;
-  axi_slave_register : entity xil_defaultlib.bpsk_transmitter_axi_slave_register 
-  port map (
-    enable_data => enable_data_net,
-    enable_tx => enable_tx_net
-  );
   dut : entity xil_defaultlib.bpsk_transmitter_dut 
   port map (
     s_reg_enable => enable_data_net,
     s_enable_tx => enable_tx_net,
     s_axis_tdata => s_axis_tdata_net,
+    s_axis_tlast => s_axis_tlast_net,
     s_axis_tvalid => s_axis_tvalid_net,
     clk_1 => src_clk_net,
     ce_1 => src_ce_net,
@@ -969,17 +977,17 @@ entity bpsk_transmitter is
 end bpsk_transmitter;
 architecture structural of bpsk_transmitter is 
   attribute core_generation_info : string;
-  attribute core_generation_info of structural : architecture is "bpsk_transmitter,sysgen_core_2019_1,{,compilation=IP Catalog,block_icon_display=Default,family=zynquplusRFSOC,part=xczu28dr,speed=-2-e,package=ffvg1517,synthesis_language=vhdl,hdl_library=xil_defaultlib,synthesis_strategy=Vivado Synthesis Defaults,implementation_strategy=Vivado Implementation Defaults,testbench=0,interface_doc=0,ce_clr=0,clock_period=7.8125,system_simulink_period=7.8125e-09,waveform_viewer=0,axilite_interface=1,ip_catalog_plugin=0,hwcosim_burst_mode=0,simulation_time=inf,cic_compiler_v4_0=1,cmult=1,concat=1,constant=5,convert=2,dsamp=1,fifo=2,fir_compiler_v7_2=1,inv=2,lfsr=1,logical=2,mux=4,p2s=1,register=3,reinterpret=1,shift=1,usamp=1,}";
-  signal enable_tx : std_logic_vector( 1-1 downto 0 );
-  signal enable_data : std_logic_vector( 1-1 downto 0 );
-  signal ce_1_net : std_logic;
-  signal ce_320_net : std_logic;
+  attribute core_generation_info of structural : architecture is "bpsk_transmitter,sysgen_core_2020_1,{,compilation=IP Catalog,block_icon_display=Default,family=zynquplusRFSOC,part=xczu28dr,speed=-2-e,package=ffvg1517,synthesis_language=vhdl,hdl_library=xil_defaultlib,synthesis_strategy=Vivado Synthesis Defaults,implementation_strategy=Vivado Implementation Defaults,testbench=0,interface_doc=0,ce_clr=0,clock_period=7.8125,system_simulink_period=7.8125e-09,waveform_viewer=0,axilite_interface=1,ip_catalog_plugin=0,hwcosim_burst_mode=0,simulation_time=0.002,cic_compiler_v4_0=1,cmult=1,concat=2,constant=5,convert=2,dsamp=1,fifo=1,fir_compiler_v7_2=1,inv=2,lfsr=1,logical=2,mux=4,p2s=1,register=3,reinterpret=1,shift=1,slice=2,usamp=1,}";
   signal clk_1_net : std_logic;
+  signal ce_1_net : std_logic;
+  signal enable_data : std_logic_vector( 1-1 downto 0 );
+  signal enable_tx : std_logic_vector( 1-1 downto 0 );
   signal clk_320_net : std_logic;
-  signal clk_1280_net : std_logic;
-  signal ce_10240_net : std_logic;
   signal clk_10240_net : std_logic;
+  signal clk_1280_net : std_logic;
   signal ce_1280_net : std_logic;
+  signal ce_10240_net : std_logic;
+  signal ce_320_net : std_logic;
   signal clk_net : std_logic;
 begin
   bpsk_transmitter_axi_lite_interface : entity xil_defaultlib.bpsk_transmitter_axi_lite_interface 
