@@ -2,6 +2,7 @@ from pynq import DefaultIP
 from pynq import allocate
 import numpy as np
 import async_radio as ar
+from random import randint
 
 class BpskTransmitter():
     def __init__(self, axi_dma, bpsk_transmitter):
@@ -14,6 +15,9 @@ class BpskTransmitter():
         
         self.controller.enable_data = 1
         self.controller.enable_transmitter = 1
+        
+        self.frame_size = 27
+        self.random_size = 10
         
         self._flags = 0
         self._frame_number = 0
@@ -62,9 +66,12 @@ class BpskTransmitter():
         if data.size == 0:
             raise ValueError('Message size should be greater than 0.')
         msg = np.array(data, dtype=np.uint8)
+        # Append Barker and Random Data
         bkr = np.array([0, 0, 63, 112, 28, len(msg) + 5, self._frame_number, self._flags, 5, len(msg)-padding, padding], dtype=np.uint8)
+        rnd = np.array([randint(0, 255) for p in range(0, self.random_size)], dtype=np.uint8)
         seq = np.append(bkr, msg)
-        pad = np.append(seq, np.zeros(int(np.ceil((len(bkr) + len(msg))/32) * 32 - (len(bkr) + len(msg))), dtype=np.uint8))
+        seq = np.append(rnd, seq)
+        pad = np.append(seq, np.zeros(int(np.ceil((len(rnd) + len(bkr) + len(msg))/32) * 32 - (len(rnd) + len(bkr) + len(msg))), dtype=np.uint8))
         buf = allocate(shape=(len(pad),), dtype=np.uint8)
         buf[:] = pad[:]
         return buf
@@ -103,16 +110,16 @@ class BpskTransmitter():
     
     def _prepare_message(self, msg):
         
-        if len(msg) > 250:
+        if len(msg) > self.frame_size:
             # Get the number of packets that will be sent
-            ncols = int(np.ceil(len(msg)/250))
+            ncols = int(np.ceil(len(msg)/self.frame_size))
 
             # Pad the message with zeros as required by the number of packets
-            nzeros = ncols*250 - len(msg)
+            nzeros = ncols*self.frame_size - len(msg)
             pad = np.append(msg, np.zeros(nzeros, dtype=np.uint8))
 
-            # Reshape the array into packets by 250
-            pckts = np.reshape(pad, (ncols, 250))
+            # Reshape the array into packets by self.frame_size
+            pckts = np.reshape(pad, (ncols, self.frame_size))
 
             # Create data frame
             data = {
