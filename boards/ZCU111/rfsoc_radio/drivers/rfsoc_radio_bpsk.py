@@ -18,7 +18,7 @@ class BpskRadio(Overlay):
         # Generate default bitfile name
         if bitfile_name is None:
             this_dir = os.path.dirname(__file__)
-            bitfile_name = os.path.join(this_dir, 'bitstream', 'rfsoc_radio_bpsk.bit')
+            bitfile_name = os.path.join(this_dir, 'bitstream', 'rfsoc_radio.bit')
             
         # Set FPD and LPD interface widths
         from pynq import MMIO
