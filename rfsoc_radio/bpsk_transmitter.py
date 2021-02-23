@@ -1,8 +1,8 @@
 from pynq import DefaultIP
 from pynq import allocate
 import numpy as np
-import async_radio as ar
 from random import randint
+import rfsoc_radio.async_radio as ar
 
 class BpskTransmitter():
     def __init__(self, axi_dma, bpsk_transmitter):

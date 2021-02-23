@@ -4,9 +4,9 @@ from pynq import allocate
 import numpy as np
 import math
 import ipywidgets as ipw
-import sdr_plots as sp
-import dma_timer as dt
-import quick_widgets as qw
+import rfsoc_radio.sdr_plots as sp
+import rfsoc_radio.dma_timer as dt
+import rfsoc_radio.quick_widgets as qw
 
 class DataInspector(DefaultHierarchy):
     

@@ -9,7 +9,9 @@ import time
 import quick_widgets as qw
 
 # Import overlay specific drivers
-import bpsk_receiver, bpsk_transmitter, data_inspector
+from .bpsk_receiver import *
+from .bpsk_transmitter import *
+from .data_inspector import *
 
 class BpskOverlay(Overlay):
     

@@ -1,9 +1,9 @@
 from pynq import DefaultIP
 from pynq import allocate
 import ipywidgets as ipw
-import quick_widgets as qw
-import async_radio as ar
 import numpy as np
+import rfsoc_radio.quick_widgets as qw
+import rfsoc_radio.async_radio as ar
 
 class BpskReceiver():
     def __init__(self, axi_dma, bpsk_receiver, inspector):
