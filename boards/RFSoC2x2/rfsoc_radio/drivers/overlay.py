@@ -22,13 +22,6 @@ class BpskOverlay(Overlay):
             this_dir = os.path.dirname(__file__)
             bitfile_name = os.path.join(this_dir, 'bitstream', 'rfsoc_radio.bit')
             
-        # Set FPD and LPD interface widths
-        from pynq import MMIO
-        fpd_cfg = MMIO(0xfd615000, 4)
-        fpd_cfg.write(0, 0x00000A00)
-        lpd_cfg = MMIO(0xff419000, 4)
-        lpd_cfg.write(0, 0x00000000)
-        
         # Create Overlay
         super().__init__(bitfile_name, **kwargs)
 
@@ -77,8 +70,8 @@ class BpskOverlay(Overlay):
         self.adc_tile.SetupFIFO(True)
         
         # Obtain friendly names for IP Cores and associated drivers
-        self.receiver = bpsk_receiver.BpskReceiver(self.axi_dma_rx, self.bpsk_receiver, self.DataInspector) # The receiver is coupled with an inspector
-        self.transmitter = bpsk_transmitter.BpskTransmitter(self.axi_dma_tx, self.bpsk_transmitter)
+        self.receiver = BpskReceiver(self.axi_dma_rx, self.bpsk_receiver, self.DataInspector) # The receiver is coupled with an inspector
+        self.transmitter = BpskTransmitter(self.axi_dma_tx, self.bpsk_transmitter)
         
         # Receiver setup requirements - pull resets low
         self.receiver.controller.reset_time_sync = 0

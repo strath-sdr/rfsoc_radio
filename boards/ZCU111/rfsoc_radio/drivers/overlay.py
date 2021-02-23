@@ -74,8 +74,8 @@ class BpskOverlay(Overlay):
         self.adc_tile.SetupFIFO(True)
         
         # Obtain friendly names for IP Cores and associated drivers
-        self.receiver = bpsk_receiver.BpskReceiver(self.axi_dma_rx, self.bpsk_receiver, self.DataInspector) # The receiver is coupled with an inspector
-        self.transmitter = bpsk_transmitter.BpskTransmitter(self.axi_dma_tx, self.bpsk_transmitter)
+        self.receiver = BpskReceiver(self.axi_dma_rx, self.bpsk_receiver, self.DataInspector) # The receiver is coupled with an inspector
+        self.transmitter = BpskTransmitter(self.axi_dma_tx, self.bpsk_transmitter)
         
         # Receiver setup requirements - pull resets low
         self.receiver.controller.reset_time_sync = 0
