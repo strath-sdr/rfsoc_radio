@@ -11,7 +11,7 @@ import quick_widgets as qw
 # Import overlay specific drivers
 import bpsk_receiver, bpsk_transmitter, data_inspector
 
-class BpskRadio(Overlay):
+class BpskOverlay(Overlay):
     
     def __init__(self, bitfile_name=None, init_rf_clks=True, **kwargs):
         
