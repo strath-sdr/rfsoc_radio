@@ -6,7 +6,7 @@ import os
 import numpy as np
 import ipywidgets as ipw
 import time
-import quick_widgets as qw
+import rfsoc_radio.quick_widgets as qw
 
 # Import overlay specific drivers
 from .bpsk_receiver import *
