@@ -67,10 +67,12 @@ class BpskReceiver():
         # Create a receiver terminal object and set callback
         self._terminal = ReceiveTerminal(description='Received Messages:')
         self.monitor.callback = [terminal_callback]
+        self._terminal.start()
 
         # Create a debug button for our text terminal
         self._debug_button = ipw.Button(description='Debug',
-                                        layout=ipw.Layout(margin='auto'))
+                                        layout=ipw.Layout(margin='auto',
+                                                          border='solid white'))
         self._debug_button.on_click(lambda _: self._toggle_debug())
         self._debug_button.style.button_color = 'lightgray'
         
@@ -142,23 +144,28 @@ class BpskReceiver():
     def visualise(self):
         """Returns widgets for inspecting and controlling signal paths in our radio.
         """
+        name = ['Time', 'Spectrum', 'Constellation']
+        children = [self.inspector.time_plot(),
+                    self.inspector.spectrum_plot(),
+                    self.inspector.constellation_plot()]
+        tab = ipw.Tab(children=children,
+                      layout=ipw.Layout(height='initial',
+                                        width='initial'))
+        for i in range(0, len(children)):
+            tab.set_title(i, name[i])
         control_buttons = self.inspector.plot_control()
-        return ipw.VBox([self.signal_selector(),
-                         ipw.HBox([self.inspector.time_plot(), 
-                                   self.inspector.constellation_plot(),
-                                   ipw.VBox([control_buttons[0], 
-                                             control_buttons[1]
-                                            ]),
-                                  ]),
-                         self.inspector.spectrum_plot()
-                        ])
+        rx_accordion = ipw.Accordion(children=[
+            ipw.VBox([tab, 
+            ipw.HBox([self._s_sel.get_widget(), control_buttons[0], control_buttons[1]])])])
+        rx_accordion.set_title(0, 'Receiver Visualisation')
+        return rx_accordion
 
     def terminal(self):
         """Returns the ReceiveTerminal object widgets.
         """
         terminal = self._terminal.get_widget()
-        terminal.children[1].children = tuple(list(terminal.children[1].children) +
-                                        [self._debug_button])
+        terminal.children[0].children[1].children = tuple(list(terminal.children[0].children[1].children) +
+            [self._debug_button])
         return terminal
         
 class BpskReceiverCore(DefaultIP):

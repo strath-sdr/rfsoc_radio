@@ -57,26 +57,49 @@ class TransmitTerminal():
     whether the text is written to the textbox area through self._listening. A clear 
     button is provided to clear the text from the textbox area.
     """
-    def __init__(self, description='Terminal', height='200px', width='800px'):
+    def __init__(self, description='Terminal', height='200px', width='400px'):
         super().__init__()
 
         # Create the text area object that acts as a terminal
         self._text_terminal = ipw.Textarea(
             value='',
             placeholder='',
-            description=description,
-            style={'description_width': 'initial'},
+            description='',
             layout={'height' : height, 'width' : width},
             disabled=False
+        )
+
+        # Create label for terminal description
+        self._label_terminal = ipw.Label(
+            value=description,
+            style={'description_width': 'initial'},
         )
         
         self.callback = []
         
         # Create a start button to enable listening
-        self._start_button = ipw.Button(description=u'\u25B6',
-                                  layout=ipw.Layout(margin='auto'))
+        self._start_button = ipw.Button(description='Send',
+                                  layout=ipw.Layout(margin='auto',
+                                                    border='solid white'))
         self._start_button.on_click(lambda _: self.start())
         self._start_button.style.button_color = 'lightgray'
+
+        # Create a clear button for our text terminal
+        self._clear_button = ipw.Button(description='Clear', 
+                                        layout=ipw.Layout(margin='auto',
+                                                          border='solid white'))
+        self._clear_button.on_click(lambda _: self.clear())
+        self._clear_button.style.button_color = 'lightgray'
+
+        # Create accordion
+        self._accordion = ipw.Accordion(children=[
+            ipw.HBox([ipw.VBox([self._text_terminal]),
+                      ipw.VBox([self._start_button,
+                                self._clear_button],
+                                layout=ipw.Layout(align_self='flex-start'))
+                      ])
+            ])
+        self._accordion.set_title(0, description)
         
     def value(self):
         return self._text_terminal.value
@@ -91,9 +114,7 @@ class TransmitTerminal():
         self._start_button.style.button_color = 'lightgray'
         
     def get_widget(self):
-        return ipw.HBox([self._text_terminal, 
-                         ipw.VBox([self._start_button])
-                        ])
+        return self._accordion
 
     
 class ReceiveTerminal():
@@ -102,17 +123,22 @@ class ReceiveTerminal():
     whether the text is written to the textbox area through self._listening. A clear 
     button is provided to clear the text from the textbox area.
     """
-    def __init__(self, description='Terminal', height='200px', width='800px'):
+    def __init__(self, description='Terminal', height='200px', width='400px'):
         super().__init__()
 
         # Create the text area object that acts as a terminal
         self._text_terminal = ipw.Textarea(
             value='',
             placeholder='',
-            description=description,
-            style={'description_width': 'initial'},
+            description='',
             layout={'height' : height, 'width' : width},
             disabled=True
+        )
+
+        # Create label for terminal description
+        self._label_terminal = ipw.Label(
+            value=description,
+            style={'description_width': 'initial'},
         )
         
         self._counter = 0
@@ -120,30 +146,46 @@ class ReceiveTerminal():
         
         # Create a autoclear button for our text terminal
         self._auto_clear_button = ipw.Button(description='Auto Clear',
-                                             layout=ipw.Layout(margin='auto'))
+                                             layout=ipw.Layout(margin='auto',
+                                                               border='solid white'))
         self._auto_clear_button.on_click(lambda _: self.autoclear())
         self._auto_clear_button.style.button_color = 'lightblue'
         
         # Create a clear button for our text terminal
         self._clear_button = ipw.Button(description='Clear', 
-                                        layout=ipw.Layout(margin='auto'))
+                                        layout=ipw.Layout(margin='auto',
+                                                          border='solid white'))
         self._clear_button.on_click(lambda _: self.clear())
         self._clear_button.style.button_color = 'lightgray'
         
         # Create a start button to enable listening
         self._start_button = ipw.Button(description=u'\u25B6', 
-                                  layout=ipw.Layout(margin='auto'))
+                                  layout=ipw.Layout(margin='auto',
+                                                    border='solid white'))
         self._start_button.on_click(lambda _: self.start())
         self._start_button.style.button_color = 'lightgray'
         
         # Create a stop button to disable listening
         self._stop_button = ipw.Button(description=u'\u25A0', 
-                                 layout=ipw.Layout(margin='auto'))
+                                 layout=ipw.Layout(margin='auto',
+                                                   border='solid white'))
         self._stop_button.on_click(lambda _: self.stop())
         self._stop_button.style.button_color = 'tomato'
         
         # Set listening to false
         self._listening = False
+
+        # Create Accordion
+        self._accordion = ipw.Accordion(children=[
+            ipw.HBox([ipw.VBox([self._text_terminal]),
+            ipw.VBox([self._start_button, 
+                      self._stop_button, 
+                      self._clear_button,
+                      self._auto_clear_button],
+                      layout=ipw.Layout(align_self='flex-start'))
+            ])
+        ])
+        self._accordion.set_title(0, description)
         
     def value(self):
         return self._text_terminal.value
@@ -181,13 +223,7 @@ class ReceiveTerminal():
             self._auto_clear_button.style.button_color = 'lightgray'            
         
     def get_widget(self):
-        return ipw.HBox([self._text_terminal, 
-                         ipw.VBox([self._start_button, 
-                                   self._stop_button, 
-                                   self._clear_button,
-                                   self._auto_clear_button
-                                  ])
-                        ])
+        return self._accordion
 
     
 class Button():

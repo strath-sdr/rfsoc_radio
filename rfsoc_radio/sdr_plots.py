@@ -13,7 +13,7 @@ class SpectrumAnalyser():
                  data,
                  fs,
                  animation_period=50,
-                 width=800,
+                 width=600,
                  height=400,
                  autosize=True):
         """Create a new Spectrum Analyser object for plotting frequency against power."""
@@ -78,7 +78,7 @@ class TimePlot():
     def __init__(self,
                  data,
                  animation_period=50,
-                 width=800,
+                 width=600,
                  height=400,
                  autosize=True):
         """Create a new plot object for plotting data against time."""
@@ -149,7 +149,7 @@ class ConstellationPlot():
                  data,
                  animation_period=50,
                  height=400,
-                 width=400,
+                 width=600,
                  autosize=True):
         """Creates a new plot object for plotting IQ constellations."""
         

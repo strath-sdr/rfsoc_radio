@@ -149,17 +149,31 @@ class BpskOverlay(Overlay):
         freq_label =  ipw.Label('Reported Frequency Offset: ' + \
                                 str(self.receiver.controller.freq_offset))
 
-        return ipw.VBox(children=[ipw.Label('Radio Dashboard'),
+        button_container = ipw.VBox([ipw.HBox([buttons[1].get_widget(), buttons[2].get_widget()]),
+                               ipw.HBox([buttons[3].get_widget(), buttons[4].get_widget()])])
+
+        dashboard = ipw.VBox(children=[
                          ipw.HBox(children=[dac_fc,
                                             buttons[0].get_widget()],
                                   layout=layout),
-                         ipw.HBox(children=[adc_fc,buttons[1].get_widget(),
-                                            buttons[2].get_widget(),
-                                            buttons[3].get_widget(),
-                                            buttons[4].get_widget()], 
+                         ipw.HBox(children=[adc_fc,
+                                            button_container], 
                                   layout=layout),
                                   freq_label
                                  ],
                         layout=layout
                        )
+
+        dashboard_accordion = ipw.Accordion(children=[dashboard])
+        dashboard_accordion.set_title(0, 'System Control')
+        
+        return dashboard_accordion
                        
+    def _bpsk_radio_generator(self):
+        sidebar = ipw.VBox([self.dashboard(), self.receiver.visualise()])
+        msgbar = ipw.VBox([self.transmitter.terminal(), self.receiver.terminal()])
+        return ipw.HBox([sidebar, msgbar])
+
+    def bpsk_radio_application(self):
+        return self._bpsk_radio_generator()
+        
