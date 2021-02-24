@@ -45,7 +45,7 @@ class SpectrumAnalyser():
             'title' : 'Frequency Spectrum'
         }
         
-        self._plot = FigureWidget(
+        self._plot = go.FigureWidget(
             layout = self._layout,
             data = self._data
         )
@@ -115,7 +115,7 @@ class TimePlot():
             'title' : 'Time Domain Signal'
         }
         
-        self._plot = FigureWidget(
+        self._plot = go.FigureWidget(
             layout = self._layout,
             data = self._data
         )
@@ -180,7 +180,7 @@ class ConstellationPlot():
             'title' : 'Constellation Plot'
         }
         
-        self._plot = FigureWidget(
+        self._plot = go.FigureWidget(
             layout = self._layout,
             data = [{
                 'mode' : 'markers',
