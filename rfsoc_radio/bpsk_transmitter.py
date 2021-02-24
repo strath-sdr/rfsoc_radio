@@ -29,7 +29,7 @@ class BpskTransmitter():
         self.controller.enable_data = 1
         self.controller.enable_transmitter = 1
         
-        self.frame_size = 27
+        self.frame_size = 44
         self.random_size = 10
         
         self._flags = 0
@@ -84,7 +84,7 @@ class BpskTransmitter():
             raise ValueError('Message size should be greater than 0.')
         msg = np.array(data, dtype=np.uint8)
         # Append Barker and Random Data
-        bkr = np.array([0, 0, 63, 112, 28, len(msg) + 5, self._frame_number, self._flags, 5, len(msg)-padding, padding], dtype=np.uint8)
+        bkr = np.array([0, 0, 63, 112, 28, len(msg) + 5, self._frame_number, self._flags, 5, len(msg), padding], dtype=np.uint8)
         rnd = np.array([randint(0, 255) for p in range(0, self.random_size)], dtype=np.uint8)
         seq = np.append(bkr, msg)
         seq = np.append(rnd, seq)
@@ -147,7 +147,7 @@ class BpskTransmitter():
         else:
             data = {
                 "message" : np.reshape(msg, (1, len(msg))),
-                "padding" : 0,
+                "padding" : self.frame_size - len(msg),
                 "nframes" : 1
             }
 

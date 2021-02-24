@@ -152,13 +152,13 @@ class BpskOverlay(Overlay):
         # Create float text objects for entering the ADC & DAC mixer frequencies
         adc_fc = ipw.FloatText(
             value=64,
-            description='ADC Frequency:',
+            description='ADC Frequency (MHz):',
             style={'description_width': 'initial'},
             disabled=False
         )
         dac_fc = ipw.FloatText(
             value=64,
-            description='DAC Frequency:',
+            description='DAC Frequency (MHz):',
             style={'description_width': 'initial'},
             disabled=False
         )
@@ -171,7 +171,8 @@ class BpskOverlay(Overlay):
                 align_content='flex-start')
         
         freq_label =  ipw.Label('Reported Frequency Offset: ' + \
-                                str(self.receiver.controller.freq_offset))
+                                str(self.receiver.controller.freq_offset) + \
+                                    ' Hz')
 
         button_container = ipw.VBox([ipw.HBox([buttons[1].get_widget(), buttons[2].get_widget()]),
                                ipw.HBox([buttons[3].get_widget(), buttons[4].get_widget()])])
@@ -200,4 +201,3 @@ class BpskOverlay(Overlay):
 
     def bpsk_radio_application(self):
         return self._bpsk_radio_generator()
-        

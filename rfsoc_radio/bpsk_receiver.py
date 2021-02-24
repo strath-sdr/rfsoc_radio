@@ -126,7 +126,7 @@ class BpskReceiver():
             
             # Obtain the message
             self._message = np.array(self._rx_buff.astype(np.uint32), \
-                                     dtype = np.uint8)[5:len(self._rx_buff) - self._rx_buff[4]]
+                                     dtype = np.uint8)[5:len(self._rx_buff)]
             
             # Set frame to allow the user to read the frame data
             self.frame = {
