@@ -45,7 +45,7 @@ class BpskReceiver():
         
         # Create asynchronous radio receiver
         self.monitor = AsyncRadioRx(irq = self.controller.irq, 
-                                       irq_callback = self.transfer)
+                                       irq_callback = self._transfer)
         
         """AXI DMA Buffer initialisation"""
         # Allocate default memory for the _rx_buffer receiver buffer
@@ -104,16 +104,13 @@ class BpskReceiver():
             self._debug = True
             self._debug_button.style.button_color = 'lightblue'
         
-    def signal_selector(self):
-        return self._s_sel.get_widget()
-        
-    def _transfer(self, pynqbuffer):
+    def _dma_transfer(self, pynqbuffer):
         self.axi_dma.recvchannel.transfer(pynqbuffer)
         self.controller.transfer = 1
         self.axi_dma.recvchannel.wait()
         self.controller.transfer = 0
         
-    def transfer(self):
+    def _transfer(self):
         buff_len = self.controller.receive_size
         
         if buff_len > 0:
@@ -122,7 +119,7 @@ class BpskReceiver():
             self._rx_buff = allocate(shape=(buff_len,), dtype = np.uint8)
 
             # Prepare to receive the message
-            self._transfer(self._rx_buff)
+            self._dma_transfer(self._rx_buff)
             
             # Obtain the message
             self._message = np.array(self._rx_buff.astype(np.uint32), \
@@ -161,7 +158,8 @@ class BpskReceiver():
         return rx_accordion
 
     def terminal(self):
-        """Returns the ReceiveTerminal object widgets.
+        """Returns a receiver terminal object for printing Ascii data
+        for the receiver.
         """
         terminal = self._terminal.get_widget()
         terminal.children[0].children[1].children = tuple(list(terminal.children[0].children[1].children) +

@@ -34,30 +34,37 @@ class BpskTransmitter():
         
         self._flags = 0
         self._frame_number = 0
-        self._tx_buff = self.create_buffer()
+        self._tx_buff = self._create_buffer()
         
         self._message = self._prepare_message(np.array([72, 101, 108, 108, 111,  32,  87, 111, 114, 108, 100,  33], dtype=np.uint8))
         self.mode = 'single'
         
         # Create a new radio transmitter object
-        self.monitor = AsyncRadioTx(rate=1, timer_callback=self.transfer)
+        self.monitor = AsyncRadioTx(rate=1, timer_callback=self._transfer)
 
         # Create a TransmitTerminal object for custom user ascii
         self._terminal = TransmitTerminal(description='Message to Transmit:')
         self._terminal.callback = [terminal_callback]
         
     def start(self):
+        """Start data transmission using the message buffer set
+        through BpskTransmitter.data(data). The transmission ends once the
+        entire message has sent or BpskTransmitter.stop() is called.
+        """
         if self.monitor.is_running:
             raise RuntimeError('Transmitter already started.')
         else:
             if self.mode == 'repeat':
                 self.monitor.start()
             elif self.mode == 'single':
-                self.transfer()
+                self._transfer()
             else:
                 raise ValueError('Transmitter mode should be repeat or single.')
         
     def data(self, data='Hello World'):
+        """Set the message buffer with ascii data. The ascii data is
+        converted to numpy and stored in the message buffer awaiting transmission.
+        """
         if isinstance(data, str):
             msg = self._ascii_to_numpy(data)
         elif isinstance(data, bytes):
@@ -69,13 +76,11 @@ class BpskTransmitter():
         self._message = self._prepare_message(msg)
         
     def stop(self):
+        """Stop data transmission if it is currently underway.
+        """
         self.monitor.stop()
         
-    def clear(self):
-        self._message = self._prepare_message(self._ascii_to_numpy('\x00'))
-        self._frame_number = 0
-        
-    def create_buffer(self, data=np.array([72, 101, 108, 108, 111,  32,  87, 111, 114, 108, 100,  33], dtype=np.uint8), eof=1, padding=0):
+    def _create_buffer(self, data=np.array([72, 101, 108, 108, 111,  32,  87, 111, 114, 108, 100,  33], dtype=np.uint8), eof=1, padding=0):
         """Create a buffer that is loaded user data. Append the Extended Barker sequence
         to the user data and then pad with zeros
         """
@@ -93,11 +98,11 @@ class BpskTransmitter():
         buf[:] = pad[:]
         return buf
         
-    def _transfer(self, pynqbuffer):
+    def _dma_transfer(self, pynqbuffer):
         self.axi_dma.sendchannel.transfer(pynqbuffer)
         self.axi_dma.sendchannel.wait()
         
-    def transfer(self):
+    def _transfer(self):
         # Create new send buffer for message
         sof = 2
         eof = 0
@@ -109,10 +114,10 @@ class BpskTransmitter():
                 eof = 1
                 padding = self._message["padding"]
             self._tx_buff.freebuffer()
-            self._tx_buff = self.create_buffer(self._message["message"][i], sof+eof, padding)
+            self._tx_buff = self._create_buffer(self._message["message"][i], sof+eof, padding)
 
             # Send the message
-            self._transfer(self._tx_buff)
+            self._dma_transfer(self._tx_buff)
             self._frame_number += 1
         self._frame_number = 0
         
@@ -154,6 +159,9 @@ class BpskTransmitter():
         return data
 
     def terminal(self):
+        """Returns a transmitter terminal object for inserting Ascii data
+        for transmission.
+        """
         return self._terminal.get_widget()
         
 class BpskTransmitterCore(DefaultIP):
