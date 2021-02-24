@@ -67,6 +67,12 @@ class BpskReceiver():
         # Create a receiver terminal object and set callback
         self._terminal = ReceiveTerminal(description='Received Messages:')
         self.monitor.callback = [terminal_callback]
+
+        # Create a debug button for our text terminal
+        self._debug_button = ipw.Button(description='Debug',
+                                        layout=ipw.Layout(margin='auto'))
+        self._debug_button.on_click(lambda _: self._toggle_debug())
+        self._debug_button.style.button_color = 'lightgray'
         
         """Monitor initialisation"""
         self.monitor.start()
@@ -87,6 +93,14 @@ class BpskReceiver():
 
         # Set terminal debug mode
         self._debug = False
+
+    def _toggle_debug(self):
+        if self._debug:
+            self._debug = False
+            self._debug_button.style.button_color = 'lightgray'
+        else:
+            self._debug = True
+            self._debug_button.style.button_color = 'lightblue'
         
     def signal_selector(self):
         return self._s_sel.get_widget()
@@ -142,7 +156,10 @@ class BpskReceiver():
     def terminal(self):
         """Returns the ReceiveTerminal object widgets.
         """
-        return self._terminal.get_widget()
+        terminal = self._terminal.get_widget()
+        terminal.children[1].children = tuple(list(terminal.children[1].children) +
+                                        [self._debug_button])
+        return terminal
         
 class BpskReceiverCore(DefaultIP):
     """Driver for BPSK Receiver's core logic IP
