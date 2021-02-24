@@ -15,7 +15,7 @@ import time
 from .quick_widgets import Button, TransmitTerminal, ReceiveTerminal
 from .bpsk_receiver import BpskReceiver
 from .bpsk_transmitter import BpskTransmitter
-import .data_inspector
+from .data_inspector import *
 
 
 class BpskOverlay(Overlay):
