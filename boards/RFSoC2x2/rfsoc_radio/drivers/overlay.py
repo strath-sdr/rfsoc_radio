@@ -37,7 +37,7 @@ class BpskOverlay(Overlay):
         
         # Start up LMX clock
         if init_rf_clks:
-            xrfclk.set_all_ref_clks(409.6)
+            xrfclk.set_ref_clks()
             
         # Set DAC defaults
         self.dac_tile.DynamicPLLConfig(1, 409.6, 1024)

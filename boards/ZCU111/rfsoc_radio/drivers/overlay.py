@@ -21,13 +21,6 @@ class BpskOverlay(Overlay):
         if bitfile_name is None:
             this_dir = os.path.dirname(__file__)
             bitfile_name = os.path.join(this_dir, 'bitstream', 'rfsoc_radio.bit')
-            
-        # Set FPD and LPD interface widths
-        from pynq import MMIO
-        fpd_cfg = MMIO(0xfd615000, 4)
-        fpd_cfg.write(0, 0x00000A00)
-        lpd_cfg = MMIO(0xff419000, 4)
-        lpd_cfg.write(0, 0x00000000)
         
         # Create Overlay
         super().__init__(bitfile_name, **kwargs)
@@ -164,3 +157,4 @@ class BpskOverlay(Overlay):
                                  ],
                         layout=layout
                        )
+                       
