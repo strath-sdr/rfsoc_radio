@@ -7,6 +7,7 @@ from pynq import allocate
 import numpy as np
 from random import randint
 from .async_radio import AsyncRadioTx
+from .quick_widgets import TransmitTerminal
 
 
 class BpskTransmitter():
@@ -14,6 +15,13 @@ class BpskTransmitter():
         """Create a BPSK Transmitter object that controls the transmitter
         and corresponding AXI DMA for data movement between the PS and PL."""
         super().__init__()
+
+        def terminal_callback():
+            data = self._terminal.value()
+            if data is not '':
+                self.data(data)
+                self.start()
+            self._terminal.clear()
         
         self.axi_dma = axi_dma
         self.controller = bpsk_transmitter
@@ -33,6 +41,10 @@ class BpskTransmitter():
         
         # Create a new radio transmitter object
         self.monitor = AsyncRadioTx(rate=1, timer_callback=self.transfer)
+
+        # Create a TransmitTerminal object for custom user ascii
+        self._terminal = TransmitTerminal(description='Message to Transmit:')
+        self._terminal.callback = [terminal_callback]
         
     def start(self):
         if self.monitor.is_running:
@@ -140,6 +152,9 @@ class BpskTransmitter():
             }
 
         return data
+
+    def terminal(self):
+        return self._terminal.get_widget()
         
 class BpskTransmitterCore(DefaultIP):
     """Driver for BPSK Transmitter's core logic IP

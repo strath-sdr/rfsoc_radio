@@ -6,7 +6,7 @@ from pynq import DefaultIP
 from pynq import allocate
 import ipywidgets as ipw
 import numpy as np
-from .quick_widgets import DropdownMenu
+from .quick_widgets import DropdownMenu, ReceiveTerminal
 from .async_radio import AsyncRadioRx
 
 
@@ -22,6 +22,16 @@ class BpskReceiver():
             self.inspector.set_frequency(freq[change['new']])
             self.controller.observation_point = change['new']
             self.inspector.set_shape(shape[change['new']])
+
+        def terminal_callback():
+            frame = self.frame
+            payload = np.where(frame["payload"] > 127, 0, frame["payload"]).tostring().decode('ascii')
+            if self._debug:
+                data = 'Header: ' + str({i:frame[i] for i in frame if i!="payload"}) \
+                + '\rPayload: ' + payload + '\r\r'
+            else:
+                data = payload
+            self._terminal.append(data)
         
         """Initialise objects"""
         # Create AXI DMA object
@@ -53,6 +63,10 @@ class BpskReceiver():
         
         # Observe the dropdown menu for changes
         self._s_sel._dropdown_menu.observe(on_signal_change, names='value')
+
+        # Create a receiver terminal object and set callback
+        self._terminal = ReceiveTerminal(description='Received Messages:')
+        self.monitor.callback = [terminal_callback]
         
         """Monitor initialisation"""
         self.monitor.start()
@@ -70,6 +84,9 @@ class BpskReceiver():
             },
             "payload" : 0
         }
+
+        # Set terminal debug mode
+        self._debug = False
         
     def signal_selector(self):
         return self._s_sel.get_widget()
@@ -120,7 +137,12 @@ class BpskReceiver():
                                             ]),
                                   ]),
                          self.inspector.spectrum_plot()
-                        ])        
+                        ])
+
+    def terminal(self):
+        """Returns the ReceiveTerminal object widgets.
+        """
+        return self._terminal.get_widget()
         
 class BpskReceiverCore(DefaultIP):
     """Driver for BPSK Receiver's core logic IP
