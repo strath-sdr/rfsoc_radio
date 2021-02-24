@@ -34,9 +34,6 @@ pip3 install git+https://github.com/strath-sdr/rfsoc_radio
 
 Once installation has complete, you will find the BPSK radio demonstrator notebooks located in the jupyter home workspace in the `bpsk-demonstrator` folder.
 
-## ZCU111 Additional Setup
-This repository uses Voila to create simple web applications using Jupyter notebooks. If you would like to use Voila on your ZCU111 development board, simply follow the instructions outlined in this [blog post](https://strath-sdr.github.io/pynq/linux/zynq/fpga/voila/2021/02/22/install-voila-on-pynq-v2-6.html).
-
 ## Using the Project Files
 The following software is required to use the project files in this repository.
 - Vivado Design Suite 2020.1
