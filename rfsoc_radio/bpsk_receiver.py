@@ -1,9 +1,14 @@
+__author__ = "David Northcote"
+__organisation__ = "The Univeristy of Strathclyde"
+__support__ = "https://github.com/strath-sdr/rfsoc_radio"
+
 from pynq import DefaultIP
 from pynq import allocate
 import ipywidgets as ipw
 import numpy as np
-import rfsoc_radio.quick_widgets as qw
-import rfsoc_radio.async_radio as ar
+from .quick_widgets import DropdownMenu
+from .async_radio import AsyncRadioRx
+
 
 class BpskReceiver():
     def __init__(self, axi_dma, bpsk_receiver, inspector):
@@ -29,7 +34,7 @@ class BpskReceiver():
         self.inspector = inspector
         
         # Create asynchronous radio receiver
-        self.monitor = ar.AsyncRadioRx(irq = self.controller.irq, 
+        self.monitor = AsyncRadioRx(irq = self.controller.irq, 
                                        irq_callback = self.transfer)
         
         """AXI DMA Buffer initialisation"""
@@ -38,13 +43,13 @@ class BpskReceiver():
         
         """Inspector initialisation"""
         # Create a new signal selector widget
-        self._s_sel = qw.DropdownMenu([('Phase Synchronisation', 0),
-                                       ('Time Synchronisation', 1),
-                                       ('Raised Cosine Filter', 2),
-                                       ('Coarse Synchronisation', 3),
-                                       ('CIC Decimator', 4)],
-                                        'Observation Point:',
-                                        0)
+        self._s_sel = DropdownMenu([('Phase Synchronisation', 0),
+                                    ('Time Synchronisation', 1),
+                                    ('Raised Cosine Filter', 2),
+                                    ('Coarse Synchronisation', 3),
+                                    ('CIC Decimator', 4)],
+                                    'Observation Point:',
+                                    0)
         
         # Observe the dropdown menu for changes
         self._s_sel._dropdown_menu.observe(on_signal_change, names='value')

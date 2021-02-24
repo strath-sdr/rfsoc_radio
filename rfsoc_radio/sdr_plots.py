@@ -1,37 +1,12 @@
+__author__ = "David Northcote"
+__organisation__ = "The Univeristy of Strathclyde"
+__support__ = "https://github.com/strath-sdr/rfsoc_radio"
+
 import numpy as np
 import plotly.graph_objs as go
 import ipywidgets as ipw
 from contextlib import contextmanager
 
-class FastFigureWidget(go.FigureWidget):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        
-    @contextmanager
-    def _fast_batch_anim(self, duration=0, easing="linear"):
-        """Our own copy of basedatatypes.py batch_animate"""
-        duration = self._animation_duration_validator.validate_coerce(duration)
-        easing = self._animation_easing_validator.validate_coerce(easing)
-
-        if self._in_batch_mode is True:
-            yield
-        else:
-            try:
-                self._in_batch_mode = True
-                yield
-            finally:
-                self._in_batch_mode = False
-                self._perform_batch_animate({
-                    'transition': {
-                        'duration': duration,
-                        'easing': easing
-                    },
-                    'frame': {
-                        'duration': duration,
-                        'redraw': False, # This is our addition
-                    },
-                    'mode': 'immediate'
-                })
                 
 class SpectrumAnalyser():
     def __init__(self,
@@ -70,7 +45,7 @@ class SpectrumAnalyser():
             'title' : 'Frequency Spectrum'
         }
         
-        self._plot = FastFigureWidget(
+        self._plot = FigureWidget(
             layout = self._layout,
             data = self._data
         )
@@ -92,12 +67,12 @@ class SpectrumAnalyser():
         self._xaxisrange = [-lim, lim - (self._fs/len(data))]
         self._plot.layout.xaxis.range = self._xaxisrange
         self._data = self._fft_psd(data, self._fs)
-        with self._plot._fast_batch_anim(duration = self._animation_period):
-            self._plot.data[0].y = self._data
-            self._plot.data[0].x = [x for x in np.arange(-lim, lim, (self._fs/len(data)))]
+        self._plot.data[0].y = self._data
+        self._plot.data[0].x = [x for x in np.arange(-lim, lim, (self._fs/len(data)))]
             
     def get_widget(self):
         return self._plot    
+        
 
 class TimePlot():
     def __init__(self,
@@ -140,7 +115,7 @@ class TimePlot():
             'title' : 'Time Domain Signal'
         }
         
-        self._plot = FastFigureWidget(
+        self._plot = FigureWidget(
             layout = self._layout,
             data = self._data
         )
@@ -160,14 +135,14 @@ class TimePlot():
                           {'y' : np.imag(data)}]
         else:
             self._data = [{'y' : data}]
-            
-        with self._plot._fast_batch_anim(duration = self._animation_period):
-            self._plot.data[0].y = self._data[0].get('y')
-            if self._complex:
-                self._plot.data[1].y = self._data[1].get('y')
+
+        self._plot.data[0].y = self._data[0].get('y')
+        if self._complex:
+            self._plot.data[1].y = self._data[1].get('y')
                 
     def get_widget(self):
         return self._plot
+
     
 class ConstellationPlot():
     def __init__(self,
@@ -205,7 +180,7 @@ class ConstellationPlot():
             'title' : 'Constellation Plot'
         }
         
-        self._plot = FastFigureWidget(
+        self._plot = FigureWidget(
             layout = self._layout,
             data = [{
                 'mode' : 'markers',

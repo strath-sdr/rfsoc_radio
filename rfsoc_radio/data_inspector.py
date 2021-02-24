@@ -1,12 +1,16 @@
+__author__ = "David Northcote"
+__organisation__ = "The Univeristy of Strathclyde"
+__support__ = "https://github.com/strath-sdr/rfsoc_radio"
+
 from pynq import DefaultIP
 from pynq import DefaultHierarchy
 from pynq import allocate
 import numpy as np
 import math
 import ipywidgets as ipw
-import rfsoc_radio.sdr_plots as sp
-import rfsoc_radio.dma_timer as dt
-import rfsoc_radio.quick_widgets as qw
+from .sdr_plots import TimePlot, ConstellationPlot, SpectrumAnalyser
+from .dma_timer import DmaTimer
+
 
 class DataInspector(DefaultHierarchy):
     
@@ -22,10 +26,10 @@ class DataInspector(DefaultHierarchy):
         self.buffer = allocate(shape=(int(self.data_inspector_module.packetsize*2),), dtype=np.int16)
         
         self._data = self.get_frame()
-        self._t_plot = sp.TimePlot(self._data, animation_period=0)
-        self._c_plot = sp.ConstellationPlot(self._data, animation_period=0)
-        self._f_plot = sp.SpectrumAnalyser(self._data, fs=100e3, animation_period=0)
-        self._plot_controller = dt.DmaTimer(self._update_data, self.get_frame, self._plotting_rate)
+        self._t_plot = TimePlot(self._data, animation_period=0)
+        self._c_plot = ConstellationPlot(self._data, animation_period=0)
+        self._f_plot = SpectrumAnalyser(self._data, fs=100e3, animation_period=0)
+        self._plot_controller = DmaTimer(self._update_data, self.get_frame, self._plotting_rate)
         
     def set_axisrange(self, axisrange):
         self._t_plot.set_axisrange(axisrange)

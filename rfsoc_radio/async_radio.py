@@ -1,7 +1,12 @@
+__author__ = "David Northcote"
+__organisation__ = "The Univeristy of Strathclyde"
+__support__ = "https://github.com/strath-sdr/rfsoc_radio"
+
 import threading
 import asyncio
 import ipywidgets as ipw
 import time
+
 
 def default_callback():
     pass

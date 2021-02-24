@@ -1,3 +1,7 @@
+__author__ = "David Northcote"
+__organisation__ = "The Univeristy of Strathclyde"
+__support__ = "https://github.com/strath-sdr/rfsoc_radio"
+
 from pynq import Overlay
 from pynq import allocate
 import xrfclk
@@ -6,12 +10,13 @@ import os
 import numpy as np
 import ipywidgets as ipw
 import time
-import rfsoc_radio.quick_widgets as qw
 
 # Import overlay specific drivers
-from .bpsk_receiver import *
-from .bpsk_transmitter import *
-from .data_inspector import *
+from .quick_widgets import Button, TransmitTerminal, ReceiveTerminal
+from .bpsk_receiver import BpskReceiver
+from .bpsk_transmitter import BpskTransmitter
+import .data_inspector
+
 
 class BpskOverlay(Overlay):
     
@@ -139,10 +144,10 @@ class BpskOverlay(Overlay):
         
         # Create buttons
         for i in range(5):
-            buttons[i] = qw.Button(description=desc_b[i],
-                                   state=True,
-                                   callback=dashboard_callback,
-                                   button_id=i)
+            buttons[i] = Button(description=desc_b[i],
+                                state=True,
+                                callback=dashboard_callback,
+                                button_id=i)
             
         # Create float text objects for entering the ADC & DAC mixer frequencies
         adc_fc = ipw.FloatText(
@@ -181,3 +186,4 @@ class BpskOverlay(Overlay):
                                  ],
                         layout=layout
                        )
+                       

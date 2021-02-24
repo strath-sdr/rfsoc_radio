@@ -1,6 +1,11 @@
+__author__ = "David Northcote (Modified from Craig Ramsay)"
+__organisation__ = "The Univeristy of Strathclyde"
+__support__ = "https://github.com/strath-sdr/rfsoc_radio"
+
 import time
 import threading
 import ipywidgets as ipw
+
 
 class DmaTimer():
     """Class for scheduling periodic callbacks.

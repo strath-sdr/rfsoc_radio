@@ -1,4 +1,9 @@
+__author__ = "David Northcote"
+__organisation__ = "The Univeristy of Strathclyde"
+__support__ = "https://github.com/strath-sdr/rfsoc_radio"
+
 import ipywidgets as ipw
+
 
 class DropdownMenu():
     """Creates a new drop-down widget.
@@ -16,6 +21,7 @@ class DropdownMenu():
             
     def get_widget(self):
         return self._dropdown_menu
+
     
 class ImageViewer():
     """Creates a new image viewer widget for display an image in bytes format.
@@ -43,8 +49,54 @@ class ImageViewer():
         
     def get_widget(self):
         return ipw.VBox([self._title, self._image_viewer])
+
+
+class TransmitTerminal():
+    """Creates a new textbox area widget that should be interacted with by the user.
+    The textbox area is primarily used to display text. Buttons are used to control
+    whether the text is written to the textbox area through self._listening. A clear 
+    button is provided to clear the text from the textbox area.
+    """
+    def __init__(self, description='Terminal', height='200px', width='800px'):
+        super().__init__()
+
+        # Create the text area object that acts as a terminal
+        self._text_terminal = ipw.Textarea(
+            value='',
+            placeholder='',
+            description=description,
+            style={'description_width': 'initial'},
+            layout={'height' : height, 'width' : width},
+            disabled=False
+        )
+        
+        self.callback = []
+        
+        # Create a start button to enable listening
+        self._start_button = ipw.Button(description=u'\u25B6',
+                                  layout=ipw.Layout(margin='auto'))
+        self._start_button.on_click(lambda _: self.start())
+        self._start_button.style.button_color = 'lightgray'
+        
+    def value(self):
+        return self._text_terminal.value
     
-class Terminal():
+    def clear(self):
+        self._text_terminal.value = ''
+        
+    def start(self):
+        self._start_button.style.button_color = 'lightgreen'
+        for callback in self.callback:
+            callback()
+        self._start_button.style.button_color = 'lightgray'
+        
+    def get_widget(self):
+        return ipw.HBox([self._text_terminal, 
+                         ipw.VBox([self._start_button])
+                        ])
+
+    
+class ReceiveTerminal():
     """Creates a new textbox area widget that should not be interacted with by user.
     The textbox area is primarily used to display text. Buttons are used to control
     whether the text is written to the textbox area through self._listening. A clear 
@@ -136,6 +188,7 @@ class Terminal():
                                    self._auto_clear_button
                                   ])
                         ])
+
     
 class Button():
     def __init__(self, description, callback, state = True, button_id = 0):

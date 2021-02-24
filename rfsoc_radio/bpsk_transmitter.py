@@ -1,8 +1,13 @@
+__author__ = "David Northcote"
+__organisation__ = "The Univeristy of Strathclyde"
+__support__ = "https://github.com/strath-sdr/rfsoc_radio"
+
 from pynq import DefaultIP
 from pynq import allocate
 import numpy as np
 from random import randint
-import rfsoc_radio.async_radio as ar
+from .async_radio import AsyncRadioTx
+
 
 class BpskTransmitter():
     def __init__(self, axi_dma, bpsk_transmitter):
@@ -27,7 +32,7 @@ class BpskTransmitter():
         self.mode = 'single'
         
         # Create a new radio transmitter object
-        self.monitor = ar.AsyncRadioTx(rate=1, timer_callback=self.transfer)
+        self.monitor = AsyncRadioTx(rate=1, timer_callback=self.transfer)
         
     def start(self):
         if self.monitor.is_running:
