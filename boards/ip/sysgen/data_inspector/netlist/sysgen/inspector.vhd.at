@@ -1,0 +1,137 @@
+{
+  'Line_102' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core/master_axi_stream_interface/tlast_generation/logical2',
+    'Instance' => 'logical2',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/TLAST Generation/Logical2'
+  },
+  'Line_111' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core/master_axi_stream_interface/tlast_generation/relational',
+    'Instance' => 'relational',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/TLAST Generation/Relational'
+  },
+  'Line_148' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core/master_axi_stream_interface/tuser_sync/expression',
+    'Instance' => 'expression',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/TUSER Sync/Expression'
+  },
+  'Line_158' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core/master_axi_stream_interface/tuser_sync/register2',
+    'Instance' => 'register2',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/TUSER Sync/Register2'
+  },
+  'Line_225' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core/master_axi_stream_interface/rising_edge_detector',
+    'Instance' => 'rising_edge_detector',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/Rising Edge Detector'
+  },
+  'Line_232' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core/master_axi_stream_interface/tlast_generation',
+    'Instance' => 'tlast_generation',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/TLAST Generation'
+  },
+  'Line_241' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core/master_axi_stream_interface/tuser_sync',
+    'Instance' => 'tuser_sync',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/TUSER Sync'
+  },
+  'Line_249' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core/master_axi_stream_interface/fifo',
+    'Instance' => 'fifo',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/FIFO'
+  },
+  'Line_26' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core/master_axi_stream_interface/rising_edge_detector/inverter',
+    'Instance' => 'inverter',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/Rising Edge Detector/Inverter'
+  },
+  'Line_276' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core/master_axi_stream_interface/inverter',
+    'Instance' => 'inverter',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/Inverter'
+  },
+  'Line_284' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core/master_axi_stream_interface/logical',
+    'Instance' => 'logical',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/Logical'
+  },
+  'Line_293' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core/master_axi_stream_interface/logical1',
+    'Instance' => 'logical1',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/Logical1'
+  },
+  'Line_302' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core/master_axi_stream_interface/logical2',
+    'Instance' => 'logical2',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/Logical2'
+  },
+  'Line_311' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core/master_axi_stream_interface/register_x0',
+    'Instance' => 'register_x0',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/Register'
+  },
+  'Line_34' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core/master_axi_stream_interface/rising_edge_detector/logical1',
+    'Instance' => 'logical1',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/Rising Edge Detector/Logical1'
+  },
+  'Line_354' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core/simple_slave_axi_stream_interface/register1',
+    'Instance' => 'register1',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core/Simple Slave AXI-Stream Interface/Register1'
+  },
+  'Line_367' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core/simple_slave_axi_stream_interface/register3',
+    'Instance' => 'register3',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core/Simple Slave AXI-Stream Interface/Register3'
+  },
+  'Line_427' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core/master_axi_stream_interface',
+    'Instance' => 'master_axi_stream_interface',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface'
+  },
+  'Line_43' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core/master_axi_stream_interface/rising_edge_detector/register2',
+    'Instance' => 'register2',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/Rising Edge Detector/Register2'
+  },
+  'Line_441' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core/simple_slave_axi_stream_interface',
+    'Instance' => 'simple_slave_axi_stream_interface',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core/Simple Slave AXI-Stream Interface'
+  },
+  'Line_495' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core',
+    'Instance' => 'data_inspector_core',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core'
+  },
+  'Line_554' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module',
+    'Instance' => 'data_inspector_module',
+    'SimulinkInstance' => 'inspector/Data Inspector Module'
+  },
+  'Line_585' => {
+    'CodeInstance' => 'inspector_default_clock_driver/clockdriver',
+    'Instance' => 'clockdriver',
+    'SimulinkInstance' => ''
+  },
+  'Line_642' => {
+    'CodeInstance' => 'inspector_axi_lite_interface',
+    'Instance' => 'inspector_axi_lite_interface',
+    'SimulinkInstance' => ''
+  },
+  'Line_668' => {
+    'CodeInstance' => 'inspector_default_clock_driver',
+    'Instance' => 'inspector_default_clock_driver',
+    'SimulinkInstance' => ''
+  },
+  'Line_676' => {
+    'CodeInstance' => 'inspector_struct',
+    'Instance' => 'inspector_struct',
+    'SimulinkInstance' => 'inspector'
+  },
+  'Line_88' => {
+    'CodeInstance' => 'inspector_struct/data_inspector_module/data_inspector_core/master_axi_stream_interface/tlast_generation/counter',
+    'Instance' => 'counter',
+    'SimulinkInstance' => 'inspector/Data Inspector Module/Data Inspector Core/Master AXI-Stream Interface/TLAST Generation/Counter'
+  }
+}
