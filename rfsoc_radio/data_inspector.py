@@ -123,7 +123,7 @@ class DataInspector(DefaultHierarchy):
         def __init__(self, description):
             super().__init__(description=description)
             
-        bindto = ['UoS:RFSoC:data_inspector_module:1.0']
+        bindto = ['UoS:RFSoC:inspector:1.0']
         
     # LUT of property addresses for our data-driven properties
     _dataInspector_props = [("reset", 0),
