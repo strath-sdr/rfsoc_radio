@@ -132,7 +132,7 @@ xilinx.com:ip:proc_sys_reset:5.0\
 xilinx.com:ip:usp_rf_data_converter:2.3\
 xilinx.com:ip:xlconcat:2.1\
 xilinx.com:ip:zynq_ultra_ps_e:3.3\
-UoS:RFSoC:data_inspector_module:1.0\
+UoS:RFSoC:inspector:1.0\
 "
 
    set list_ips_missing ""
@@ -222,22 +222,22 @@ proc create_hier_cell_DataInspector { parentCell nameHier } {
  ] $axi_dma
 
   # Create instance: data_inspector_module, and set properties
-  set data_inspector_module [ create_bd_cell -type ip -vlnv UoS:RFSoC:data_inspector_module:1.0 data_inspector_module ]
+  set data_inspector_module [ create_bd_cell -type ip -vlnv UoS:RFSoC:inspector:1.0 data_inspector_module ]
 
   # Create instance: s_axi_interconnect, and set properties
   set s_axi_interconnect [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 s_axi_interconnect ]
 
   # Create interface connections
-  connect_bd_intf_net -intf_net Conn1 [get_bd_intf_pins S_AXIS] [get_bd_intf_pins data_inspector_module/s_axis]
   connect_bd_intf_net -intf_net Conn2 [get_bd_intf_pins S_AXI] [get_bd_intf_pins s_axi_interconnect/S00_AXI]
   connect_bd_intf_net -intf_net Conn3 [get_bd_intf_pins M_AXI] [get_bd_intf_pins axi_dma/M_AXI_S2MM]
+  connect_bd_intf_net -intf_net S_AXIS_1 [get_bd_intf_pins S_AXIS] [get_bd_intf_pins data_inspector_module/s_axis]
   connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins axi_dma/S_AXI_LITE] [get_bd_intf_pins s_axi_interconnect/M00_AXI]
-  connect_bd_intf_net -intf_net axi_interconnect_0_M01_AXI [get_bd_intf_pins data_inspector_module/data_inspector_module_s_axi] [get_bd_intf_pins s_axi_interconnect/M01_AXI]
   connect_bd_intf_net -intf_net data_inspector_module_m_axis [get_bd_intf_pins axi_dma/S_AXIS_S2MM] [get_bd_intf_pins data_inspector_module/m_axis]
+  connect_bd_intf_net -intf_net s_axi_interconnect_M01_AXI [get_bd_intf_pins data_inspector_module/inspector_s_axi] [get_bd_intf_pins s_axi_interconnect/M01_AXI]
 
   # Create port connections
   connect_bd_net -net axi_dma_s2mm_introut1 [get_bd_pins irq] [get_bd_pins axi_dma/s2mm_introut]
-  connect_bd_net -net proc_sys_reset_clk_dac1_peripheral_aresetn [get_bd_pins aresetn] [get_bd_pins axi_dma/axi_resetn] [get_bd_pins data_inspector_module/data_inspector_module_aresetn] [get_bd_pins s_axi_interconnect/ARESETN] [get_bd_pins s_axi_interconnect/M00_ARESETN] [get_bd_pins s_axi_interconnect/M01_ARESETN] [get_bd_pins s_axi_interconnect/S00_ARESETN]
+  connect_bd_net -net proc_sys_reset_clk_dac1_peripheral_aresetn [get_bd_pins aresetn] [get_bd_pins axi_dma/axi_resetn] [get_bd_pins data_inspector_module/inspector_aresetn] [get_bd_pins s_axi_interconnect/ARESETN] [get_bd_pins s_axi_interconnect/M00_ARESETN] [get_bd_pins s_axi_interconnect/M01_ARESETN] [get_bd_pins s_axi_interconnect/S00_ARESETN]
   connect_bd_net -net usp_rf_data_converter_0_clk_dac1 [get_bd_pins aclk] [get_bd_pins axi_dma/m_axi_s2mm_aclk] [get_bd_pins axi_dma/s_axi_lite_aclk] [get_bd_pins data_inspector_module/clk] [get_bd_pins s_axi_interconnect/ACLK] [get_bd_pins s_axi_interconnect/M00_ACLK] [get_bd_pins s_axi_interconnect/M01_ACLK] [get_bd_pins s_axi_interconnect/S00_ACLK]
 
   # Restore current instance
@@ -373,30 +373,30 @@ proc create_root_design { parentCell } {
   set_property -dict [ list \
    CONFIG.ADC0_Enable {0} \
    CONFIG.ADC0_Fabric_Freq {0.0} \
-   CONFIG.ADC0_Outclk_Freq {64.000} \
+   CONFIG.ADC0_Outclk_Freq {15.625} \
    CONFIG.ADC0_PLL_Enable {false} \
-   CONFIG.ADC0_Refclk_Freq {1024.000} \
-   CONFIG.ADC0_Sampling_Rate {1.024} \
+   CONFIG.ADC0_Refclk_Freq {2000.000} \
+   CONFIG.ADC0_Sampling_Rate {2.0} \
    CONFIG.ADC2_Enable {1} \
    CONFIG.ADC2_Fabric_Freq {64.000} \
    CONFIG.ADC2_Outclk_Freq {64.000} \
    CONFIG.ADC2_PLL_Enable {true} \
    CONFIG.ADC2_Refclk_Freq {409.600} \
    CONFIG.ADC2_Sampling_Rate {1.024} \
-   CONFIG.ADC_Data_Type00 {1} \
-   CONFIG.ADC_Data_Type01 {1} \
+   CONFIG.ADC_Data_Type00 {0} \
+   CONFIG.ADC_Data_Type01 {0} \
    CONFIG.ADC_Data_Type20 {1} \
    CONFIG.ADC_Data_Type21 {1} \
-   CONFIG.ADC_Data_Width00 {2} \
-   CONFIG.ADC_Data_Width01 {2} \
+   CONFIG.ADC_Data_Width00 {8} \
+   CONFIG.ADC_Data_Width01 {8} \
    CONFIG.ADC_Data_Width20 {2} \
    CONFIG.ADC_Data_Width21 {2} \
    CONFIG.ADC_Decimation_Mode00 {0} \
    CONFIG.ADC_Decimation_Mode01 {0} \
    CONFIG.ADC_Decimation_Mode20 {8} \
    CONFIG.ADC_Decimation_Mode21 {8} \
-   CONFIG.ADC_Mixer_Mode00 {0} \
-   CONFIG.ADC_Mixer_Mode01 {0} \
+   CONFIG.ADC_Mixer_Mode00 {2} \
+   CONFIG.ADC_Mixer_Mode01 {2} \
    CONFIG.ADC_Mixer_Mode20 {0} \
    CONFIG.ADC_Mixer_Mode21 {0} \
    CONFIG.ADC_Mixer_Type00 {3} \
@@ -425,7 +425,7 @@ proc create_root_design { parentCell } {
    CONFIG.DAC1_Sampling_Rate {1.024} \
    CONFIG.DAC_Data_Width00 {16} \
    CONFIG.DAC_Data_Width10 {2} \
-   CONFIG.DAC_Data_Width12 {3} \
+   CONFIG.DAC_Data_Width12 {16} \
    CONFIG.DAC_Interpolation_Mode00 {0} \
    CONFIG.DAC_Interpolation_Mode10 {8} \
    CONFIG.DAC_Interpolation_Mode12 {0} \
@@ -2008,7 +2008,7 @@ proc create_root_design { parentCell } {
   assign_bd_address -offset 0xA0042000 -range 0x00001000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e/Data] [get_bd_addr_segs axi_intc/S_AXI/Reg] -force
   assign_bd_address -offset 0xA0050000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e/Data] [get_bd_addr_segs bpsk_receiver/bpsk_receiver_s_axi/reg0] -force
   assign_bd_address -offset 0xA0060000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e/Data] [get_bd_addr_segs bpsk_transmitter/bpsk_transmitter_s_axi/reg0] -force
-  assign_bd_address -offset 0xA0046000 -range 0x00001000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e/Data] [get_bd_addr_segs DataInspector/data_inspector_module/data_inspector_module_s_axi/reg0] -force
+  assign_bd_address -offset 0xA0070000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e/Data] [get_bd_addr_segs DataInspector/data_inspector_module/inspector_s_axi/reg0] -force
   assign_bd_address -offset 0xA0000000 -range 0x00040000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e/Data] [get_bd_addr_segs usp_rf_data_converter/s_axi/Reg] -force
   assign_bd_address -offset 0x000800000000 -range 0x000800000000 -target_address_space [get_bd_addr_spaces DataInspector/axi_dma/Data_S2MM] [get_bd_addr_segs zynq_ultra_ps_e/SAXIGP4/HP2_DDR_HIGH] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces DataInspector/axi_dma/Data_S2MM] [get_bd_addr_segs zynq_ultra_ps_e/SAXIGP4/HP2_DDR_LOW] -force
@@ -2019,7 +2019,6 @@ proc create_root_design { parentCell } {
   # Restore current instance
   current_bd_instance $oldCurInst
 
-  validate_bd_design
   save_bd_design
 }
 # End of create_root_design()
@@ -2031,4 +2030,6 @@ proc create_root_design { parentCell } {
 
 create_root_design ""
 
+
+common::send_gid_msg -ssname BD::TCL -id 2053 -severity "WARNING" "This Tcl script was generated from a block design that has not been validated. It is possible that design <$design_name> may result in errors during validation."
 
