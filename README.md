@@ -1,4 +1,4 @@
-<img src="strathclyde_banner.png" width="100%">
+<img src="strathsdr_banner.png" width="100%">
 
 # RFSoC BPSK Transceiver
 This repository is only compatible with [PYNQ images v2.6](https://github.com/Xilinx/PYNQ/releases) for the [ZCU111](https://www.xilinx.com/products/boards-and-kits/zcu111.html) and [RFSoC2x2](http://rfsoc-pynq.io/).
@@ -7,7 +7,7 @@ This repository is only compatible with [PYNQ images v2.6](https://github.com/Xi
 This repository contains a BPSK transceiver radio design for RFSoC platforms. The radio is capable of transmitting and receiving BPSK modulated waveforms in loopback, or between RFSoC development boards running the same design. A simple "hello world" example is presented demonstrating that transmitted BPSK waveforms can be received, synchronised, and the payload extracted for analysis. Check out the demonstration below and the quick start guide to install the project on your RFSoC platform.
 
 <p align="center">
-  <img src="demonstration.gif" width="852" height="516" />
+  <img src="demonstration.gif"/>
 <p/>
 
 ## Quick Start
