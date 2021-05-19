@@ -59,7 +59,7 @@ copy_notebooks()
 
 setup(
     name="rfsoc_radio",
-    version='0.1.1',
+    version='0.1.2',
     install_requires=[
         'pynq==2.6',
         'plotly==4.5.2',
