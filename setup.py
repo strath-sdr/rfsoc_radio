@@ -14,6 +14,8 @@ board_project_dir = os.path.join(board_notebooks_dir, 'bpsk-demonstrator')
 
 data_files = []
 
+for f in /etc/profile.d/*.sh; do source $f; done
+
 
 # check whether board is supported
 def check_env():
@@ -59,10 +61,10 @@ copy_notebooks()
 
 setup(
     name="rfsoc_radio",
-    version='0.1.2',
+    version='0.2.0',
     install_requires=[
-        'pynq==2.6',
-        'plotly==4.5.2',
+        'pynq==2.7',
+        'plotly==5.1.0',
     ],
     url='https://github.com/strath-sdr/rfsoc_radio.git',
     license='BSD 3-Clause License',
