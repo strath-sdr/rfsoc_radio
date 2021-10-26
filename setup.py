@@ -14,9 +14,6 @@ board_project_dir = os.path.join(board_notebooks_dir, 'bpsk-demonstrator')
 
 data_files = []
 
-for f in /etc/profile.d/*.sh; do source $f; done
-
-
 # check whether board is supported
 def check_env():
     if not os.path.isdir(repo_board_folder):
