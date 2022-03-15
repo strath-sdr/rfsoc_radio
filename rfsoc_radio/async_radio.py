@@ -7,7 +7,6 @@ import asyncio
 import ipywidgets as ipw
 import time
 
-
 def default_callback():
     pass
 
@@ -23,34 +22,27 @@ class AsyncRadioRx():
         """        
         self._interrupt = irq
         self._irq_callback = irq_callback
-        self._stopping = True
+        self._loop = asyncio.get_event_loop()
         self.callback = func_callback
         self.is_running = False
         
     async def _wait(self):
-        await self._interrupt.wait() # Wait for IRQ rise
+        await self._interrupt.wait() # Wait for IRQ level
         self._irq_callback()
-        await self._interrupt.wait() # Wait for IRQ fall
+        await self._interrupt.wait() # Discard the next IRQ assertion
         
     def _do(self):
-        while not self._stopping:
+        while True:
             self.is_running = True
-            self._task_wait = self._loop.create_task(self._wait())
-            self._loop.run_until_complete(self._task_wait)
+            future = asyncio.run_coroutine_threadsafe(self._wait(), self._loop)
+            future.result()
             for i in range(len(self.callback)):
                 self.callback[i]()
         
     def start(self):
         """Start the async irq routine."""
-        if self._stopping:
-            self._stopping = False
-            self._loop = asyncio.get_event_loop()
-            self._thread = threading.Thread(target=self._do)
-            self._thread.start()
-            
-    def stop(self):
-        self._stopping = True
-        self.is_running = False
+        thread = threading.Thread(target=self._do)
+        thread.start()
         
     def get_widget(self):
         """Get ipywidget controls to stop and start the generator thread."""
