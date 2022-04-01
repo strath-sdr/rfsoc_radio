@@ -10,7 +10,7 @@ pip_name = 'rfsoc-radio'
 board = os.environ['BOARD']
 repo_board_folder = f'boards/{board}/{package_name}'
 board_notebooks_dir = os.environ['PYNQ_JUPYTER_NOTEBOOKS']
-board_project_dir = os.path.join(board_notebooks_dir, 'bpsk-demonstrator')
+board_project_dir = os.path.join(board_notebooks_dir, 'rfsoc-studio', 'bpsk-demonstrator')
 
 data_files = []
 
@@ -58,10 +58,9 @@ copy_notebooks()
 
 setup(
     name="rfsoc_radio",
-    version='0.2.0',
+    version='0.2.2',
     install_requires=[
         'pynq==2.7',
-        'plotly==5.1.0',
     ],
     url='https://github.com/strath-sdr/rfsoc_radio.git',
     license='BSD 3-Clause License',
