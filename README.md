@@ -32,7 +32,7 @@ Follow the instructions below to install the BPSK radio demonstrator on your dev
 pip3 install git+https://github.com/strath-sdr/rfsoc_radio
 ```
 
-Once installation has complete, you will find the BPSK radio demonstrator notebooks located in the jupyter home workspace in the `bpsk-demonstrator` folder.
+Once installation has complete, you will find the BPSK radio demonstrator notebooks located in the jupyter home workspace in the `rfsoc-studio/bpsk-demonstrator` folder.
 
 ## Using the Project Files
 The following software is required to use the project files in this repository.
