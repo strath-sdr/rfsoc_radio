@@ -66,7 +66,7 @@ copy_xrfclk()
 
 setup(
     name="rfsoc_radio",
-    version='0.2.2',
+    version='0.2.3',
     install_requires=[
         'pynq==2.7',
     ],
