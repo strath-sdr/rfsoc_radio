@@ -1,7 +1,7 @@
 <img src="strathsdr_banner.png" width="100%">
 
 # RFSoC BPSK Transceiver
-This repository is only compatible with [PYNQ images v2.7](https://github.com/Xilinx/PYNQ/releases) for the [ZCU111](https://www.xilinx.com/products/boards-and-kits/zcu111.html) and [RFSoC2x2](http://rfsoc-pynq.io/).
+This repository is only compatible with [PYNQ images v2.7](https://github.com/Xilinx/PYNQ/releases) for the [ZCU111](https://www.xilinx.com/products/boards-and-kits/zcu111.html), [RFSoC2x2](http://rfsoc-pynq.io/), and [RFSoC4x2](http://rfsoc-pynq.io/).
 
 ## Introduction
 This repository contains a BPSK transceiver radio design for RFSoC platforms. The radio is capable of transmitting and receiving BPSK modulated waveforms in loopback, or between RFSoC development boards running the same design. A simple "hello world" example is presented demonstrating that transmitted BPSK waveforms can be received, synchronised, and the payload extracted for analysis. Check out the demonstration below and the quick start guide to install the project on your RFSoC platform.
@@ -12,7 +12,7 @@ This repository contains a BPSK transceiver radio design for RFSoC platforms. Th
 
 ## Quick Start
 Follow the instructions below to install the BPSK radio demonstrator on your development board. **You will need to give your board access to the internet**.
-* Power on your RFSoC2x2 or ZCU111 development board with an SD Card containing a fresh PYNQ v2.7 image.
+* Power on your RFSoC2x2, RFSoC4x2, or ZCU111 development board with an SD Card containing a fresh PYNQ v2.7 image.
 * Navigate to Jupyter Labs by opening a browser (preferably Chrome) and connecting to `http://<board_ip_address>:9090/lab`.
 * We need to open a terminal in Jupyter Lab. Firstly, open a launcher window as shown in the figure below:
 
