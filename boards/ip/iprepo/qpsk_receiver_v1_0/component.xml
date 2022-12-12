@@ -1129,7 +1129,7 @@ mmediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spi
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>xpm_e45989_vivado.mem</spirit:name>
+        <spirit:name>xpm_fef865_vivado.mem</spirit:name>
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
       <spirit:file>
@@ -1365,7 +1365,7 @@ mmediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spi
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>xpm_e45989_vivado.mem</spirit:name>
+        <spirit:name>xpm_fef865_vivado.mem</spirit:name>
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
       <spirit:file>
@@ -1554,8 +1554,8 @@ mmediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spi
         <xilinx:xpmLibrary>XPM_FIFO</xilinx:xpmLibrary>
         <xilinx:xpmLibrary>XPM_CDC</xilinx:xpmLibrary>
       </xilinx:xpmLibraries>
-      <xilinx:coreRevision>290704844</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-08-06T14:21:13Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>301584480</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2022-12-10T13:28:43Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.2</xilinx:xilinxVersion>

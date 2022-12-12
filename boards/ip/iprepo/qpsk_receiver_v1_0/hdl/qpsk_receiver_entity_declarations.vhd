@@ -2067,17 +2067,17 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_constant_bd97dda7a6 is
+entity sysgen_constant_3f6dceec85 is
   port (
-    op : out std_logic_vector((10 - 1) downto 0);
+    op : out std_logic_vector((13 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_constant_bd97dda7a6;
-architecture behavior of sysgen_constant_bd97dda7a6
+end sysgen_constant_3f6dceec85;
+architecture behavior of sysgen_constant_3f6dceec85
 is
 begin
-  op <= "1111111111";
+  op <= "1111111111111";
 end behavior;
 
 library xil_defaultlib;
@@ -2086,19 +2086,19 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_relational_1648490e1b is
+entity sysgen_relational_6c0ec1027b is
   port (
-    a : in std_logic_vector((10 - 1) downto 0);
-    b : in std_logic_vector((10 - 1) downto 0);
+    a : in std_logic_vector((13 - 1) downto 0);
+    b : in std_logic_vector((13 - 1) downto 0);
     op : out std_logic_vector((1 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_relational_1648490e1b;
-architecture behavior of sysgen_relational_1648490e1b
+end sysgen_relational_6c0ec1027b;
+architecture behavior of sysgen_relational_6c0ec1027b
 is
-  signal a_1_31: unsigned((10 - 1) downto 0);
-  signal b_1_34: unsigned((10 - 1) downto 0);
+  signal a_1_31: unsigned((13 - 1) downto 0);
+  signal b_1_34: unsigned((13 - 1) downto 0);
   signal result_12_3_rel: boolean;
 begin
   a_1_31 <= std_logic_vector_to_unsigned(a);
@@ -2159,6 +2159,25 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
+entity sysgen_constant_d87fd274bc is
+  port (
+    op : out std_logic_vector((14 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_constant_d87fd274bc;
+architecture behavior of sysgen_constant_d87fd274bc
+is
+begin
+  op <= "00000000000000";
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
 entity sysgen_constant_4dcfc2e94b is
   port (
     op : out std_logic_vector((32 - 1) downto 0);
@@ -2211,6 +2230,35 @@ begin
     end case;
   end process proc_switch_6_1;
   y <= unregy_join_6_1;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_relational_ddc61bc27b is
+  port (
+    a : in std_logic_vector((10 - 1) downto 0);
+    b : in std_logic_vector((13 - 1) downto 0);
+    op : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_relational_ddc61bc27b;
+architecture behavior of sysgen_relational_ddc61bc27b
+is
+  signal a_1_31: unsigned((10 - 1) downto 0);
+  signal b_1_34: unsigned((13 - 1) downto 0);
+  signal cast_12_12: unsigned((13 - 1) downto 0);
+  signal result_12_3_rel: boolean;
+begin
+  a_1_31 <= std_logic_vector_to_unsigned(a);
+  b_1_34 <= std_logic_vector_to_unsigned(b);
+  cast_12_12 <= u2u_cast(a_1_31, 0, 13, 0);
+  result_12_3_rel <= cast_12_12 = b_1_34;
+  op <= boolean_to_vector(result_12_3_rel);
 end behavior;
 
 library xil_defaultlib;
@@ -4591,7 +4639,7 @@ use IEEE.numeric_std.all;
 library xil_defaultlib;
 use xil_defaultlib.conv_pkg.all;
 
-entity xlfast_fourier_transform_56c2ee035b9598f9af28bc71e4400314 is 
+entity xlfast_fourier_transform_8cf93c3446defce8baa1b0a5fb31f1d3 is 
   port(
     ce:in std_logic;
     clk:in std_logic;
@@ -4607,7 +4655,7 @@ entity xlfast_fourier_transform_56c2ee035b9598f9af28bc71e4400314 is
     m_axis_data_tready:in std_logic;
     m_axis_data_tvalid:out std_logic;
     s_axis_config_tdata_fwd_inv:in std_logic_vector(0 downto 0);
-    s_axis_config_tdata_scale_sch:in std_logic_vector(9 downto 0);
+    s_axis_config_tdata_scale_sch:in std_logic_vector(13 downto 0);
     s_axis_config_tready:out std_logic;
     s_axis_config_tvalid:in std_logic;
     s_axis_data_tdata_xn_im_0:in std_logic_vector(31 downto 0);
@@ -4616,9 +4664,9 @@ entity xlfast_fourier_transform_56c2ee035b9598f9af28bc71e4400314 is
     s_axis_data_tready:out std_logic;
     s_axis_data_tvalid:in std_logic
   );
-end xlfast_fourier_transform_56c2ee035b9598f9af28bc71e4400314; 
+end xlfast_fourier_transform_8cf93c3446defce8baa1b0a5fb31f1d3; 
 
-architecture behavior of xlfast_fourier_transform_56c2ee035b9598f9af28bc71e4400314  is
+architecture behavior of xlfast_fourier_transform_8cf93c3446defce8baa1b0a5fb31f1d3  is
   component qpsk_receiver_xfft_v9_1_i0
     port(
       aclk:in std_logic;
@@ -4648,7 +4696,7 @@ signal s_axis_data_tdata_net: std_logic_vector(63 downto 0) := (others=>'0');
 begin
   m_axis_data_tdata_xn_im_0 <= m_axis_data_tdata_net(63 downto 32);
   m_axis_data_tdata_xn_re_0 <= m_axis_data_tdata_net(31 downto 0);
-  s_axis_config_tdata_net(10 downto 1) <= s_axis_config_tdata_scale_sch;
+  s_axis_config_tdata_net(14 downto 1) <= s_axis_config_tdata_scale_sch;
   s_axis_config_tdata_net(0 downto 0) <= s_axis_config_tdata_fwd_inv;
   s_axis_data_tdata_net(63 downto 32) <= s_axis_data_tdata_xn_im_0;
   s_axis_data_tdata_net(31 downto 0) <= s_axis_data_tdata_xn_re_0;
