@@ -1,0 +1,8 @@
+OPTION psf_version = 2.1;
+BEGIN driver transmitter
+ OPTION supported_peripherals = (transmitter_v1_0);
+ OPTION driver_state = ACTIVE;
+ OPTION copyfiles = all;
+ OPTION name = transmitter;
+ OPTION version = 1.0;
+END driver
