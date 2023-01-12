@@ -13,7 +13,7 @@ class SpectrumAnalyser():
                  data,
                  fs,
                  animation_period=50,
-                 width=600,
+                 width=1000,
                  height=400,
                  autosize=True):
         """Create a new Spectrum Analyser object for plotting frequency against power."""
@@ -24,7 +24,7 @@ class SpectrumAnalyser():
         self._animation_period = animation_period
         self._width = width
         self._height = height
-        self._yaxisrange = [-200, -50]
+        self._yaxisrange = [-150, -50]
         lim = int(self._fs/2)
         self._xaxisrange = [-lim, lim - (self._fs/len(data))]
         self._autosize = autosize
@@ -39,8 +39,7 @@ class SpectrumAnalyser():
                 'title' : 'Frequency (Hz)',
             },
             'yaxis' : {
-                'range' : self._yaxisrange,
-                'title' : 'Amplitude (dB)',
+                'title' : 'Log Scale Power Spectra (dB)',
             },
             'title' : 'Frequency Spectrum'
         }
@@ -55,8 +54,9 @@ class SpectrumAnalyser():
         
     def _fft_psd(self, data, fs):
         fft = np.fft.fftshift(np.fft.fft(data))
-        mag = np.array([abs(y)**2/(fs*len(fft)) for y in fft])
-        psd = 10 * np.where(mag>0, np.log10(mag), 0)
+        mag = np.array([abs(y)**2/(len(fft)) for y in fft])
+        with np.errstate(divide='ignore'):
+            psd = 10 * np.where(mag>0, np.log10(mag), 0)
         return psd
     
     def set_frequency(self, fs):
@@ -78,7 +78,7 @@ class TimePlot():
     def __init__(self,
                  data,
                  animation_period=50,
-                 width=600,
+                 width=1000,
                  height=400,
                  autosize=True):
         """Create a new plot object for plotting data against time."""
@@ -87,7 +87,7 @@ class TimePlot():
         self._animation_period = animation_period
         self._width = width
         self._height = height
-        self._yaxisrange = [-0.3, 0.3]
+        self._yaxisrange = [-0.6, 0.6]
         self._xaxisrange = [-0.5, len(data)-0.5]
         self._autosize = autosize
         self._complex = isinstance(data[0], complex)
@@ -109,7 +109,6 @@ class TimePlot():
                 'title' : 'Samples',
             },
             'yaxis' : {
-                'range' : self._yaxisrange,
                 'title' : 'Amplitude',
             },
             'title' : 'Time Domain Signal'
@@ -149,7 +148,7 @@ class ConstellationPlot():
                  data,
                  animation_period=50,
                  height=400,
-                 width=600,
+                 width=400,
                  autosize=True):
         """Creates a new plot object for plotting IQ constellations."""
         
@@ -157,7 +156,7 @@ class ConstellationPlot():
         self._animation_period = 50
         self._width = width
         self._height = height
-        self._axisrange = [-0.3, 0.3]
+        self._axisrange = [-1.2, 1.2]
         self._autosize = autosize
         self._complex = isinstance(self._data[0], complex)
         

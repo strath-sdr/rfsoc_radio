@@ -1,0 +1,387 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<style type="text/css">
+body {margin-top:6.35em; 
+      margin-left:6.35em; 
+      width:62.5em;
+      text-align:justify;
+      font-size:1em; 
+      font-family:"Arial", Serif;
+      color:#000000;}
+
+h1 {font-size:1.125em;
+    font-family:"Arial", Sans-serif;
+    color:#943634;}
+
+p {font-size:inherit;
+   width:62.5em;
+   font-family:inherit;
+   color:inherit;}
+
+ul {font-size:inherit;
+    width:62.5em;
+    font-family:inherit;
+    color:inherit;}
+
+li {width:46.15em;}
+
+.image {position: relative;
+        width: 100%;}
+
+table {border-collapse:collapse;
+       border-spacing:0;
+       caption-side:bottom;
+       border-style:solid;
+       border-width:thin;
+       font-size:1em;
+       width:62.5em;
+       font-family:inherit;
+       color:inherit;}
+
+.title_table {border-collapse:collapse;
+       border-spacing:0;
+       caption-side:bottom;
+       font-size:1em;
+       width:62.5em;
+       border-style:none;}
+
+.title_table_image_cell {border-bottom:thin solid #000000;}
+
+.title_table_design_cell {vertical-align:bottom;
+        font-size:1.875em;
+        text-align:right;
+        border-bottom:thin solid #000000;}
+
+.title_table_date_cell{font-size:1.25em;
+        vertical-align:bottom;
+        text-align:left;
+        border-bottom:thick solid #943634}
+
+.sg_row {font-size:inherit;
+         font-family:inherit;
+         color:inherit;
+         border-style:solid;
+         border-width:thin;}
+
+.sg_cell {margin:0;
+          padding:1em;
+          border-width:inherit;
+          border-style:inherit;
+          font-size:inherit;
+          font-family:inherit;
+          color:inherit;}
+
+.sg_cell_first_row {margin:0;
+          padding:1em;
+          border-width:inherit;
+          border-style:inherit;
+          border-bottom:thick solid #943634;
+          font-size:inherit;
+          font-family:inherit;
+          color:inherit;}
+
+.sg_caption {text-align:left;
+             caption-side:bottom;
+             font-family:inherit;
+             font-size:inherit;}
+</style>
+</head>
+<body>
+<table class="title_table">
+<tr>
+<td class="title_table_image_cell"></td>
+<td class="title_table_design_cell">receiver</td>
+</tr>
+<tr>
+<td colspan=2 class="title_table_date_cell"><b></b></td>
+</tr>
+</table>
+<h1>int receiver_Initialize(receiver* InstancePtr, u16 DeviceId)</h1>
+<p>
+Initialize receiver pointer with a specifc instance of the device based device id.
+<br/>
+  @param InstancePtr to be initialized
+<br/>
+  @param DeviceId device id assigned to the device in xparameters.h
+<br/>
+<br/>
+  @return int XST_SUCCESS if initialization is successful
+<br/>
+</p>
+<h1>void receiver_threshold_write(receiver *InstancePtr, u32 Data);</h1>
+<p>
+ Write to threshold gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the threshold instance to operate on.<br/>
+ @param	Data is value to be written to gateway threshold.<br/>
+<br/>
+ @return	None.<br/>
+<br/>
+ @note    .<br/>
+<br/>
+</p>
+<h1>u32 receiver_threshold_read(receiver *InstancePtr);</h1>
+<p>
+ Read from threshold gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the threshold instance to operate on.<br/>
+<br/>
+ @return	u32<br/>
+
+ @note    .<br/>
+<br/>
+</p>
+<h1>void receiver_reset_time_sync_write(receiver *InstancePtr, u32 Data);</h1>
+<p>
+ Write to reset_time_sync gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the reset_time_sync instance to operate on.<br/>
+ @param	Data is value to be written to gateway reset_time_sync.<br/>
+<br/>
+ @return	None.<br/>
+<br/>
+ @note    .<br/>
+<br/>
+</p>
+<h1>u32 receiver_reset_time_sync_read(receiver *InstancePtr);</h1>
+<p>
+ Read from reset_time_sync gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the reset_time_sync instance to operate on.<br/>
+<br/>
+ @return	u32<br/>
+
+ @note    .<br/>
+<br/>
+</p>
+<h1>void receiver_reset_phase_sync_write(receiver *InstancePtr, u32 Data);</h1>
+<p>
+ Write to reset_phase_sync gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the reset_phase_sync instance to operate on.<br/>
+ @param	Data is value to be written to gateway reset_phase_sync.<br/>
+<br/>
+ @return	None.<br/>
+<br/>
+ @note    .<br/>
+<br/>
+</p>
+<h1>u32 receiver_reset_phase_sync_read(receiver *InstancePtr);</h1>
+<p>
+ Read from reset_phase_sync gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the reset_phase_sync instance to operate on.<br/>
+<br/>
+ @return	u32<br/>
+
+ @note    .<br/>
+<br/>
+</p>
+<h1>void receiver_reset_frame_sync_write(receiver *InstancePtr, u32 Data);</h1>
+<p>
+ Write to reset_frame_sync gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the reset_frame_sync instance to operate on.<br/>
+ @param	Data is value to be written to gateway reset_frame_sync.<br/>
+<br/>
+ @return	None.<br/>
+<br/>
+ @note    .<br/>
+<br/>
+</p>
+<h1>u32 receiver_reset_frame_sync_read(receiver *InstancePtr);</h1>
+<p>
+ Read from reset_frame_sync gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the reset_frame_sync instance to operate on.<br/>
+<br/>
+ @return	u32<br/>
+
+ @note    .<br/>
+<br/>
+</p>
+<h1>void receiver_observation_point_write(receiver *InstancePtr, u32 Data);</h1>
+<p>
+ Write to observation_point gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the observation_point instance to operate on.<br/>
+ @param	Data is value to be written to gateway observation_point.<br/>
+<br/>
+ @return	None.<br/>
+<br/>
+ @note    .<br/>
+<br/>
+</p>
+<h1>u32 receiver_observation_point_read(receiver *InstancePtr);</h1>
+<p>
+ Read from observation_point gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the observation_point instance to operate on.<br/>
+<br/>
+ @return	u32<br/>
+
+ @note    .<br/>
+<br/>
+</p>
+<h1>void receiver_modulation_write(receiver *InstancePtr, u32 Data);</h1>
+<p>
+ Write to modulation gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the modulation instance to operate on.<br/>
+ @param	Data is value to be written to gateway modulation.<br/>
+<br/>
+ @return	None.<br/>
+<br/>
+ @note    .<br/>
+<br/>
+</p>
+<h1>u32 receiver_modulation_read(receiver *InstancePtr);</h1>
+<p>
+ Read from modulation gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the modulation instance to operate on.<br/>
+<br/>
+ @return	u32<br/>
+
+ @note    .<br/>
+<br/>
+</p>
+<h1>void receiver_global_reset_sync_write(receiver *InstancePtr, u32 Data);</h1>
+<p>
+ Write to global_reset_sync gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the global_reset_sync instance to operate on.<br/>
+ @param	Data is value to be written to gateway global_reset_sync.<br/>
+<br/>
+ @return	None.<br/>
+<br/>
+ @note    .<br/>
+<br/>
+</p>
+<h1>u32 receiver_global_reset_sync_read(receiver *InstancePtr);</h1>
+<p>
+ Read from global_reset_sync gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the global_reset_sync instance to operate on.<br/>
+<br/>
+ @return	u32<br/>
+
+ @note    .<br/>
+<br/>
+</p>
+<h1>void receiver_enable_transfer_write(receiver *InstancePtr, u32 Data);</h1>
+<p>
+ Write to enable_transfer gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the enable_transfer instance to operate on.<br/>
+ @param	Data is value to be written to gateway enable_transfer.<br/>
+<br/>
+ @return	None.<br/>
+<br/>
+ @note    .<br/>
+<br/>
+</p>
+<h1>u32 receiver_enable_transfer_read(receiver *InstancePtr);</h1>
+<p>
+ Read from enable_transfer gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the enable_transfer instance to operate on.<br/>
+<br/>
+ @return	u32<br/>
+
+ @note    .<br/>
+<br/>
+</p>
+<h1>void receiver_coarse_passthrough_write(receiver *InstancePtr, u32 Data);</h1>
+<p>
+ Write to coarse_passthrough gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the coarse_passthrough instance to operate on.<br/>
+ @param	Data is value to be written to gateway coarse_passthrough.<br/>
+<br/>
+ @return	None.<br/>
+<br/>
+ @note    .<br/>
+<br/>
+</p>
+<h1>u32 receiver_coarse_passthrough_read(receiver *InstancePtr);</h1>
+<p>
+ Read from coarse_passthrough gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the coarse_passthrough instance to operate on.<br/>
+<br/>
+ @return	u32<br/>
+
+ @note    .<br/>
+<br/>
+</p>
+<h1>u32 receiver_bpsk_packet_count_read(receiver *InstancePtr);</h1>
+<p>
+ Read from bpsk_packet_count gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the bpsk_packet_count instance to operate on.<br/>
+<br/>
+ @return	u32<br/>
+
+ @note    .<br/>
+<br/>
+</p>
+<h1>u32 receiver_data_count_read(receiver *InstancePtr);</h1>
+<p>
+ Read from data_count gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the data_count instance to operate on.<br/>
+<br/>
+ @return	u32<br/>
+
+ @note    .<br/>
+<br/>
+</p>
+<h1>u8 receiver_frame_size_read(receiver *InstancePtr);</h1>
+<p>
+ Read from frame_size gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the frame_size instance to operate on.<br/>
+<br/>
+ @return	u8<br/>
+
+ @note    .<br/>
+<br/>
+</p>
+<h1>int receiver_freq_offset_read(receiver *InstancePtr);</h1>
+<p>
+ Read from freq_offset gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the freq_offset instance to operate on.<br/>
+<br/>
+ @return	int<br/>
+
+ @note    .<br/>
+<br/>
+</p>
+<h1>u8 receiver_packet_size_read(receiver *InstancePtr);</h1>
+<p>
+ Read from packet_size gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the packet_size instance to operate on.<br/>
+<br/>
+ @return	u8<br/>
+
+ @note    .<br/>
+<br/>
+</p>
+<h1>u32 receiver_qpsk_packet_count_read(receiver *InstancePtr);</h1>
+<p>
+ Read from qpsk_packet_count gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the qpsk_packet_count instance to operate on.<br/>
+<br/>
+ @return	u32<br/>
+
+ @note    .<br/>
+<br/>
+</p>
+</body>
+</html>
