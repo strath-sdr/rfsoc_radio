@@ -10,7 +10,7 @@ pip_name = 'rfsoc-radio'
 board = os.environ['BOARD']
 repo_board_folder = f'boards/{board}/{package_name}'
 board_notebooks_dir = os.environ['PYNQ_JUPYTER_NOTEBOOKS']
-board_project_dir = os.path.join(board_notebooks_dir, 'rfsoc-studio', 'bpsk-demonstrator')
+board_project_dir = os.path.join(board_notebooks_dir, 'rfsoc-studio', 'radio-demonstrator')
 
 data_files = []
 
@@ -22,7 +22,6 @@ def check_env():
         raise ValueError(
             "Directory {} does not exist.".format(board_notebooks_dir))
 
-
 # copy overlays to python package
 def copy_overlays():
     src_ol_dir = os.path.join(repo_board_folder, 'bitstream')
@@ -30,7 +29,6 @@ def copy_overlays():
     copy_tree(src_ol_dir, dst_ol_dir)
     data_files.extend(
         [os.path.join("..", dst_ol_dir, f) for f in os.listdir(dst_ol_dir)])
-
 
 # copy notebooks to jupyter home
 def copy_notebooks():
@@ -40,14 +38,10 @@ def copy_notebooks():
         shutil.rmtree(dst_nb_dir)
     copy_tree(src_nb_dir, dst_nb_dir)
 
-
-# copy driver to python package
-def copy_drivers():
-    src_dr_dir = os.path.join(repo_board_folder, 'drivers')
-    dst_dr_dir = os.path.join(package_name)
-    copy_tree(src_dr_dir, dst_dr_dir)
-    data_files.extend(
-        [os.path.join("..", dst_dr_dir, f) for f in os.listdir(dst_dr_dir)])
+def copy_common_images():
+    src_cm_dir = os.path.join(f'boards/common/', 'images')
+    dst_cm_dir = os.path.join(board_project_dir, 'images')
+    copy_tree(src_cm_dir, dst_cm_dir)
 
 # copy xrfclk file to python package (gen3 devices only)
 def copy_xrfclk():
@@ -60,13 +54,13 @@ def copy_xrfclk():
 
 check_env()
 copy_overlays()
-copy_drivers()
 copy_notebooks()
+copy_common_images()
 copy_xrfclk()
 
 setup(
     name="rfsoc_radio",
-    version='0.2.3',
+    version='0.9.0',
     install_requires=[
         'pynq==2.7',
     ],
@@ -78,4 +72,4 @@ setup(
     package_data={
         '': data_files,
     },
-    description="PYNQ example of using the RFSoC as a BPSK radio transceiver.")
+    description="PYNQ example of using the RFSoC as a radio transceiver.")
