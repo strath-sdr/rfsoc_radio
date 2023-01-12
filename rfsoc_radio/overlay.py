@@ -39,7 +39,7 @@ class RadioOverlay(Overlay):
         if board in GEN3:
             lmk_clk = 245.76
         elif board in GEN1:
-            lmx_clk = 122.88
+            lmk_clk = 122.88
         else:
             raise RuntimeError('Platform not supported.') # shouldn't get here
         
