@@ -43,6 +43,11 @@ def copy_common_images():
     dst_cm_dir = os.path.join(board_project_dir, 'images')
     copy_tree(src_cm_dir, dst_cm_dir)
 
+def copy_common_notebooks():
+    src_cm_dir = os.path.join(f'boards/common/', 'notebooks')
+    dst_cm_dir = os.path.join(board_project_dir)
+    copy_tree(src_cm_dir, dst_cm_dir)
+
 # copy xrfclk file to python package (gen3 devices only)
 def copy_xrfclk():
     src_at_dir = os.path.join(repo_board_folder, 'xrfclk')
@@ -56,6 +61,7 @@ check_env()
 copy_overlays()
 copy_notebooks()
 copy_common_images()
+copy_common_notebooks()
 copy_xrfclk()
 
 setup(
