@@ -23,6 +23,9 @@ class RadioOverlay(Overlay):
     
     def __init__(self, bitfile_name=None, init_rf_clks=True, run_test=True, debug_test=False, **kwargs):
         
+        GEN3 = ['RFSoC4x2']
+        GEN1 = ['RFSoC2x2', 'ZCU111']
+        
         # Generate default bitfile name
         if bitfile_name is None:
             this_dir = os.path.dirname(__file__)
@@ -30,6 +33,15 @@ class RadioOverlay(Overlay):
             
         # Create Overlay
         super().__init__(bitfile_name, **kwargs)
+        
+        # Determine board and set PLL appropriately
+        board = os.environ['BOARD']
+        if board in GEN3:
+            lmk_clk = 245.76
+        elif board in GEN1:
+            lmx_clk = 122.88
+        else:
+            raise RuntimeError('Platform not supported.') # shouldn't get here
         
         # Extract friendly dataconverter names
         self.rf = self.usp_rf_data_converter
@@ -40,7 +52,7 @@ class RadioOverlay(Overlay):
         
         # Start up LMX clock
         if init_rf_clks:
-            xrfclk.set_ref_clks(245.76, 409.6)
+            xrfclk.set_ref_clks(lmk_clk, 409.6)
             time.sleep(1)
         
         # Set ADC defaults
