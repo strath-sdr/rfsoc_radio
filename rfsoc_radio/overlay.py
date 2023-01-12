@@ -45,10 +45,23 @@ class RadioOverlay(Overlay):
         
         # Extract friendly dataconverter names
         self.rf = self.usp_rf_data_converter
-        self.dac_tile = self.rf.dac_tiles[2]
-        self.dac_block = self.dac_tile.blocks[0]
-        self.adc_tile = self.rf.adc_tiles[2]
-        self.adc_block = self.adc_tile.blocks[1]
+        if board == 'RFSoC4x2':
+            self.dac_tile = self.rf.dac_tiles[2]
+            self.dac_block = self.dac_tile.blocks[0]
+            self.adc_tile = self.rf.adc_tiles[2]
+            self.adc_block = self.adc_tile.blocks[1]
+        elif board == 'RFSoC2x2':
+            self.dac_tile = self.rf.dac_tiles[1]
+            self.dac_block = self.dac_tile.blocks[0]
+            self.adc_tile = self.rf.adc_tiles[2]
+            self.adc_block = self.adc_tile.blocks[0]
+        elif board == 'ZCU111':
+            self.dac_tile = self.rf.dac_tiles[1]
+            self.dac_block = self.dac_tile.blocks[2]
+            self.adc_tile = self.rf.adc_tiles[0]
+            self.adc_block = self.adc_tile.blocks[0]
+        else:
+            raise RuntimeError('Unknown error occurred.') # shouldn't get here
         
         # Start up LMX clock
         if init_rf_clks:
