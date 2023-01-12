@@ -101,6 +101,9 @@ class RadioOverlay(Overlay):
         # Run synchronisation tests
         if run_test:
             self._synchronisation_test(debug_test)
+        else:
+            self.radio_receiver.controller.modulation = 1
+            self.radio_transmitter.controller.modulation = 1
         self.radio_receiver.monitor.start()
         
         # Complete
