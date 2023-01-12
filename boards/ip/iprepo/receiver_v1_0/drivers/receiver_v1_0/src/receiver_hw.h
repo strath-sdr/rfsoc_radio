@@ -12,6 +12,7 @@
 #define RECEIVER_RESET_FRAME_SYNC 0x8/**< reset_frame_sync */
 #define RECEIVER_OBSERVATION_POINT 0x24/**< observation_point */
 #define RECEIVER_MODULATION 0x30/**< modulation */
+#define RECEIVER_GLOBAL_RESET_SYNC 0x38/**< global_reset_sync */
 #define RECEIVER_ENABLE_TRANSFER 0x1c/**< enable_transfer */
 #define RECEIVER_COARSE_PASSTHROUGH 0x2c/**< coarse_passthrough */
 #define RECEIVER_BPSK_PACKET_COUNT 0x34/**< bpsk_packet_count */

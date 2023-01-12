@@ -35,13 +35,14 @@
 //-----------------------------------------------------------------
 
 `include "conv_pkg.v"
-module receiver_axi_lite_interface_verilog#(parameter C_S_AXI_DATA_WIDTH = 32, C_S_AXI_ADDR_WIDTH = 6, C_S_NUM_OFFSETS = 14)(
+module receiver_axi_lite_interface_verilog#(parameter C_S_AXI_DATA_WIDTH = 32, C_S_AXI_ADDR_WIDTH = 6, C_S_NUM_OFFSETS = 15)(
   output wire[31:0] threshold,
   output wire[0:0] reset_time_sync,
   output wire[0:0] reset_phase_sync,
   output wire[0:0] reset_frame_sync,
   output wire[31:0] observation_point,
   output wire[0:0] modulation,
+  output wire[0:0] global_reset_sync,
   output wire[0:0] enable_transfer,
   output wire[0:0] coarse_passthrough,
   input wire[31:0] bpsk_packet_count,
@@ -127,22 +128,25 @@ assign slv_wire_array[5] = slv_reg_array[5];
 assign modulation = slv_wire_array[5][0];
 // map input 6
 assign slv_wire_array[6] = slv_reg_array[6];
-assign enable_transfer = slv_wire_array[6][0];
+assign global_reset_sync = slv_wire_array[6][0];
 // map input 7
 assign slv_wire_array[7] = slv_reg_array[7];
-assign coarse_passthrough = slv_wire_array[7][0];
-// map output 8
-assign slv_wire_array[8] = bpsk_packet_count[31:0];
+assign enable_transfer = slv_wire_array[7][0];
+// map input 8
+assign slv_wire_array[8] = slv_reg_array[8];
+assign coarse_passthrough = slv_wire_array[8][0];
 // map output 9
-assign slv_wire_array[9] = {20'h0, data_count[11:0]};
+assign slv_wire_array[9] = bpsk_packet_count[31:0];
 // map output 10
-assign slv_wire_array[10] = {24'h0, frame_size[7:0]};
+assign slv_wire_array[10] = {20'h0, data_count[11:0]};
 // map output 11
-assign slv_wire_array[11] = freq_offset[31:0];
+assign slv_wire_array[11] = {24'h0, frame_size[7:0]};
 // map output 12
-assign slv_wire_array[12] = {24'h0, packet_size[7:0]};
+assign slv_wire_array[12] = freq_offset[31:0];
 // map output 13
-assign slv_wire_array[13] = qpsk_packet_count[31:0];
+assign slv_wire_array[13] = {24'h0, packet_size[7:0]};
+// map output 14
+assign slv_wire_array[14] = qpsk_packet_count[31:0];
   initial
   begin
     slv_reg_array[0] = 32'd39;
@@ -150,9 +154,10 @@ assign slv_wire_array[13] = qpsk_packet_count[31:0];
     slv_reg_array[2] = 32'd1;
     slv_reg_array[3] = 32'd1;
     slv_reg_array[4] = 32'd0;
-    slv_reg_array[5] = 32'd1;
-    slv_reg_array[6] = 32'd0;
+    slv_reg_array[5] = 32'd0;
+    slv_reg_array[6] = 32'd1;
     slv_reg_array[7] = 32'd0;
+    slv_reg_array[8] = 32'd0;
   end
   always @(axi_awaddr)
   begin
@@ -163,14 +168,15 @@ assign slv_wire_array[13] = qpsk_packet_count[31:0];
       6'd8 : dec_w = 3;
       6'd36 : dec_w = 4;
       6'd48 : dec_w = 5;
-      6'd28 : dec_w = 6;
-      6'd44 : dec_w = 7;
-      6'd52 : dec_w = 8;
-      6'd32 : dec_w = 9;
-      6'd16 : dec_w = 10;
-      6'd40 : dec_w = 11;
-      6'd20 : dec_w = 12;
-      6'd24 : dec_w = 13;
+      6'd56 : dec_w = 6;
+      6'd28 : dec_w = 7;
+      6'd44 : dec_w = 8;
+      6'd52 : dec_w = 9;
+      6'd32 : dec_w = 10;
+      6'd16 : dec_w = 11;
+      6'd40 : dec_w = 12;
+      6'd20 : dec_w = 13;
+      6'd24 : dec_w = 14;
       default : dec_w = 0;
     endcase
   end
@@ -183,14 +189,15 @@ assign slv_wire_array[13] = qpsk_packet_count[31:0];
       6'd8 : dec_r = 3;
       6'd36 : dec_r = 4;
       6'd48 : dec_r = 5;
-      6'd28 : dec_r = 6;
-      6'd44 : dec_r = 7;
-      6'd52 : dec_r = 8;
-      6'd32 : dec_r = 9;
-      6'd16 : dec_r = 10;
-      6'd40 : dec_r = 11;
-      6'd20 : dec_r = 12;
-      6'd24 : dec_r = 13;
+      6'd56 : dec_r = 6;
+      6'd28 : dec_r = 7;
+      6'd44 : dec_r = 8;
+      6'd52 : dec_r = 9;
+      6'd32 : dec_r = 10;
+      6'd16 : dec_r = 11;
+      6'd40 : dec_r = 12;
+      6'd20 : dec_r = 13;
+      6'd24 : dec_r = 14;
       default : dec_r = 0;
     endcase
   end
@@ -242,9 +249,10 @@ assign slv_wire_array[13] = qpsk_packet_count[31:0];
         slv_reg_array[2] = 32'd1;
         slv_reg_array[3] = 32'd1;
         slv_reg_array[4] = 32'd0;
-        slv_reg_array[5] = 32'd1;
-        slv_reg_array[6] = 32'd0;
+        slv_reg_array[5] = 32'd0;
+        slv_reg_array[6] = 32'd1;
         slv_reg_array[7] = 32'd0;
+        slv_reg_array[8] = 32'd0;
       end
     else begin
       if (slv_reg_wren)

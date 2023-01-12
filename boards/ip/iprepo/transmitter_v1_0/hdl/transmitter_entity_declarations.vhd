@@ -88,42 +88,253 @@ end behavior;
 library xil_defaultlib;
 use xil_defaultlib.conv_pkg.all;
 
+---------------------------------------------------------------------
+--
+--  Filename      : xldsamp.vhd
+--
+--  Description   : VHDL description of a block that is inserted into the
+--                  data path to down sample the data betwen two blocks
+--                  where the period is different between two blocks.
+--
+--  Mod. History  : Changed clock timing on the down sampler.  The
+--                  destination enable is delayed by one system clock
+--                  cycle and held until the next consecutive source
+--                  enable pulse.  This change allows downsampler data
+--                  transitions to occur on the rising clock edge when
+--                  the destination ce is asserted.
+--                : Added optional latency is the downsampler.  Note, if
+--                  the latency is greater than 0, no shutter is used.
+--                : Removed valid bit logic from wrapper
+--
+--
+---------------------------------------------------------------------
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+
+-- synthesis translate_off
+library unisim;
+use unisim.vcomponents.all;
+-- synthesis translate_on
+
+entity transmitter_xldsamp is
+  generic (
+    d_width: integer := 12;
+    d_bin_pt: integer := 0;
+    d_arith: integer := xlUnsigned;
+    q_width: integer := 12;
+    q_bin_pt: integer := 0;
+    q_arith: integer := xlUnsigned;
+    en_width: integer := 1;
+    en_bin_pt: integer := 0;
+    en_arith: integer := xlUnsigned;
+    rst_width: integer := 1;
+    rst_bin_pt: integer := 0;
+    rst_arith: integer := xlUnsigned;
+    ds_ratio: integer := 2;
+    phase: integer := 0;
+    latency: integer := 1
+  );
+  port (
+    d: in std_logic_vector(d_width - 1 downto 0);
+    src_clk: in std_logic;
+    src_ce: in std_logic;
+    src_clr: in std_logic;
+    dest_clk: in std_logic;
+    dest_ce: in std_logic;
+    dest_clr: in std_logic;
+    en: in std_logic_vector(en_width - 1 downto 0);
+    rst: in std_logic_vector(rst_width - 1 downto 0);
+    q: out std_logic_vector(q_width - 1 downto 0)
+  );
+end transmitter_xldsamp;
+
+architecture struct of transmitter_xldsamp is
+  component synth_reg
+    generic (
+      width: integer := 16;
+      latency: integer := 5
+    );
+    port (
+      i: in std_logic_vector(width - 1 downto 0);
+      ce: in std_logic;
+      clr: in std_logic;
+      clk: in std_logic;
+      o: out std_logic_vector(width - 1 downto 0)
+    );
+  end component; -- end synth_reg
+
+  component synth_reg_reg
+     generic (width       : integer;
+              latency     : integer);
+     port (i       : in std_logic_vector(width-1 downto 0);
+           ce      : in std_logic;
+           clr     : in std_logic;
+           clk     : in std_logic;
+           o       : out std_logic_vector(width-1 downto 0));
+  end component;
+
+  component fdse
+    port (
+      q: out   std_ulogic;
+      d: in    std_ulogic;
+      c: in    std_ulogic;
+      s: in    std_ulogic;
+      ce: in    std_ulogic
+    );
+  end component; -- end fdse
+  attribute syn_black_box of fdse: component is true;
+  attribute fpga_dont_touch of fdse: component is "true";
+
+  signal adjusted_dest_ce: std_logic;
+  signal adjusted_dest_ce_w_en: std_logic;
+  signal dest_ce_w_en: std_logic;
+  signal smpld_d: std_logic_vector(d_width-1 downto 0);
+  signal sclr:std_logic;
+begin
+  -- An 'adjusted' destination clock enable signal must be generated for
+  -- the zero latency and double registered down-sampler implementations.
+  -- For both cases, it is necassary to adjust the timing of the clock
+  -- enable so that it is asserted at the start of the sample period,
+  -- instead of the end.  This is realized using an fdse prim. to register
+  -- the destination clock enable.  The fdse itself is enabled with the
+  -- source clock enable.  Enabling the fdse holds the adjusted CE high
+  -- for the duration of the fast sample period and is needed to satisfy
+  -- the multicycle constraint if the input data is running at a non-system
+  -- rate.
+  adjusted_ce_needed: if ((latency = 0) or (phase /= (ds_ratio - 1))) generate
+    dest_ce_reg: fdse
+      port map (
+        q => adjusted_dest_ce,
+        d => dest_ce,
+        c => src_clk,
+        s => sclr,
+        ce => src_ce
+      );
+  end generate; -- adjusted_ce_needed
+
+  -- A shutter (mux/reg pair) is used to implement a 0 latency downsampler.
+  -- The shutter uses the adjusted destination clock enable to select between
+  -- the current input and the sampled input.
+  latency_eq_0: if (latency = 0) generate
+    shutter_d_reg: synth_reg
+      generic map (
+        width => d_width,
+        latency => 1
+      )
+      port map (
+        i => d,
+        ce => adjusted_dest_ce,
+        clr => sclr,
+        clk => src_clk,
+        o => smpld_d
+      );
+
+    -- Mux selects current input value or register value.
+    shutter_mux: process (adjusted_dest_ce, d, smpld_d)
+    begin
+	  if adjusted_dest_ce = '0' then
+        q <= smpld_d;
+      else
+        q <= d;
+      end if;
+    end process; -- end select_mux
+  end generate; -- end latency_eq_0
+
+  -- A more efficient downsampler can be implemented if a latency > 0 is
+  -- allowed.  There are two possible implementations, depending on the
+  -- requested sampling phase.  A double register downsampler is needed
+  -- for all cases except when the sample phase is the last input frame
+  -- of the sample period.  In this case, only one register is needed.
+
+  latency_gt_0: if (latency > 0) generate
+    -- The first register in the double reg implementation is used to
+    -- sample the correct frame (phase) of the input data.  Both the
+    -- data and valid bit must be sampled.
+    dbl_reg_test: if (phase /= (ds_ratio-1)) generate
+        smpl_d_reg: synth_reg_reg
+          generic map (
+            width => d_width,
+            latency => 1
+          )
+          port map (
+            i => d,
+            ce => adjusted_dest_ce_w_en,
+            clr => sclr,
+            clk => src_clk,
+            o => smpld_d
+          );
+    end generate; -- end dbl_reg_test
+
+    sngl_reg_test: if (phase = (ds_ratio -1)) generate
+      smpld_d <= d;
+    end generate; -- sngl_reg_test
+
+    -- The latency pipe captures the sampled data and the END of the sample
+    -- period.  Note that if the requested sample phase is the last input
+    -- frame in the period, the first register (smpl_reg) is not needed.
+    latency_pipe: synth_reg_reg
+      generic map (
+        width => d_width,
+        latency => latency
+      )
+      port map (
+        i => smpld_d,
+        ce => dest_ce_w_en,
+        clr => sclr,
+        clk => dest_clk,
+        o => q
+      );
+  end generate; -- end latency_gt_0
+
+  -- Signal assignments
+  dest_ce_w_en <= dest_ce and en(0);
+  adjusted_dest_ce_w_en <= adjusted_dest_ce and en(0);
+  sclr <= (src_clr or rst(0)) and dest_ce;
+end architecture struct;
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_mux_a3b8477e84 is
+entity sysgen_inverter_dbb2213157 is
   port (
-    sel : in std_logic_vector((1 - 1) downto 0);
-    d0 : in std_logic_vector((1 - 1) downto 0);
-    d1 : in std_logic_vector((2 - 1) downto 0);
-    y : out std_logic_vector((2 - 1) downto 0);
+    ip : in std_logic_vector((1 - 1) downto 0);
+    op : out std_logic_vector((1 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_mux_a3b8477e84;
-architecture behavior of sysgen_mux_a3b8477e84
+end sysgen_inverter_dbb2213157;
+architecture behavior of sysgen_inverter_dbb2213157
 is
-  signal sel_1_20: std_logic;
-  signal d0_1_24: std_logic_vector((1 - 1) downto 0);
-  signal d1_1_27: std_logic_vector((2 - 1) downto 0);
-  signal sel_internal_2_1_convert: std_logic_vector((1 - 1) downto 0);
-  signal unregy_join_6_1: std_logic_vector((2 - 1) downto 0);
+  signal ip_1_26: boolean;
+  type array_type_op_mem_22_20 is array (0 to (1 - 1)) of boolean;
+  signal op_mem_22_20: array_type_op_mem_22_20 := (
+    0 => false);
+  signal op_mem_22_20_front_din: boolean;
+  signal op_mem_22_20_back: boolean;
+  signal op_mem_22_20_push_front_pop_back_en: std_logic;
+  signal internal_ip_12_1_bitnot: boolean;
 begin
-  sel_1_20 <= sel(0);
-  d0_1_24 <= d0;
-  d1_1_27 <= d1;
-  sel_internal_2_1_convert <= cast(std_logic_to_vector(sel_1_20), 0, 1, 0, xlUnsigned);
-  proc_switch_6_1: process (d0_1_24, d1_1_27, sel_internal_2_1_convert)
+  ip_1_26 <= ((ip) = "1");
+  op_mem_22_20_back <= op_mem_22_20(0);
+  proc_op_mem_22_20: process (clk)
   is
+    variable i: integer;
   begin
-    case sel_internal_2_1_convert is 
-      when "0" =>
-        unregy_join_6_1 <= cast(d0_1_24, 0, 2, 0, xlUnsigned);
-      when others =>
-        unregy_join_6_1 <= d1_1_27;
-    end case;
-  end process proc_switch_6_1;
-  y <= unregy_join_6_1;
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (op_mem_22_20_push_front_pop_back_en = '1')) then
+        op_mem_22_20(0) <= op_mem_22_20_front_din;
+      end if;
+    end if;
+  end process proc_op_mem_22_20;
+  internal_ip_12_1_bitnot <= ((not boolean_to_vector(ip_1_26)) = "1");
+  op_mem_22_20_push_front_pop_back_en <= '0';
+  op <= boolean_to_vector(internal_ip_12_1_bitnot);
 end behavior;
 
 library xil_defaultlib;
@@ -200,40 +411,39 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_inverter_dbb2213157 is
+entity sysgen_mux_a3b8477e84 is
   port (
-    ip : in std_logic_vector((1 - 1) downto 0);
-    op : out std_logic_vector((1 - 1) downto 0);
+    sel : in std_logic_vector((1 - 1) downto 0);
+    d0 : in std_logic_vector((1 - 1) downto 0);
+    d1 : in std_logic_vector((2 - 1) downto 0);
+    y : out std_logic_vector((2 - 1) downto 0);
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_inverter_dbb2213157;
-architecture behavior of sysgen_inverter_dbb2213157
+end sysgen_mux_a3b8477e84;
+architecture behavior of sysgen_mux_a3b8477e84
 is
-  signal ip_1_26: boolean;
-  type array_type_op_mem_22_20 is array (0 to (1 - 1)) of boolean;
-  signal op_mem_22_20: array_type_op_mem_22_20 := (
-    0 => false);
-  signal op_mem_22_20_front_din: boolean;
-  signal op_mem_22_20_back: boolean;
-  signal op_mem_22_20_push_front_pop_back_en: std_logic;
-  signal internal_ip_12_1_bitnot: boolean;
+  signal sel_1_20: std_logic;
+  signal d0_1_24: std_logic_vector((1 - 1) downto 0);
+  signal d1_1_27: std_logic_vector((2 - 1) downto 0);
+  signal sel_internal_2_1_convert: std_logic_vector((1 - 1) downto 0);
+  signal unregy_join_6_1: std_logic_vector((2 - 1) downto 0);
 begin
-  ip_1_26 <= ((ip) = "1");
-  op_mem_22_20_back <= op_mem_22_20(0);
-  proc_op_mem_22_20: process (clk)
+  sel_1_20 <= sel(0);
+  d0_1_24 <= d0;
+  d1_1_27 <= d1;
+  sel_internal_2_1_convert <= cast(std_logic_to_vector(sel_1_20), 0, 1, 0, xlUnsigned);
+  proc_switch_6_1: process (d0_1_24, d1_1_27, sel_internal_2_1_convert)
   is
-    variable i: integer;
   begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_22_20_push_front_pop_back_en = '1')) then
-        op_mem_22_20(0) <= op_mem_22_20_front_din;
-      end if;
-    end if;
-  end process proc_op_mem_22_20;
-  internal_ip_12_1_bitnot <= ((not boolean_to_vector(ip_1_26)) = "1");
-  op_mem_22_20_push_front_pop_back_en <= '0';
-  op <= boolean_to_vector(internal_ip_12_1_bitnot);
+    case sel_internal_2_1_convert is 
+      when "0" =>
+        unregy_join_6_1 <= cast(d0_1_24, 0, 2, 0, xlUnsigned);
+      when others =>
+        unregy_join_6_1 <= d1_1_27;
+    end case;
+  end process proc_switch_6_1;
+  y <= unregy_join_6_1;
 end behavior;
 
 library xil_defaultlib;
@@ -313,6 +523,112 @@ begin
 
 end architecture behavior;
 
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_concat_5c2d28a2d6 is
+  port (
+    in0 : in std_logic_vector((1 - 1) downto 0);
+    in1 : in std_logic_vector((8 - 1) downto 0);
+    y : out std_logic_vector((9 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_concat_5c2d28a2d6;
+architecture behavior of sysgen_concat_5c2d28a2d6
+is
+  signal in0_1_23: unsigned((1 - 1) downto 0);
+  signal in1_1_27: unsigned((8 - 1) downto 0);
+  signal y_2_1_concat: unsigned((9 - 1) downto 0);
+begin
+  in0_1_23 <= std_logic_vector_to_unsigned(in0);
+  in1_1_27 <= std_logic_vector_to_unsigned(in1);
+  y_2_1_concat <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(in0_1_23) & unsigned_to_std_logic_vector(in1_1_27));
+  y <= unsigned_to_std_logic_vector(y_2_1_concat);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_constant_30184e3d5a is
+  port (
+    op : out std_logic_vector((8 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_constant_30184e3d5a;
+architecture behavior of sysgen_constant_30184e3d5a
+is
+begin
+  op <= "00000000";
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_constant_9079c173aa is
+  port (
+    op : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_constant_9079c173aa;
+architecture behavior of sysgen_constant_9079c173aa
+is
+begin
+  op <= "0";
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_mux_dd7c3a5195 is
+  port (
+    sel : in std_logic_vector((1 - 1) downto 0);
+    d0 : in std_logic_vector((8 - 1) downto 0);
+    d1 : in std_logic_vector((8 - 1) downto 0);
+    y : out std_logic_vector((8 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_mux_dd7c3a5195;
+architecture behavior of sysgen_mux_dd7c3a5195
+is
+  signal sel_1_20: std_logic;
+  signal d0_1_24: std_logic_vector((8 - 1) downto 0);
+  signal d1_1_27: std_logic_vector((8 - 1) downto 0);
+  signal sel_internal_2_1_convert: std_logic_vector((1 - 1) downto 0);
+  signal unregy_join_6_1: std_logic_vector((8 - 1) downto 0);
+begin
+  sel_1_20 <= sel(0);
+  d0_1_24 <= d0;
+  d1_1_27 <= d1;
+  sel_internal_2_1_convert <= cast(std_logic_to_vector(sel_1_20), 0, 1, 0, xlUnsigned);
+  proc_switch_6_1: process (d0_1_24, d1_1_27, sel_internal_2_1_convert)
+  is
+  begin
+    case sel_internal_2_1_convert is 
+      when "0" =>
+        unregy_join_6_1 <= d0_1_24;
+      when others =>
+        unregy_join_6_1 <= d1_1_27;
+    end case;
+  end process proc_switch_6_1;
+  y <= unregy_join_6_1;
+end behavior;
 
 library xil_defaultlib;
 use xil_defaultlib.conv_pkg.all;
@@ -529,6 +845,71 @@ end architecture synth_behavioral;
 library xil_defaultlib;
 use xil_defaultlib.conv_pkg.all;
 
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_relational_6f5c4058bd is
+  port (
+    a : in std_logic_vector((10 - 1) downto 0);
+    b : in std_logic_vector((1 - 1) downto 0);
+    op : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_relational_6f5c4058bd;
+architecture behavior of sysgen_relational_6f5c4058bd
+is
+  signal a_1_31: unsigned((10 - 1) downto 0);
+  signal b_1_34: unsigned((1 - 1) downto 0);
+  signal cast_12_17: unsigned((10 - 1) downto 0);
+  signal result_12_3_rel: boolean;
+begin
+  a_1_31 <= std_logic_vector_to_unsigned(a);
+  b_1_34 <= std_logic_vector_to_unsigned(b);
+  cast_12_17 <= u2u_cast(b_1_34, 0, 10, 0);
+  result_12_3_rel <= a_1_31 = cast_12_17;
+  op <= boolean_to_vector(result_12_3_rel);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+---------------------------------------------------------------------
+--
+--  Filename      : xlslice.vhd
+--
+--  Description   : VHDL description of a block that sets the output to a
+--                  specified range of the input bits. The output is always
+--                  set to an unsigned type with it's binary point at zero.
+--
+---------------------------------------------------------------------
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.std_logic_arith.all;
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+
+entity transmitter_xlslice is
+    generic (
+        new_msb      : integer := 9;           -- position of new msb
+        new_lsb      : integer := 1;           -- position of new lsb
+        x_width      : integer := 16;          -- Width of x input
+        y_width      : integer := 8);          -- Width of y output
+    port (
+        x : in std_logic_vector (x_width-1 downto 0);
+        y : out std_logic_vector (y_width-1 downto 0));
+end transmitter_xlslice;
+
+architecture behavior of transmitter_xlslice is
+begin
+    y <= x(new_msb downto new_lsb);
+end  behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
 ----------------------------------------------------------------------------
 --
 --  Filename      : xlusamp.vhd
@@ -723,339 +1104,6 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_concat_5c2d28a2d6 is
-  port (
-    in0 : in std_logic_vector((1 - 1) downto 0);
-    in1 : in std_logic_vector((8 - 1) downto 0);
-    y : out std_logic_vector((9 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_concat_5c2d28a2d6;
-architecture behavior of sysgen_concat_5c2d28a2d6
-is
-  signal in0_1_23: unsigned((1 - 1) downto 0);
-  signal in1_1_27: unsigned((8 - 1) downto 0);
-  signal y_2_1_concat: unsigned((9 - 1) downto 0);
-begin
-  in0_1_23 <= std_logic_vector_to_unsigned(in0);
-  in1_1_27 <= std_logic_vector_to_unsigned(in1);
-  y_2_1_concat <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(in0_1_23) & unsigned_to_std_logic_vector(in1_1_27));
-  y <= unsigned_to_std_logic_vector(y_2_1_concat);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_constant_30184e3d5a is
-  port (
-    op : out std_logic_vector((8 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_constant_30184e3d5a;
-architecture behavior of sysgen_constant_30184e3d5a
-is
-begin
-  op <= "00000000";
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
----------------------------------------------------------------------
---
---  Filename      : xldsamp.vhd
---
---  Description   : VHDL description of a block that is inserted into the
---                  data path to down sample the data betwen two blocks
---                  where the period is different between two blocks.
---
---  Mod. History  : Changed clock timing on the down sampler.  The
---                  destination enable is delayed by one system clock
---                  cycle and held until the next consecutive source
---                  enable pulse.  This change allows downsampler data
---                  transitions to occur on the rising clock edge when
---                  the destination ce is asserted.
---                : Added optional latency is the downsampler.  Note, if
---                  the latency is greater than 0, no shutter is used.
---                : Removed valid bit logic from wrapper
---
---
----------------------------------------------------------------------
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-
--- synthesis translate_off
-library unisim;
-use unisim.vcomponents.all;
--- synthesis translate_on
-
-entity transmitter_xldsamp is
-  generic (
-    d_width: integer := 12;
-    d_bin_pt: integer := 0;
-    d_arith: integer := xlUnsigned;
-    q_width: integer := 12;
-    q_bin_pt: integer := 0;
-    q_arith: integer := xlUnsigned;
-    en_width: integer := 1;
-    en_bin_pt: integer := 0;
-    en_arith: integer := xlUnsigned;
-    rst_width: integer := 1;
-    rst_bin_pt: integer := 0;
-    rst_arith: integer := xlUnsigned;
-    ds_ratio: integer := 2;
-    phase: integer := 0;
-    latency: integer := 1
-  );
-  port (
-    d: in std_logic_vector(d_width - 1 downto 0);
-    src_clk: in std_logic;
-    src_ce: in std_logic;
-    src_clr: in std_logic;
-    dest_clk: in std_logic;
-    dest_ce: in std_logic;
-    dest_clr: in std_logic;
-    en: in std_logic_vector(en_width - 1 downto 0);
-    rst: in std_logic_vector(rst_width - 1 downto 0);
-    q: out std_logic_vector(q_width - 1 downto 0)
-  );
-end transmitter_xldsamp;
-
-architecture struct of transmitter_xldsamp is
-  component synth_reg
-    generic (
-      width: integer := 16;
-      latency: integer := 5
-    );
-    port (
-      i: in std_logic_vector(width - 1 downto 0);
-      ce: in std_logic;
-      clr: in std_logic;
-      clk: in std_logic;
-      o: out std_logic_vector(width - 1 downto 0)
-    );
-  end component; -- end synth_reg
-
-  component synth_reg_reg
-     generic (width       : integer;
-              latency     : integer);
-     port (i       : in std_logic_vector(width-1 downto 0);
-           ce      : in std_logic;
-           clr     : in std_logic;
-           clk     : in std_logic;
-           o       : out std_logic_vector(width-1 downto 0));
-  end component;
-
-  component fdse
-    port (
-      q: out   std_ulogic;
-      d: in    std_ulogic;
-      c: in    std_ulogic;
-      s: in    std_ulogic;
-      ce: in    std_ulogic
-    );
-  end component; -- end fdse
-  attribute syn_black_box of fdse: component is true;
-  attribute fpga_dont_touch of fdse: component is "true";
-
-  signal adjusted_dest_ce: std_logic;
-  signal adjusted_dest_ce_w_en: std_logic;
-  signal dest_ce_w_en: std_logic;
-  signal smpld_d: std_logic_vector(d_width-1 downto 0);
-  signal sclr:std_logic;
-begin
-  -- An 'adjusted' destination clock enable signal must be generated for
-  -- the zero latency and double registered down-sampler implementations.
-  -- For both cases, it is necassary to adjust the timing of the clock
-  -- enable so that it is asserted at the start of the sample period,
-  -- instead of the end.  This is realized using an fdse prim. to register
-  -- the destination clock enable.  The fdse itself is enabled with the
-  -- source clock enable.  Enabling the fdse holds the adjusted CE high
-  -- for the duration of the fast sample period and is needed to satisfy
-  -- the multicycle constraint if the input data is running at a non-system
-  -- rate.
-  adjusted_ce_needed: if ((latency = 0) or (phase /= (ds_ratio - 1))) generate
-    dest_ce_reg: fdse
-      port map (
-        q => adjusted_dest_ce,
-        d => dest_ce,
-        c => src_clk,
-        s => sclr,
-        ce => src_ce
-      );
-  end generate; -- adjusted_ce_needed
-
-  -- A shutter (mux/reg pair) is used to implement a 0 latency downsampler.
-  -- The shutter uses the adjusted destination clock enable to select between
-  -- the current input and the sampled input.
-  latency_eq_0: if (latency = 0) generate
-    shutter_d_reg: synth_reg
-      generic map (
-        width => d_width,
-        latency => 1
-      )
-      port map (
-        i => d,
-        ce => adjusted_dest_ce,
-        clr => sclr,
-        clk => src_clk,
-        o => smpld_d
-      );
-
-    -- Mux selects current input value or register value.
-    shutter_mux: process (adjusted_dest_ce, d, smpld_d)
-    begin
-	  if adjusted_dest_ce = '0' then
-        q <= smpld_d;
-      else
-        q <= d;
-      end if;
-    end process; -- end select_mux
-  end generate; -- end latency_eq_0
-
-  -- A more efficient downsampler can be implemented if a latency > 0 is
-  -- allowed.  There are two possible implementations, depending on the
-  -- requested sampling phase.  A double register downsampler is needed
-  -- for all cases except when the sample phase is the last input frame
-  -- of the sample period.  In this case, only one register is needed.
-
-  latency_gt_0: if (latency > 0) generate
-    -- The first register in the double reg implementation is used to
-    -- sample the correct frame (phase) of the input data.  Both the
-    -- data and valid bit must be sampled.
-    dbl_reg_test: if (phase /= (ds_ratio-1)) generate
-        smpl_d_reg: synth_reg_reg
-          generic map (
-            width => d_width,
-            latency => 1
-          )
-          port map (
-            i => d,
-            ce => adjusted_dest_ce_w_en,
-            clr => sclr,
-            clk => src_clk,
-            o => smpld_d
-          );
-    end generate; -- end dbl_reg_test
-
-    sngl_reg_test: if (phase = (ds_ratio -1)) generate
-      smpld_d <= d;
-    end generate; -- sngl_reg_test
-
-    -- The latency pipe captures the sampled data and the END of the sample
-    -- period.  Note that if the requested sample phase is the last input
-    -- frame in the period, the first register (smpl_reg) is not needed.
-    latency_pipe: synth_reg_reg
-      generic map (
-        width => d_width,
-        latency => latency
-      )
-      port map (
-        i => smpld_d,
-        ce => dest_ce_w_en,
-        clr => sclr,
-        clk => dest_clk,
-        o => q
-      );
-  end generate; -- end latency_gt_0
-
-  -- Signal assignments
-  dest_ce_w_en <= dest_ce and en(0);
-  adjusted_dest_ce_w_en <= adjusted_dest_ce and en(0);
-  sclr <= (src_clr or rst(0)) and dest_ce;
-end architecture struct;
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_mux_dd7c3a5195 is
-  port (
-    sel : in std_logic_vector((1 - 1) downto 0);
-    d0 : in std_logic_vector((8 - 1) downto 0);
-    d1 : in std_logic_vector((8 - 1) downto 0);
-    y : out std_logic_vector((8 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_mux_dd7c3a5195;
-architecture behavior of sysgen_mux_dd7c3a5195
-is
-  signal sel_1_20: std_logic;
-  signal d0_1_24: std_logic_vector((8 - 1) downto 0);
-  signal d1_1_27: std_logic_vector((8 - 1) downto 0);
-  signal sel_internal_2_1_convert: std_logic_vector((1 - 1) downto 0);
-  signal unregy_join_6_1: std_logic_vector((8 - 1) downto 0);
-begin
-  sel_1_20 <= sel(0);
-  d0_1_24 <= d0;
-  d1_1_27 <= d1;
-  sel_internal_2_1_convert <= cast(std_logic_to_vector(sel_1_20), 0, 1, 0, xlUnsigned);
-  proc_switch_6_1: process (d0_1_24, d1_1_27, sel_internal_2_1_convert)
-  is
-  begin
-    case sel_internal_2_1_convert is 
-      when "0" =>
-        unregy_join_6_1 <= d0_1_24;
-      when others =>
-        unregy_join_6_1 <= d1_1_27;
-    end case;
-  end process proc_switch_6_1;
-  y <= unregy_join_6_1;
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
----------------------------------------------------------------------
---
---  Filename      : xlslice.vhd
---
---  Description   : VHDL description of a block that sets the output to a
---                  specified range of the input bits. The output is always
---                  set to an unsigned type with it's binary point at zero.
---
----------------------------------------------------------------------
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.std_logic_arith.all;
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-
-entity transmitter_xlslice is
-    generic (
-        new_msb      : integer := 9;           -- position of new msb
-        new_lsb      : integer := 1;           -- position of new lsb
-        x_width      : integer := 16;          -- Width of x input
-        y_width      : integer := 8);          -- Width of y output
-    port (
-        x : in std_logic_vector (x_width-1 downto 0);
-        y : out std_logic_vector (y_width-1 downto 0));
-end transmitter_xlslice;
-
-architecture behavior of transmitter_xlslice is
-begin
-    y <= x(new_msb downto new_lsb);
-end  behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
 entity sysgen_constant_c35d4af7aa is
   port (
     op : out std_logic_vector((16 - 1) downto 0);
@@ -1105,33 +1153,6 @@ architecture behavior of sysgen_constant_f74b79fe84
 is
 begin
   op <= "0000000000000000";
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_logical_ef8eaf66a9 is
-  port (
-    d0 : in std_logic_vector((1 - 1) downto 0);
-    d1 : in std_logic_vector((1 - 1) downto 0);
-    y : out std_logic_vector((1 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_logical_ef8eaf66a9;
-architecture behavior of sysgen_logical_ef8eaf66a9
-is
-  signal d0_1_24: std_logic_vector((1 - 1) downto 0);
-  signal d1_1_27: std_logic_vector((1 - 1) downto 0);
-  signal fully_2_1_bit: std_logic_vector((1 - 1) downto 0);
-begin
-  d0_1_24 <= d0;
-  d1_1_27 <= d1;
-  fully_2_1_bit <= d0_1_24 xor d1_1_27;
-  y <= fully_2_1_bit;
 end behavior;
 
 library xil_defaultlib;
@@ -1258,716 +1279,7 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-entity sysgen_shift_46a06dc853 is
-  port (
-    ip : in std_logic_vector((50 - 1) downto 0);
-    op : out std_logic_vector((58 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_shift_46a06dc853;
-architecture behavior of sysgen_shift_46a06dc853
-is
-  signal ip_1_23: signed((50 - 1) downto 0);
-  type array_type_op_mem_46_20 is array (0 to (1 - 1)) of signed((58 - 1) downto 0);
-  signal op_mem_46_20: array_type_op_mem_46_20 := (
-    0 => "0000000000000000000000000000000000000000000000000000000000");
-  signal op_mem_46_20_front_din: signed((58 - 1) downto 0);
-  signal op_mem_46_20_back: signed((58 - 1) downto 0);
-  signal op_mem_46_20_push_front_pop_back_en: std_logic;
-  signal internal_ip_33_3_convert: signed((58 - 1) downto 0);
-begin
-  ip_1_23 <= std_logic_vector_to_signed(ip);
-  op_mem_46_20_back <= op_mem_46_20(0);
-  proc_op_mem_46_20: process (clk)
-  is
-    variable i: integer;
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (op_mem_46_20_push_front_pop_back_en = '1')) then
-        op_mem_46_20(0) <= op_mem_46_20_front_din;
-      end if;
-    end if;
-  end process proc_op_mem_46_20;
-  internal_ip_33_3_convert <= std_logic_vector_to_signed(convert_type(signed_to_std_logic_vector(ip_1_23), 50, 48, xlSigned, 58, 56, xlSigned, xlRound, xlSaturate));
-  op_mem_46_20_push_front_pop_back_en <= '0';
-  op <= signed_to_std_logic_vector(internal_ip_33_3_convert);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_lfsr_f8990da5d1 is
-  port (
-    en : in std_logic_vector((1 - 1) downto 0);
-    dout : out std_logic_vector((1 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_lfsr_f8990da5d1;
-architecture behavior of sysgen_lfsr_f8990da5d1
-is
-  signal en_1_63: boolean;
-  signal lfsr0_2_19_next: unsigned((1 - 1) downto 0);
-  signal lfsr0_2_19: unsigned((1 - 1) downto 0);
-  signal lfsr0_2_19_en: std_logic;
-  signal lfsr0_2_19_reg_i: std_logic_vector((1 - 1) downto 0);
-  signal lfsr0_2_19_reg_o: std_logic_vector((1 - 1) downto 0);
-  signal lfsr0_2_19_reg_ce: std_logic;
-  signal lfsr1_3_19_next: unsigned((1 - 1) downto 0);
-  signal lfsr1_3_19: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr1_3_19_en: std_logic;
-  signal lfsr2_4_19_next: unsigned((1 - 1) downto 0);
-  signal lfsr2_4_19: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr2_4_19_en: std_logic;
-  signal lfsr3_5_19_next: unsigned((1 - 1) downto 0);
-  signal lfsr3_5_19: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr3_5_19_en: std_logic;
-  signal lfsr4_6_19_next: unsigned((1 - 1) downto 0);
-  signal lfsr4_6_19: unsigned((1 - 1) downto 0);
-  signal lfsr4_6_19_en: std_logic;
-  signal lfsr4_6_19_reg_i: std_logic_vector((1 - 1) downto 0);
-  signal lfsr4_6_19_reg_o: std_logic_vector((1 - 1) downto 0);
-  signal lfsr4_6_19_reg_ce: std_logic;
-  signal lfsr5_7_19_next: unsigned((1 - 1) downto 0);
-  signal lfsr5_7_19: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr5_7_19_en: std_logic;
-  signal lfsr6_8_19_next: unsigned((1 - 1) downto 0);
-  signal lfsr6_8_19: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr6_8_19_en: std_logic;
-  signal lfsr7_9_19_next: unsigned((1 - 1) downto 0);
-  signal lfsr7_9_19: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr7_9_19_en: std_logic;
-  signal lfsr8_10_19_next: unsigned((1 - 1) downto 0);
-  signal lfsr8_10_19: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr8_10_19_en: std_logic;
-  signal lfsr9_11_19_next: unsigned((1 - 1) downto 0);
-  signal lfsr9_11_19: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr9_11_19_en: std_logic;
-  signal bit_27_35: unsigned((1 - 1) downto 0);
-  signal bit_27_22: unsigned((1 - 1) downto 0);
-  signal temp_27_1_bitnot: unsigned((1 - 1) downto 0);
-  signal lfsr1_join_25_1: unsigned((1 - 1) downto 0);
-  signal lfsr1_join_25_1_en: std_logic;
-  signal lfsr4_join_25_1: unsigned((1 - 1) downto 0);
-  signal lfsr4_join_25_1_en: std_logic;
-  signal lfsr7_join_25_1: unsigned((1 - 1) downto 0);
-  signal lfsr7_join_25_1_en: std_logic;
-  signal lfsr5_join_25_1: unsigned((1 - 1) downto 0);
-  signal lfsr5_join_25_1_en: std_logic;
-  signal lfsr9_join_25_1: unsigned((1 - 1) downto 0);
-  signal lfsr9_join_25_1_en: std_logic;
-  signal lfsr2_join_25_1: unsigned((1 - 1) downto 0);
-  signal lfsr2_join_25_1_en: std_logic;
-  signal lfsr0_join_25_1: unsigned((1 - 1) downto 0);
-  signal lfsr0_join_25_1_en: std_logic;
-  signal lfsr6_join_25_1: unsigned((1 - 1) downto 0);
-  signal lfsr6_join_25_1_en: std_logic;
-  signal lfsr3_join_25_1: unsigned((1 - 1) downto 0);
-  signal lfsr3_join_25_1_en: std_logic;
-  signal lfsr8_join_25_1: unsigned((1 - 1) downto 0);
-  signal lfsr8_join_25_1_en: std_logic;
-begin
-  en_1_63 <= ((en) = "1");
-  lfsr0_2_19_reg_i <= unsigned_to_std_logic_vector(lfsr0_2_19_next);
-  lfsr0_2_19 <= std_logic_vector_to_unsigned(lfsr0_2_19_reg_o);
-  lfsr0_2_19_reg_ce <= (ce and lfsr0_2_19_en);
-  lfsr0_2_19_reg_inst: entity work.synth_reg_w_init
-    generic map (
-      init_index => 2, 
-      init_value => b"1", 
-      latency => 1, 
-      width => 1)
-    port map (
-      ce => lfsr0_2_19_reg_ce, 
-      clk => clk, 
-      clr => clr, 
-      i => lfsr0_2_19_reg_i, 
-      o => lfsr0_2_19_reg_o);
-  proc_lfsr1_3_19: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr1_3_19_en = '1')) then
-        lfsr1_3_19 <= lfsr1_3_19_next;
-      end if;
-    end if;
-  end process proc_lfsr1_3_19;
-  proc_lfsr2_4_19: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr2_4_19_en = '1')) then
-        lfsr2_4_19 <= lfsr2_4_19_next;
-      end if;
-    end if;
-  end process proc_lfsr2_4_19;
-  proc_lfsr3_5_19: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr3_5_19_en = '1')) then
-        lfsr3_5_19 <= lfsr3_5_19_next;
-      end if;
-    end if;
-  end process proc_lfsr3_5_19;
-  lfsr4_6_19_reg_i <= unsigned_to_std_logic_vector(lfsr4_6_19_next);
-  lfsr4_6_19 <= std_logic_vector_to_unsigned(lfsr4_6_19_reg_o);
-  lfsr4_6_19_reg_ce <= (ce and lfsr4_6_19_en);
-  lfsr4_6_19_reg_inst: entity work.synth_reg_w_init
-    generic map (
-      init_index => 2, 
-      init_value => b"1", 
-      latency => 1, 
-      width => 1)
-    port map (
-      ce => lfsr4_6_19_reg_ce, 
-      clk => clk, 
-      clr => clr, 
-      i => lfsr4_6_19_reg_i, 
-      o => lfsr4_6_19_reg_o);
-  proc_lfsr5_7_19: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr5_7_19_en = '1')) then
-        lfsr5_7_19 <= lfsr5_7_19_next;
-      end if;
-    end if;
-  end process proc_lfsr5_7_19;
-  proc_lfsr6_8_19: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr6_8_19_en = '1')) then
-        lfsr6_8_19 <= lfsr6_8_19_next;
-      end if;
-    end if;
-  end process proc_lfsr6_8_19;
-  proc_lfsr7_9_19: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr7_9_19_en = '1')) then
-        lfsr7_9_19 <= lfsr7_9_19_next;
-      end if;
-    end if;
-  end process proc_lfsr7_9_19;
-  proc_lfsr8_10_19: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr8_10_19_en = '1')) then
-        lfsr8_10_19 <= lfsr8_10_19_next;
-      end if;
-    end if;
-  end process proc_lfsr8_10_19;
-  proc_lfsr9_11_19: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr9_11_19_en = '1')) then
-        lfsr9_11_19 <= lfsr9_11_19_next;
-      end if;
-    end if;
-  end process proc_lfsr9_11_19;
-  bit_27_35 <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(lfsr9_11_19) xor unsigned_to_std_logic_vector(lfsr4_6_19));
-  bit_27_22 <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(lfsr1_3_19) xor unsigned_to_std_logic_vector(bit_27_35));
-  temp_27_1_bitnot <= std_logic_vector_to_unsigned(not unsigned_to_std_logic_vector(bit_27_22));
-  proc_if_25_1: process (en_1_63, lfsr0_2_19, lfsr1_3_19, lfsr2_4_19, lfsr3_5_19, lfsr4_6_19, lfsr5_7_19, lfsr6_8_19, lfsr7_9_19, lfsr8_10_19, temp_27_1_bitnot)
-  is
-  begin
-    if en_1_63 then
-      lfsr1_join_25_1_en <= '1';
-    else 
-      lfsr1_join_25_1_en <= '0';
-    end if;
-    lfsr1_join_25_1 <= lfsr0_2_19;
-    if en_1_63 then
-      lfsr4_join_25_1_en <= '1';
-    else 
-      lfsr4_join_25_1_en <= '0';
-    end if;
-    lfsr4_join_25_1 <= lfsr3_5_19;
-    if en_1_63 then
-      lfsr7_join_25_1_en <= '1';
-    else 
-      lfsr7_join_25_1_en <= '0';
-    end if;
-    lfsr7_join_25_1 <= lfsr6_8_19;
-    if en_1_63 then
-      lfsr5_join_25_1_en <= '1';
-    else 
-      lfsr5_join_25_1_en <= '0';
-    end if;
-    lfsr5_join_25_1 <= lfsr4_6_19;
-    if en_1_63 then
-      lfsr9_join_25_1_en <= '1';
-    else 
-      lfsr9_join_25_1_en <= '0';
-    end if;
-    lfsr9_join_25_1 <= lfsr8_10_19;
-    if en_1_63 then
-      lfsr2_join_25_1_en <= '1';
-    else 
-      lfsr2_join_25_1_en <= '0';
-    end if;
-    lfsr2_join_25_1 <= lfsr1_3_19;
-    if en_1_63 then
-      lfsr0_join_25_1_en <= '1';
-    else 
-      lfsr0_join_25_1_en <= '0';
-    end if;
-    lfsr0_join_25_1 <= temp_27_1_bitnot;
-    if en_1_63 then
-      lfsr6_join_25_1_en <= '1';
-    else 
-      lfsr6_join_25_1_en <= '0';
-    end if;
-    lfsr6_join_25_1 <= lfsr5_7_19;
-    if en_1_63 then
-      lfsr3_join_25_1_en <= '1';
-    else 
-      lfsr3_join_25_1_en <= '0';
-    end if;
-    lfsr3_join_25_1 <= lfsr2_4_19;
-    if en_1_63 then
-      lfsr8_join_25_1_en <= '1';
-    else 
-      lfsr8_join_25_1_en <= '0';
-    end if;
-    lfsr8_join_25_1 <= lfsr7_9_19;
-  end process proc_if_25_1;
-  lfsr0_2_19_next <= temp_27_1_bitnot;
-  lfsr0_2_19_en <= lfsr0_join_25_1_en;
-  lfsr1_3_19_next <= lfsr0_2_19;
-  lfsr1_3_19_en <= lfsr1_join_25_1_en;
-  lfsr2_4_19_next <= lfsr1_3_19;
-  lfsr2_4_19_en <= lfsr2_join_25_1_en;
-  lfsr3_5_19_next <= lfsr2_4_19;
-  lfsr3_5_19_en <= lfsr3_join_25_1_en;
-  lfsr4_6_19_next <= lfsr3_5_19;
-  lfsr4_6_19_en <= lfsr4_join_25_1_en;
-  lfsr5_7_19_next <= lfsr4_6_19;
-  lfsr5_7_19_en <= lfsr5_join_25_1_en;
-  lfsr6_8_19_next <= lfsr5_7_19;
-  lfsr6_8_19_en <= lfsr6_join_25_1_en;
-  lfsr7_9_19_next <= lfsr6_8_19;
-  lfsr7_9_19_en <= lfsr7_join_25_1_en;
-  lfsr8_10_19_next <= lfsr7_9_19;
-  lfsr8_10_19_en <= lfsr8_join_25_1_en;
-  lfsr9_11_19_next <= lfsr8_10_19;
-  lfsr9_11_19_en <= lfsr9_join_25_1_en;
-  dout <= unsigned_to_std_logic_vector(lfsr9_11_19);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_lfsr_0bdcbb251b is
-  port (
-    en : in std_logic_vector((1 - 1) downto 0);
-    dout : out std_logic_vector((1 - 1) downto 0);
-    clk : in std_logic;
-    ce : in std_logic;
-    clr : in std_logic);
-end sysgen_lfsr_0bdcbb251b;
-architecture behavior of sysgen_lfsr_0bdcbb251b
-is
-  signal en_1_63: boolean;
-  signal lfsr0_2_19_next: unsigned((1 - 1) downto 0);
-  signal lfsr0_2_19: unsigned((1 - 1) downto 0);
-  signal lfsr0_2_19_en: std_logic;
-  signal lfsr0_2_19_reg_i: std_logic_vector((1 - 1) downto 0);
-  signal lfsr0_2_19_reg_o: std_logic_vector((1 - 1) downto 0);
-  signal lfsr0_2_19_reg_ce: std_logic;
-  signal lfsr1_3_19_next: unsigned((1 - 1) downto 0);
-  signal lfsr1_3_19: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr1_3_19_en: std_logic;
-  signal lfsr2_4_19_next: unsigned((1 - 1) downto 0);
-  signal lfsr2_4_19: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr2_4_19_en: std_logic;
-  signal lfsr3_5_19_next: unsigned((1 - 1) downto 0);
-  signal lfsr3_5_19: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr3_5_19_en: std_logic;
-  signal lfsr4_6_19_next: unsigned((1 - 1) downto 0);
-  signal lfsr4_6_19: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr4_6_19_en: std_logic;
-  signal lfsr5_7_19_next: unsigned((1 - 1) downto 0);
-  signal lfsr5_7_19: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr5_7_19_en: std_logic;
-  signal lfsr6_8_19_next: unsigned((1 - 1) downto 0);
-  signal lfsr6_8_19: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr6_8_19_en: std_logic;
-  signal lfsr7_9_19_next: unsigned((1 - 1) downto 0);
-  signal lfsr7_9_19: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr7_9_19_en: std_logic;
-  signal lfsr8_10_19_next: unsigned((1 - 1) downto 0);
-  signal lfsr8_10_19: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr8_10_19_en: std_logic;
-  signal lfsr9_11_19_next: unsigned((1 - 1) downto 0);
-  signal lfsr9_11_19: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr9_11_19_en: std_logic;
-  signal lfsr10_12_20_next: unsigned((1 - 1) downto 0);
-  signal lfsr10_12_20: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr10_12_20_en: std_logic;
-  signal lfsr11_13_20_next: unsigned((1 - 1) downto 0);
-  signal lfsr11_13_20: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr11_13_20_en: std_logic;
-  signal lfsr12_14_20_next: unsigned((1 - 1) downto 0);
-  signal lfsr12_14_20: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr12_14_20_en: std_logic;
-  signal lfsr13_15_20_next: unsigned((1 - 1) downto 0);
-  signal lfsr13_15_20: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr13_15_20_en: std_logic;
-  signal lfsr14_16_20_next: unsigned((1 - 1) downto 0);
-  signal lfsr14_16_20: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr14_16_20_en: std_logic;
-  signal lfsr15_17_20_next: unsigned((1 - 1) downto 0);
-  signal lfsr15_17_20: unsigned((1 - 1) downto 0) := "0";
-  signal lfsr15_17_20_en: std_logic;
-  signal bit_39_61: unsigned((1 - 1) downto 0);
-  signal bit_39_48: unsigned((1 - 1) downto 0);
-  signal bit_39_35: unsigned((1 - 1) downto 0);
-  signal bit_39_22: unsigned((1 - 1) downto 0);
-  signal temp_39_1_bitnot: unsigned((1 - 1) downto 0);
-  signal lfsr9_join_37_1: unsigned((1 - 1) downto 0);
-  signal lfsr9_join_37_1_en: std_logic;
-  signal lfsr2_join_37_1: unsigned((1 - 1) downto 0);
-  signal lfsr2_join_37_1_en: std_logic;
-  signal lfsr8_join_37_1: unsigned((1 - 1) downto 0);
-  signal lfsr8_join_37_1_en: std_logic;
-  signal lfsr10_join_37_1: unsigned((1 - 1) downto 0);
-  signal lfsr10_join_37_1_en: std_logic;
-  signal lfsr15_join_37_1: unsigned((1 - 1) downto 0);
-  signal lfsr15_join_37_1_en: std_logic;
-  signal lfsr6_join_37_1: unsigned((1 - 1) downto 0);
-  signal lfsr6_join_37_1_en: std_logic;
-  signal lfsr1_join_37_1: unsigned((1 - 1) downto 0);
-  signal lfsr1_join_37_1_en: std_logic;
-  signal lfsr13_join_37_1: unsigned((1 - 1) downto 0);
-  signal lfsr13_join_37_1_en: std_logic;
-  signal lfsr14_join_37_1: unsigned((1 - 1) downto 0);
-  signal lfsr14_join_37_1_en: std_logic;
-  signal lfsr12_join_37_1: unsigned((1 - 1) downto 0);
-  signal lfsr12_join_37_1_en: std_logic;
-  signal lfsr0_join_37_1: unsigned((1 - 1) downto 0);
-  signal lfsr0_join_37_1_en: std_logic;
-  signal lfsr11_join_37_1: unsigned((1 - 1) downto 0);
-  signal lfsr11_join_37_1_en: std_logic;
-  signal lfsr5_join_37_1: unsigned((1 - 1) downto 0);
-  signal lfsr5_join_37_1_en: std_logic;
-  signal lfsr3_join_37_1: unsigned((1 - 1) downto 0);
-  signal lfsr3_join_37_1_en: std_logic;
-  signal lfsr4_join_37_1: unsigned((1 - 1) downto 0);
-  signal lfsr4_join_37_1_en: std_logic;
-  signal lfsr7_join_37_1: unsigned((1 - 1) downto 0);
-  signal lfsr7_join_37_1_en: std_logic;
-begin
-  en_1_63 <= ((en) = "1");
-  lfsr0_2_19_reg_i <= unsigned_to_std_logic_vector(lfsr0_2_19_next);
-  lfsr0_2_19 <= std_logic_vector_to_unsigned(lfsr0_2_19_reg_o);
-  lfsr0_2_19_reg_ce <= (ce and lfsr0_2_19_en);
-  lfsr0_2_19_reg_inst: entity work.synth_reg_w_init
-    generic map (
-      init_index => 2, 
-      init_value => b"1", 
-      latency => 1, 
-      width => 1)
-    port map (
-      ce => lfsr0_2_19_reg_ce, 
-      clk => clk, 
-      clr => clr, 
-      i => lfsr0_2_19_reg_i, 
-      o => lfsr0_2_19_reg_o);
-  proc_lfsr1_3_19: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr1_3_19_en = '1')) then
-        lfsr1_3_19 <= lfsr1_3_19_next;
-      end if;
-    end if;
-  end process proc_lfsr1_3_19;
-  proc_lfsr2_4_19: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr2_4_19_en = '1')) then
-        lfsr2_4_19 <= lfsr2_4_19_next;
-      end if;
-    end if;
-  end process proc_lfsr2_4_19;
-  proc_lfsr3_5_19: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr3_5_19_en = '1')) then
-        lfsr3_5_19 <= lfsr3_5_19_next;
-      end if;
-    end if;
-  end process proc_lfsr3_5_19;
-  proc_lfsr4_6_19: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr4_6_19_en = '1')) then
-        lfsr4_6_19 <= lfsr4_6_19_next;
-      end if;
-    end if;
-  end process proc_lfsr4_6_19;
-  proc_lfsr5_7_19: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr5_7_19_en = '1')) then
-        lfsr5_7_19 <= lfsr5_7_19_next;
-      end if;
-    end if;
-  end process proc_lfsr5_7_19;
-  proc_lfsr6_8_19: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr6_8_19_en = '1')) then
-        lfsr6_8_19 <= lfsr6_8_19_next;
-      end if;
-    end if;
-  end process proc_lfsr6_8_19;
-  proc_lfsr7_9_19: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr7_9_19_en = '1')) then
-        lfsr7_9_19 <= lfsr7_9_19_next;
-      end if;
-    end if;
-  end process proc_lfsr7_9_19;
-  proc_lfsr8_10_19: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr8_10_19_en = '1')) then
-        lfsr8_10_19 <= lfsr8_10_19_next;
-      end if;
-    end if;
-  end process proc_lfsr8_10_19;
-  proc_lfsr9_11_19: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr9_11_19_en = '1')) then
-        lfsr9_11_19 <= lfsr9_11_19_next;
-      end if;
-    end if;
-  end process proc_lfsr9_11_19;
-  proc_lfsr10_12_20: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr10_12_20_en = '1')) then
-        lfsr10_12_20 <= lfsr10_12_20_next;
-      end if;
-    end if;
-  end process proc_lfsr10_12_20;
-  proc_lfsr11_13_20: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr11_13_20_en = '1')) then
-        lfsr11_13_20 <= lfsr11_13_20_next;
-      end if;
-    end if;
-  end process proc_lfsr11_13_20;
-  proc_lfsr12_14_20: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr12_14_20_en = '1')) then
-        lfsr12_14_20 <= lfsr12_14_20_next;
-      end if;
-    end if;
-  end process proc_lfsr12_14_20;
-  proc_lfsr13_15_20: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr13_15_20_en = '1')) then
-        lfsr13_15_20 <= lfsr13_15_20_next;
-      end if;
-    end if;
-  end process proc_lfsr13_15_20;
-  proc_lfsr14_16_20: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr14_16_20_en = '1')) then
-        lfsr14_16_20 <= lfsr14_16_20_next;
-      end if;
-    end if;
-  end process proc_lfsr14_16_20;
-  proc_lfsr15_17_20: process (clk)
-  is
-  begin
-    if (clk'event and (clk = '1')) then
-      if ((ce = '1') and (lfsr15_17_20_en = '1')) then
-        lfsr15_17_20 <= lfsr15_17_20_next;
-      end if;
-    end if;
-  end process proc_lfsr15_17_20;
-  bit_39_61 <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(lfsr15_17_20) xor unsigned_to_std_logic_vector(lfsr13_15_20));
-  bit_39_48 <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(lfsr4_6_19) xor unsigned_to_std_logic_vector(bit_39_61));
-  bit_39_35 <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(lfsr2_4_19) xor unsigned_to_std_logic_vector(bit_39_48));
-  bit_39_22 <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(lfsr1_3_19) xor unsigned_to_std_logic_vector(bit_39_35));
-  temp_39_1_bitnot <= std_logic_vector_to_unsigned(not unsigned_to_std_logic_vector(bit_39_22));
-  proc_if_37_1: process (en_1_63, lfsr0_2_19, lfsr10_12_20, lfsr11_13_20, lfsr12_14_20, lfsr13_15_20, lfsr14_16_20, lfsr1_3_19, lfsr2_4_19, lfsr3_5_19, lfsr4_6_19, lfsr5_7_19, lfsr6_8_19, lfsr7_9_19, lfsr8_10_19, lfsr9_11_19, temp_39_1_bitnot)
-  is
-  begin
-    if en_1_63 then
-      lfsr9_join_37_1_en <= '1';
-    else 
-      lfsr9_join_37_1_en <= '0';
-    end if;
-    lfsr9_join_37_1 <= lfsr8_10_19;
-    if en_1_63 then
-      lfsr2_join_37_1_en <= '1';
-    else 
-      lfsr2_join_37_1_en <= '0';
-    end if;
-    lfsr2_join_37_1 <= lfsr1_3_19;
-    if en_1_63 then
-      lfsr8_join_37_1_en <= '1';
-    else 
-      lfsr8_join_37_1_en <= '0';
-    end if;
-    lfsr8_join_37_1 <= lfsr7_9_19;
-    if en_1_63 then
-      lfsr10_join_37_1_en <= '1';
-    else 
-      lfsr10_join_37_1_en <= '0';
-    end if;
-    lfsr10_join_37_1 <= lfsr9_11_19;
-    if en_1_63 then
-      lfsr15_join_37_1_en <= '1';
-    else 
-      lfsr15_join_37_1_en <= '0';
-    end if;
-    lfsr15_join_37_1 <= lfsr14_16_20;
-    if en_1_63 then
-      lfsr6_join_37_1_en <= '1';
-    else 
-      lfsr6_join_37_1_en <= '0';
-    end if;
-    lfsr6_join_37_1 <= lfsr5_7_19;
-    if en_1_63 then
-      lfsr1_join_37_1_en <= '1';
-    else 
-      lfsr1_join_37_1_en <= '0';
-    end if;
-    lfsr1_join_37_1 <= lfsr0_2_19;
-    if en_1_63 then
-      lfsr13_join_37_1_en <= '1';
-    else 
-      lfsr13_join_37_1_en <= '0';
-    end if;
-    lfsr13_join_37_1 <= lfsr12_14_20;
-    if en_1_63 then
-      lfsr14_join_37_1_en <= '1';
-    else 
-      lfsr14_join_37_1_en <= '0';
-    end if;
-    lfsr14_join_37_1 <= lfsr13_15_20;
-    if en_1_63 then
-      lfsr12_join_37_1_en <= '1';
-    else 
-      lfsr12_join_37_1_en <= '0';
-    end if;
-    lfsr12_join_37_1 <= lfsr11_13_20;
-    if en_1_63 then
-      lfsr0_join_37_1_en <= '1';
-    else 
-      lfsr0_join_37_1_en <= '0';
-    end if;
-    lfsr0_join_37_1 <= temp_39_1_bitnot;
-    if en_1_63 then
-      lfsr11_join_37_1_en <= '1';
-    else 
-      lfsr11_join_37_1_en <= '0';
-    end if;
-    lfsr11_join_37_1 <= lfsr10_12_20;
-    if en_1_63 then
-      lfsr5_join_37_1_en <= '1';
-    else 
-      lfsr5_join_37_1_en <= '0';
-    end if;
-    lfsr5_join_37_1 <= lfsr4_6_19;
-    if en_1_63 then
-      lfsr3_join_37_1_en <= '1';
-    else 
-      lfsr3_join_37_1_en <= '0';
-    end if;
-    lfsr3_join_37_1 <= lfsr2_4_19;
-    if en_1_63 then
-      lfsr4_join_37_1_en <= '1';
-    else 
-      lfsr4_join_37_1_en <= '0';
-    end if;
-    lfsr4_join_37_1 <= lfsr3_5_19;
-    if en_1_63 then
-      lfsr7_join_37_1_en <= '1';
-    else 
-      lfsr7_join_37_1_en <= '0';
-    end if;
-    lfsr7_join_37_1 <= lfsr6_8_19;
-  end process proc_if_37_1;
-  lfsr0_2_19_next <= temp_39_1_bitnot;
-  lfsr0_2_19_en <= lfsr0_join_37_1_en;
-  lfsr1_3_19_next <= lfsr0_2_19;
-  lfsr1_3_19_en <= lfsr1_join_37_1_en;
-  lfsr2_4_19_next <= lfsr1_3_19;
-  lfsr2_4_19_en <= lfsr2_join_37_1_en;
-  lfsr3_5_19_next <= lfsr2_4_19;
-  lfsr3_5_19_en <= lfsr3_join_37_1_en;
-  lfsr4_6_19_next <= lfsr3_5_19;
-  lfsr4_6_19_en <= lfsr4_join_37_1_en;
-  lfsr5_7_19_next <= lfsr4_6_19;
-  lfsr5_7_19_en <= lfsr5_join_37_1_en;
-  lfsr6_8_19_next <= lfsr5_7_19;
-  lfsr6_8_19_en <= lfsr6_join_37_1_en;
-  lfsr7_9_19_next <= lfsr6_8_19;
-  lfsr7_9_19_en <= lfsr7_join_37_1_en;
-  lfsr8_10_19_next <= lfsr7_9_19;
-  lfsr8_10_19_en <= lfsr8_join_37_1_en;
-  lfsr9_11_19_next <= lfsr8_10_19;
-  lfsr9_11_19_en <= lfsr9_join_37_1_en;
-  lfsr10_12_20_next <= lfsr9_11_19;
-  lfsr10_12_20_en <= lfsr10_join_37_1_en;
-  lfsr11_13_20_next <= lfsr10_12_20;
-  lfsr11_13_20_en <= lfsr11_join_37_1_en;
-  lfsr12_14_20_next <= lfsr11_13_20;
-  lfsr12_14_20_en <= lfsr12_join_37_1_en;
-  lfsr13_15_20_next <= lfsr12_14_20;
-  lfsr13_15_20_en <= lfsr13_join_37_1_en;
-  lfsr14_16_20_next <= lfsr13_15_20;
-  lfsr14_16_20_en <= lfsr14_join_37_1_en;
-  lfsr15_17_20_next <= lfsr14_16_20;
-  lfsr15_17_20_en <= lfsr15_join_37_1_en;
-  dout <= unsigned_to_std_logic_vector(lfsr15_17_20);
-end behavior;
-
-library xil_defaultlib;
-use xil_defaultlib.conv_pkg.all;
-
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
-entity sysgen_mux_81a2b1b804 is
+entity sysgen_mux_6be70fcaaf is
   port (
     sel : in std_logic_vector((1 - 1) downto 0);
     d0 : in std_logic_vector((1 - 1) downto 0);
@@ -1976,18 +1288,35 @@ entity sysgen_mux_81a2b1b804 is
     clk : in std_logic;
     ce : in std_logic;
     clr : in std_logic);
-end sysgen_mux_81a2b1b804;
-architecture behavior of sysgen_mux_81a2b1b804
+end sysgen_mux_6be70fcaaf;
+architecture behavior of sysgen_mux_6be70fcaaf
 is
   signal sel_1_20: std_logic;
   signal d0_1_24: std_logic_vector((1 - 1) downto 0);
   signal d1_1_27: std_logic_vector((1 - 1) downto 0);
+  type array_type_pipe_16_22 is array (0 to (1 - 1)) of std_logic_vector((1 - 1) downto 0);
+  signal pipe_16_22: array_type_pipe_16_22 := (
+    0 => "0");
+  signal pipe_16_22_front_din: std_logic_vector((1 - 1) downto 0);
+  signal pipe_16_22_back: std_logic_vector((1 - 1) downto 0);
+  signal pipe_16_22_push_front_pop_back_en: std_logic;
   signal sel_internal_2_1_convert: std_logic_vector((1 - 1) downto 0);
   signal unregy_join_6_1: std_logic_vector((1 - 1) downto 0);
 begin
   sel_1_20 <= sel(0);
   d0_1_24 <= d0;
   d1_1_27 <= d1;
+  pipe_16_22_back <= pipe_16_22(0);
+  proc_pipe_16_22: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (pipe_16_22_push_front_pop_back_en = '1')) then
+        pipe_16_22(0) <= pipe_16_22_front_din;
+      end if;
+    end if;
+  end process proc_pipe_16_22;
   sel_internal_2_1_convert <= cast(std_logic_to_vector(sel_1_20), 0, 1, 0, xlUnsigned);
   proc_switch_6_1: process (d0_1_24, d1_1_27, sel_internal_2_1_convert)
   is
@@ -1999,7 +1328,107 @@ begin
         unregy_join_6_1 <= d1_1_27;
     end case;
   end process proc_switch_6_1;
-  y <= unregy_join_6_1;
+  pipe_16_22_front_din <= unregy_join_6_1;
+  pipe_16_22_push_front_pop_back_en <= '1';
+  y <= pipe_16_22_back;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_logical_ef8eaf66a9 is
+  port (
+    d0 : in std_logic_vector((1 - 1) downto 0);
+    d1 : in std_logic_vector((1 - 1) downto 0);
+    y : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_logical_ef8eaf66a9;
+architecture behavior of sysgen_logical_ef8eaf66a9
+is
+  signal d0_1_24: std_logic_vector((1 - 1) downto 0);
+  signal d1_1_27: std_logic_vector((1 - 1) downto 0);
+  signal fully_2_1_bit: std_logic_vector((1 - 1) downto 0);
+begin
+  d0_1_24 <= d0;
+  d1_1_27 <= d1;
+  fully_2_1_bit <= d0_1_24 xor d1_1_27;
+  y <= fully_2_1_bit;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+--$Header: /devl/xcs/repo/env/Jobs/sysgen/src/xbs/hdl_pkg/xlpassthrough.vhd,v 1.1 2005/07/11 00:50:55 alexc Exp $
+---------------------------------------------------------------------
+--
+--  Filename      : xlpassthrough.vhd
+--
+--  Created       : 07/09/05
+--
+--  Description   : VHDL description of a passthrough block
+--
+---------------------------------------------------------------------
+
+
+---------------------------------------------------------------------
+--
+--  Entity        : xlpassthrough
+--
+--  Architecture  : passthrough_arch
+--
+--  Description   : Top level VHDL description of passthrough block. 
+--
+---------------------------------------------------------------------
+library IEEE;
+use IEEE.std_logic_1164.all;
+use work.conv_pkg.all;
+
+entity xlpassthrough is
+    generic (
+        din_width    : integer := 16;            -- Width of input
+        dout_width   : integer := 16             -- Width of output
+        );
+    port (
+        din : in std_logic_vector (din_width-1 downto 0);
+        dout : out std_logic_vector (dout_width-1 downto 0));
+end xlpassthrough;
+
+architecture passthrough_arch of xlpassthrough is
+begin
+  dout <= din;
+end passthrough_arch;
+
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_concat_4b856b04a0 is
+  port (
+    in0 : in std_logic_vector((1 - 1) downto 0);
+    in1 : in std_logic_vector((1 - 1) downto 0);
+    y : out std_logic_vector((2 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_concat_4b856b04a0;
+architecture behavior of sysgen_concat_4b856b04a0
+is
+  signal in0_1_23: unsigned((1 - 1) downto 0);
+  signal in1_1_27: unsigned((1 - 1) downto 0);
+  signal y_2_1_concat: unsigned((2 - 1) downto 0);
+begin
+  in0_1_23 <= std_logic_vector_to_unsigned(in0);
+  in1_1_27 <= std_logic_vector_to_unsigned(in1);
+  y_2_1_concat <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(in0_1_23) & unsigned_to_std_logic_vector(in1_1_27));
+  y <= unsigned_to_std_logic_vector(y_2_1_concat);
 end behavior;
 
 library xil_defaultlib;
@@ -2185,8 +1614,953 @@ use xil_defaultlib.conv_pkg.all;
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
+entity sysgen_mux_7d29d07b59 is
+  port (
+    sel : in std_logic_vector((2 - 1) downto 0);
+    d0 : in std_logic_vector((1 - 1) downto 0);
+    d1 : in std_logic_vector((1 - 1) downto 0);
+    d2 : in std_logic_vector((1 - 1) downto 0);
+    d3 : in std_logic_vector((1 - 1) downto 0);
+    y : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_mux_7d29d07b59;
+architecture behavior of sysgen_mux_7d29d07b59
+is
+  signal sel_1_20: std_logic_vector((2 - 1) downto 0);
+  signal d0_1_24: std_logic;
+  signal d1_1_27: std_logic;
+  signal d2_1_30: std_logic;
+  signal d3_1_33: std_logic;
+  signal unregy_join_6_1: std_logic;
+begin
+  sel_1_20 <= sel;
+  d0_1_24 <= d0(0);
+  d1_1_27 <= d1(0);
+  d2_1_30 <= d2(0);
+  d3_1_33 <= d3(0);
+  proc_switch_6_1: process (d0_1_24, d1_1_27, d2_1_30, d3_1_33, sel_1_20)
+  is
+  begin
+    case sel_1_20 is 
+      when "00" =>
+        unregy_join_6_1 <= d0_1_24;
+      when "01" =>
+        unregy_join_6_1 <= d1_1_27;
+      when "10" =>
+        unregy_join_6_1 <= d2_1_30;
+      when others =>
+        unregy_join_6_1 <= d3_1_33;
+    end case;
+  end process proc_switch_6_1;
+  y <= std_logic_to_vector(unregy_join_6_1);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_shift_46a06dc853 is
+  port (
+    ip : in std_logic_vector((50 - 1) downto 0);
+    op : out std_logic_vector((58 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_shift_46a06dc853;
+architecture behavior of sysgen_shift_46a06dc853
+is
+  signal ip_1_23: signed((50 - 1) downto 0);
+  type array_type_op_mem_46_20 is array (0 to (1 - 1)) of signed((58 - 1) downto 0);
+  signal op_mem_46_20: array_type_op_mem_46_20 := (
+    0 => "0000000000000000000000000000000000000000000000000000000000");
+  signal op_mem_46_20_front_din: signed((58 - 1) downto 0);
+  signal op_mem_46_20_back: signed((58 - 1) downto 0);
+  signal op_mem_46_20_push_front_pop_back_en: std_logic;
+  signal internal_ip_33_3_convert: signed((58 - 1) downto 0);
+begin
+  ip_1_23 <= std_logic_vector_to_signed(ip);
+  op_mem_46_20_back <= op_mem_46_20(0);
+  proc_op_mem_46_20: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (op_mem_46_20_push_front_pop_back_en = '1')) then
+        op_mem_46_20(0) <= op_mem_46_20_front_din;
+      end if;
+    end if;
+  end process proc_op_mem_46_20;
+  internal_ip_33_3_convert <= std_logic_vector_to_signed(convert_type(signed_to_std_logic_vector(ip_1_23), 50, 48, xlSigned, 58, 56, xlSigned, xlRound, xlSaturate));
+  op_mem_46_20_push_front_pop_back_en <= '0';
+  op <= signed_to_std_logic_vector(internal_ip_33_3_convert);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_lfsr_581ccf288b is
+  port (
+    en : in std_logic_vector((1 - 1) downto 0);
+    dout : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_lfsr_581ccf288b;
+architecture behavior of sysgen_lfsr_581ccf288b
+is
+  signal en_1_63: boolean;
+  signal lfsr0_2_19_next: unsigned((1 - 1) downto 0);
+  signal lfsr0_2_19: unsigned((1 - 1) downto 0);
+  signal lfsr0_2_19_en: std_logic;
+  signal lfsr0_2_19_reg_i: std_logic_vector((1 - 1) downto 0);
+  signal lfsr0_2_19_reg_o: std_logic_vector((1 - 1) downto 0);
+  signal lfsr0_2_19_reg_ce: std_logic;
+  signal lfsr1_3_19_next: unsigned((1 - 1) downto 0);
+  signal lfsr1_3_19: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr1_3_19_en: std_logic;
+  signal lfsr2_4_19_next: unsigned((1 - 1) downto 0);
+  signal lfsr2_4_19: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr2_4_19_en: std_logic;
+  signal lfsr3_5_19_next: unsigned((1 - 1) downto 0);
+  signal lfsr3_5_19: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr3_5_19_en: std_logic;
+  signal lfsr4_6_19_next: unsigned((1 - 1) downto 0);
+  signal lfsr4_6_19: unsigned((1 - 1) downto 0);
+  signal lfsr4_6_19_en: std_logic;
+  signal lfsr4_6_19_reg_i: std_logic_vector((1 - 1) downto 0);
+  signal lfsr4_6_19_reg_o: std_logic_vector((1 - 1) downto 0);
+  signal lfsr4_6_19_reg_ce: std_logic;
+  signal lfsr5_7_19_next: unsigned((1 - 1) downto 0);
+  signal lfsr5_7_19: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr5_7_19_en: std_logic;
+  signal lfsr6_8_19_next: unsigned((1 - 1) downto 0);
+  signal lfsr6_8_19: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr6_8_19_en: std_logic;
+  signal lfsr7_9_19_next: unsigned((1 - 1) downto 0);
+  signal lfsr7_9_19: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr7_9_19_en: std_logic;
+  signal lfsr8_10_19_next: unsigned((1 - 1) downto 0);
+  signal lfsr8_10_19: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr8_10_19_en: std_logic;
+  signal lfsr9_11_19_next: unsigned((1 - 1) downto 0);
+  signal lfsr9_11_19: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr9_11_19_en: std_logic;
+  signal bit_27_35: unsigned((1 - 1) downto 0);
+  signal bit_27_22: unsigned((1 - 1) downto 0);
+  signal temp_27_1_bitnot: unsigned((1 - 1) downto 0);
+  signal lfsr6_join_25_1: unsigned((1 - 1) downto 0);
+  signal lfsr6_join_25_1_en: std_logic;
+  signal lfsr7_join_25_1: unsigned((1 - 1) downto 0);
+  signal lfsr7_join_25_1_en: std_logic;
+  signal lfsr8_join_25_1: unsigned((1 - 1) downto 0);
+  signal lfsr8_join_25_1_en: std_logic;
+  signal lfsr2_join_25_1: unsigned((1 - 1) downto 0);
+  signal lfsr2_join_25_1_en: std_logic;
+  signal lfsr5_join_25_1: unsigned((1 - 1) downto 0);
+  signal lfsr5_join_25_1_en: std_logic;
+  signal lfsr3_join_25_1: unsigned((1 - 1) downto 0);
+  signal lfsr3_join_25_1_en: std_logic;
+  signal lfsr0_join_25_1: unsigned((1 - 1) downto 0);
+  signal lfsr0_join_25_1_en: std_logic;
+  signal lfsr9_join_25_1: unsigned((1 - 1) downto 0);
+  signal lfsr9_join_25_1_en: std_logic;
+  signal lfsr4_join_25_1: unsigned((1 - 1) downto 0);
+  signal lfsr4_join_25_1_en: std_logic;
+  signal lfsr1_join_25_1: unsigned((1 - 1) downto 0);
+  signal lfsr1_join_25_1_en: std_logic;
+begin
+  en_1_63 <= ((en) = "1");
+  lfsr0_2_19_reg_i <= unsigned_to_std_logic_vector(lfsr0_2_19_next);
+  lfsr0_2_19 <= std_logic_vector_to_unsigned(lfsr0_2_19_reg_o);
+  lfsr0_2_19_reg_ce <= (ce and lfsr0_2_19_en);
+  lfsr0_2_19_reg_inst: entity work.synth_reg_w_init
+    generic map (
+      init_index => 2, 
+      init_value => b"1", 
+      latency => 1, 
+      width => 1)
+    port map (
+      ce => lfsr0_2_19_reg_ce, 
+      clk => clk, 
+      clr => clr, 
+      i => lfsr0_2_19_reg_i, 
+      o => lfsr0_2_19_reg_o);
+  proc_lfsr1_3_19: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr1_3_19_en = '1')) then
+        lfsr1_3_19 <= lfsr1_3_19_next;
+      end if;
+    end if;
+  end process proc_lfsr1_3_19;
+  proc_lfsr2_4_19: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr2_4_19_en = '1')) then
+        lfsr2_4_19 <= lfsr2_4_19_next;
+      end if;
+    end if;
+  end process proc_lfsr2_4_19;
+  proc_lfsr3_5_19: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr3_5_19_en = '1')) then
+        lfsr3_5_19 <= lfsr3_5_19_next;
+      end if;
+    end if;
+  end process proc_lfsr3_5_19;
+  lfsr4_6_19_reg_i <= unsigned_to_std_logic_vector(lfsr4_6_19_next);
+  lfsr4_6_19 <= std_logic_vector_to_unsigned(lfsr4_6_19_reg_o);
+  lfsr4_6_19_reg_ce <= (ce and lfsr4_6_19_en);
+  lfsr4_6_19_reg_inst: entity work.synth_reg_w_init
+    generic map (
+      init_index => 2, 
+      init_value => b"1", 
+      latency => 1, 
+      width => 1)
+    port map (
+      ce => lfsr4_6_19_reg_ce, 
+      clk => clk, 
+      clr => clr, 
+      i => lfsr4_6_19_reg_i, 
+      o => lfsr4_6_19_reg_o);
+  proc_lfsr5_7_19: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr5_7_19_en = '1')) then
+        lfsr5_7_19 <= lfsr5_7_19_next;
+      end if;
+    end if;
+  end process proc_lfsr5_7_19;
+  proc_lfsr6_8_19: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr6_8_19_en = '1')) then
+        lfsr6_8_19 <= lfsr6_8_19_next;
+      end if;
+    end if;
+  end process proc_lfsr6_8_19;
+  proc_lfsr7_9_19: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr7_9_19_en = '1')) then
+        lfsr7_9_19 <= lfsr7_9_19_next;
+      end if;
+    end if;
+  end process proc_lfsr7_9_19;
+  proc_lfsr8_10_19: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr8_10_19_en = '1')) then
+        lfsr8_10_19 <= lfsr8_10_19_next;
+      end if;
+    end if;
+  end process proc_lfsr8_10_19;
+  proc_lfsr9_11_19: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr9_11_19_en = '1')) then
+        lfsr9_11_19 <= lfsr9_11_19_next;
+      end if;
+    end if;
+  end process proc_lfsr9_11_19;
+  bit_27_35 <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(lfsr9_11_19) xor unsigned_to_std_logic_vector(lfsr4_6_19));
+  bit_27_22 <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(lfsr1_3_19) xor unsigned_to_std_logic_vector(bit_27_35));
+  temp_27_1_bitnot <= std_logic_vector_to_unsigned(not unsigned_to_std_logic_vector(bit_27_22));
+  proc_if_25_1: process (en_1_63, lfsr0_2_19, lfsr1_3_19, lfsr2_4_19, lfsr3_5_19, lfsr4_6_19, lfsr5_7_19, lfsr6_8_19, lfsr7_9_19, lfsr8_10_19, temp_27_1_bitnot)
+  is
+  begin
+    if en_1_63 then
+      lfsr6_join_25_1_en <= '1';
+    else 
+      lfsr6_join_25_1_en <= '0';
+    end if;
+    lfsr6_join_25_1 <= lfsr5_7_19;
+    if en_1_63 then
+      lfsr7_join_25_1_en <= '1';
+    else 
+      lfsr7_join_25_1_en <= '0';
+    end if;
+    lfsr7_join_25_1 <= lfsr6_8_19;
+    if en_1_63 then
+      lfsr8_join_25_1_en <= '1';
+    else 
+      lfsr8_join_25_1_en <= '0';
+    end if;
+    lfsr8_join_25_1 <= lfsr7_9_19;
+    if en_1_63 then
+      lfsr2_join_25_1_en <= '1';
+    else 
+      lfsr2_join_25_1_en <= '0';
+    end if;
+    lfsr2_join_25_1 <= lfsr1_3_19;
+    if en_1_63 then
+      lfsr5_join_25_1_en <= '1';
+    else 
+      lfsr5_join_25_1_en <= '0';
+    end if;
+    lfsr5_join_25_1 <= lfsr4_6_19;
+    if en_1_63 then
+      lfsr3_join_25_1_en <= '1';
+    else 
+      lfsr3_join_25_1_en <= '0';
+    end if;
+    lfsr3_join_25_1 <= lfsr2_4_19;
+    if en_1_63 then
+      lfsr0_join_25_1_en <= '1';
+    else 
+      lfsr0_join_25_1_en <= '0';
+    end if;
+    lfsr0_join_25_1 <= temp_27_1_bitnot;
+    if en_1_63 then
+      lfsr9_join_25_1_en <= '1';
+    else 
+      lfsr9_join_25_1_en <= '0';
+    end if;
+    lfsr9_join_25_1 <= lfsr8_10_19;
+    if en_1_63 then
+      lfsr4_join_25_1_en <= '1';
+    else 
+      lfsr4_join_25_1_en <= '0';
+    end if;
+    lfsr4_join_25_1 <= lfsr3_5_19;
+    if en_1_63 then
+      lfsr1_join_25_1_en <= '1';
+    else 
+      lfsr1_join_25_1_en <= '0';
+    end if;
+    lfsr1_join_25_1 <= lfsr0_2_19;
+  end process proc_if_25_1;
+  lfsr0_2_19_next <= temp_27_1_bitnot;
+  lfsr0_2_19_en <= lfsr0_join_25_1_en;
+  lfsr1_3_19_next <= lfsr0_2_19;
+  lfsr1_3_19_en <= lfsr1_join_25_1_en;
+  lfsr2_4_19_next <= lfsr1_3_19;
+  lfsr2_4_19_en <= lfsr2_join_25_1_en;
+  lfsr3_5_19_next <= lfsr2_4_19;
+  lfsr3_5_19_en <= lfsr3_join_25_1_en;
+  lfsr4_6_19_next <= lfsr3_5_19;
+  lfsr4_6_19_en <= lfsr4_join_25_1_en;
+  lfsr5_7_19_next <= lfsr4_6_19;
+  lfsr5_7_19_en <= lfsr5_join_25_1_en;
+  lfsr6_8_19_next <= lfsr5_7_19;
+  lfsr6_8_19_en <= lfsr6_join_25_1_en;
+  lfsr7_9_19_next <= lfsr6_8_19;
+  lfsr7_9_19_en <= lfsr7_join_25_1_en;
+  lfsr8_10_19_next <= lfsr7_9_19;
+  lfsr8_10_19_en <= lfsr8_join_25_1_en;
+  lfsr9_11_19_next <= lfsr8_10_19;
+  lfsr9_11_19_en <= lfsr9_join_25_1_en;
+  dout <= unsigned_to_std_logic_vector(lfsr9_11_19);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_lfsr_2355174a2f is
+  port (
+    en : in std_logic_vector((1 - 1) downto 0);
+    dout : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_lfsr_2355174a2f;
+architecture behavior of sysgen_lfsr_2355174a2f
+is
+  signal en_1_63: boolean;
+  signal lfsr0_2_19_next: unsigned((1 - 1) downto 0);
+  signal lfsr0_2_19: unsigned((1 - 1) downto 0);
+  signal lfsr0_2_19_en: std_logic;
+  signal lfsr0_2_19_reg_i: std_logic_vector((1 - 1) downto 0);
+  signal lfsr0_2_19_reg_o: std_logic_vector((1 - 1) downto 0);
+  signal lfsr0_2_19_reg_ce: std_logic;
+  signal lfsr1_3_19_next: unsigned((1 - 1) downto 0);
+  signal lfsr1_3_19: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr1_3_19_en: std_logic;
+  signal lfsr2_4_19_next: unsigned((1 - 1) downto 0);
+  signal lfsr2_4_19: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr2_4_19_en: std_logic;
+  signal lfsr3_5_19_next: unsigned((1 - 1) downto 0);
+  signal lfsr3_5_19: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr3_5_19_en: std_logic;
+  signal lfsr4_6_19_next: unsigned((1 - 1) downto 0);
+  signal lfsr4_6_19: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr4_6_19_en: std_logic;
+  signal lfsr5_7_19_next: unsigned((1 - 1) downto 0);
+  signal lfsr5_7_19: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr5_7_19_en: std_logic;
+  signal lfsr6_8_19_next: unsigned((1 - 1) downto 0);
+  signal lfsr6_8_19: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr6_8_19_en: std_logic;
+  signal lfsr7_9_19_next: unsigned((1 - 1) downto 0);
+  signal lfsr7_9_19: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr7_9_19_en: std_logic;
+  signal lfsr8_10_19_next: unsigned((1 - 1) downto 0);
+  signal lfsr8_10_19: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr8_10_19_en: std_logic;
+  signal lfsr9_11_19_next: unsigned((1 - 1) downto 0);
+  signal lfsr9_11_19: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr9_11_19_en: std_logic;
+  signal lfsr10_12_20_next: unsigned((1 - 1) downto 0);
+  signal lfsr10_12_20: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr10_12_20_en: std_logic;
+  signal lfsr11_13_20_next: unsigned((1 - 1) downto 0);
+  signal lfsr11_13_20: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr11_13_20_en: std_logic;
+  signal lfsr12_14_20_next: unsigned((1 - 1) downto 0);
+  signal lfsr12_14_20: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr12_14_20_en: std_logic;
+  signal lfsr13_15_20_next: unsigned((1 - 1) downto 0);
+  signal lfsr13_15_20: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr13_15_20_en: std_logic;
+  signal lfsr14_16_20_next: unsigned((1 - 1) downto 0);
+  signal lfsr14_16_20: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr14_16_20_en: std_logic;
+  signal lfsr15_17_20_next: unsigned((1 - 1) downto 0);
+  signal lfsr15_17_20: unsigned((1 - 1) downto 0) := "0";
+  signal lfsr15_17_20_en: std_logic;
+  signal bit_39_61: unsigned((1 - 1) downto 0);
+  signal bit_39_48: unsigned((1 - 1) downto 0);
+  signal bit_39_35: unsigned((1 - 1) downto 0);
+  signal bit_39_22: unsigned((1 - 1) downto 0);
+  signal temp_39_1_bitnot: unsigned((1 - 1) downto 0);
+  signal lfsr6_join_37_1: unsigned((1 - 1) downto 0);
+  signal lfsr6_join_37_1_en: std_logic;
+  signal lfsr1_join_37_1: unsigned((1 - 1) downto 0);
+  signal lfsr1_join_37_1_en: std_logic;
+  signal lfsr11_join_37_1: unsigned((1 - 1) downto 0);
+  signal lfsr11_join_37_1_en: std_logic;
+  signal lfsr0_join_37_1: unsigned((1 - 1) downto 0);
+  signal lfsr0_join_37_1_en: std_logic;
+  signal lfsr8_join_37_1: unsigned((1 - 1) downto 0);
+  signal lfsr8_join_37_1_en: std_logic;
+  signal lfsr13_join_37_1: unsigned((1 - 1) downto 0);
+  signal lfsr13_join_37_1_en: std_logic;
+  signal lfsr10_join_37_1: unsigned((1 - 1) downto 0);
+  signal lfsr10_join_37_1_en: std_logic;
+  signal lfsr7_join_37_1: unsigned((1 - 1) downto 0);
+  signal lfsr7_join_37_1_en: std_logic;
+  signal lfsr14_join_37_1: unsigned((1 - 1) downto 0);
+  signal lfsr14_join_37_1_en: std_logic;
+  signal lfsr4_join_37_1: unsigned((1 - 1) downto 0);
+  signal lfsr4_join_37_1_en: std_logic;
+  signal lfsr12_join_37_1: unsigned((1 - 1) downto 0);
+  signal lfsr12_join_37_1_en: std_logic;
+  signal lfsr9_join_37_1: unsigned((1 - 1) downto 0);
+  signal lfsr9_join_37_1_en: std_logic;
+  signal lfsr3_join_37_1: unsigned((1 - 1) downto 0);
+  signal lfsr3_join_37_1_en: std_logic;
+  signal lfsr5_join_37_1: unsigned((1 - 1) downto 0);
+  signal lfsr5_join_37_1_en: std_logic;
+  signal lfsr15_join_37_1: unsigned((1 - 1) downto 0);
+  signal lfsr15_join_37_1_en: std_logic;
+  signal lfsr2_join_37_1: unsigned((1 - 1) downto 0);
+  signal lfsr2_join_37_1_en: std_logic;
+begin
+  en_1_63 <= ((en) = "1");
+  lfsr0_2_19_reg_i <= unsigned_to_std_logic_vector(lfsr0_2_19_next);
+  lfsr0_2_19 <= std_logic_vector_to_unsigned(lfsr0_2_19_reg_o);
+  lfsr0_2_19_reg_ce <= (ce and lfsr0_2_19_en);
+  lfsr0_2_19_reg_inst: entity work.synth_reg_w_init
+    generic map (
+      init_index => 2, 
+      init_value => b"1", 
+      latency => 1, 
+      width => 1)
+    port map (
+      ce => lfsr0_2_19_reg_ce, 
+      clk => clk, 
+      clr => clr, 
+      i => lfsr0_2_19_reg_i, 
+      o => lfsr0_2_19_reg_o);
+  proc_lfsr1_3_19: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr1_3_19_en = '1')) then
+        lfsr1_3_19 <= lfsr1_3_19_next;
+      end if;
+    end if;
+  end process proc_lfsr1_3_19;
+  proc_lfsr2_4_19: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr2_4_19_en = '1')) then
+        lfsr2_4_19 <= lfsr2_4_19_next;
+      end if;
+    end if;
+  end process proc_lfsr2_4_19;
+  proc_lfsr3_5_19: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr3_5_19_en = '1')) then
+        lfsr3_5_19 <= lfsr3_5_19_next;
+      end if;
+    end if;
+  end process proc_lfsr3_5_19;
+  proc_lfsr4_6_19: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr4_6_19_en = '1')) then
+        lfsr4_6_19 <= lfsr4_6_19_next;
+      end if;
+    end if;
+  end process proc_lfsr4_6_19;
+  proc_lfsr5_7_19: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr5_7_19_en = '1')) then
+        lfsr5_7_19 <= lfsr5_7_19_next;
+      end if;
+    end if;
+  end process proc_lfsr5_7_19;
+  proc_lfsr6_8_19: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr6_8_19_en = '1')) then
+        lfsr6_8_19 <= lfsr6_8_19_next;
+      end if;
+    end if;
+  end process proc_lfsr6_8_19;
+  proc_lfsr7_9_19: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr7_9_19_en = '1')) then
+        lfsr7_9_19 <= lfsr7_9_19_next;
+      end if;
+    end if;
+  end process proc_lfsr7_9_19;
+  proc_lfsr8_10_19: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr8_10_19_en = '1')) then
+        lfsr8_10_19 <= lfsr8_10_19_next;
+      end if;
+    end if;
+  end process proc_lfsr8_10_19;
+  proc_lfsr9_11_19: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr9_11_19_en = '1')) then
+        lfsr9_11_19 <= lfsr9_11_19_next;
+      end if;
+    end if;
+  end process proc_lfsr9_11_19;
+  proc_lfsr10_12_20: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr10_12_20_en = '1')) then
+        lfsr10_12_20 <= lfsr10_12_20_next;
+      end if;
+    end if;
+  end process proc_lfsr10_12_20;
+  proc_lfsr11_13_20: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr11_13_20_en = '1')) then
+        lfsr11_13_20 <= lfsr11_13_20_next;
+      end if;
+    end if;
+  end process proc_lfsr11_13_20;
+  proc_lfsr12_14_20: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr12_14_20_en = '1')) then
+        lfsr12_14_20 <= lfsr12_14_20_next;
+      end if;
+    end if;
+  end process proc_lfsr12_14_20;
+  proc_lfsr13_15_20: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr13_15_20_en = '1')) then
+        lfsr13_15_20 <= lfsr13_15_20_next;
+      end if;
+    end if;
+  end process proc_lfsr13_15_20;
+  proc_lfsr14_16_20: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr14_16_20_en = '1')) then
+        lfsr14_16_20 <= lfsr14_16_20_next;
+      end if;
+    end if;
+  end process proc_lfsr14_16_20;
+  proc_lfsr15_17_20: process (clk)
+  is
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (lfsr15_17_20_en = '1')) then
+        lfsr15_17_20 <= lfsr15_17_20_next;
+      end if;
+    end if;
+  end process proc_lfsr15_17_20;
+  bit_39_61 <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(lfsr15_17_20) xor unsigned_to_std_logic_vector(lfsr13_15_20));
+  bit_39_48 <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(lfsr4_6_19) xor unsigned_to_std_logic_vector(bit_39_61));
+  bit_39_35 <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(lfsr2_4_19) xor unsigned_to_std_logic_vector(bit_39_48));
+  bit_39_22 <= std_logic_vector_to_unsigned(unsigned_to_std_logic_vector(lfsr1_3_19) xor unsigned_to_std_logic_vector(bit_39_35));
+  temp_39_1_bitnot <= std_logic_vector_to_unsigned(not unsigned_to_std_logic_vector(bit_39_22));
+  proc_if_37_1: process (en_1_63, lfsr0_2_19, lfsr10_12_20, lfsr11_13_20, lfsr12_14_20, lfsr13_15_20, lfsr14_16_20, lfsr1_3_19, lfsr2_4_19, lfsr3_5_19, lfsr4_6_19, lfsr5_7_19, lfsr6_8_19, lfsr7_9_19, lfsr8_10_19, lfsr9_11_19, temp_39_1_bitnot)
+  is
+  begin
+    if en_1_63 then
+      lfsr6_join_37_1_en <= '1';
+    else 
+      lfsr6_join_37_1_en <= '0';
+    end if;
+    lfsr6_join_37_1 <= lfsr5_7_19;
+    if en_1_63 then
+      lfsr1_join_37_1_en <= '1';
+    else 
+      lfsr1_join_37_1_en <= '0';
+    end if;
+    lfsr1_join_37_1 <= lfsr0_2_19;
+    if en_1_63 then
+      lfsr11_join_37_1_en <= '1';
+    else 
+      lfsr11_join_37_1_en <= '0';
+    end if;
+    lfsr11_join_37_1 <= lfsr10_12_20;
+    if en_1_63 then
+      lfsr0_join_37_1_en <= '1';
+    else 
+      lfsr0_join_37_1_en <= '0';
+    end if;
+    lfsr0_join_37_1 <= temp_39_1_bitnot;
+    if en_1_63 then
+      lfsr8_join_37_1_en <= '1';
+    else 
+      lfsr8_join_37_1_en <= '0';
+    end if;
+    lfsr8_join_37_1 <= lfsr7_9_19;
+    if en_1_63 then
+      lfsr13_join_37_1_en <= '1';
+    else 
+      lfsr13_join_37_1_en <= '0';
+    end if;
+    lfsr13_join_37_1 <= lfsr12_14_20;
+    if en_1_63 then
+      lfsr10_join_37_1_en <= '1';
+    else 
+      lfsr10_join_37_1_en <= '0';
+    end if;
+    lfsr10_join_37_1 <= lfsr9_11_19;
+    if en_1_63 then
+      lfsr7_join_37_1_en <= '1';
+    else 
+      lfsr7_join_37_1_en <= '0';
+    end if;
+    lfsr7_join_37_1 <= lfsr6_8_19;
+    if en_1_63 then
+      lfsr14_join_37_1_en <= '1';
+    else 
+      lfsr14_join_37_1_en <= '0';
+    end if;
+    lfsr14_join_37_1 <= lfsr13_15_20;
+    if en_1_63 then
+      lfsr4_join_37_1_en <= '1';
+    else 
+      lfsr4_join_37_1_en <= '0';
+    end if;
+    lfsr4_join_37_1 <= lfsr3_5_19;
+    if en_1_63 then
+      lfsr12_join_37_1_en <= '1';
+    else 
+      lfsr12_join_37_1_en <= '0';
+    end if;
+    lfsr12_join_37_1 <= lfsr11_13_20;
+    if en_1_63 then
+      lfsr9_join_37_1_en <= '1';
+    else 
+      lfsr9_join_37_1_en <= '0';
+    end if;
+    lfsr9_join_37_1 <= lfsr8_10_19;
+    if en_1_63 then
+      lfsr3_join_37_1_en <= '1';
+    else 
+      lfsr3_join_37_1_en <= '0';
+    end if;
+    lfsr3_join_37_1 <= lfsr2_4_19;
+    if en_1_63 then
+      lfsr5_join_37_1_en <= '1';
+    else 
+      lfsr5_join_37_1_en <= '0';
+    end if;
+    lfsr5_join_37_1 <= lfsr4_6_19;
+    if en_1_63 then
+      lfsr15_join_37_1_en <= '1';
+    else 
+      lfsr15_join_37_1_en <= '0';
+    end if;
+    lfsr15_join_37_1 <= lfsr14_16_20;
+    if en_1_63 then
+      lfsr2_join_37_1_en <= '1';
+    else 
+      lfsr2_join_37_1_en <= '0';
+    end if;
+    lfsr2_join_37_1 <= lfsr1_3_19;
+  end process proc_if_37_1;
+  lfsr0_2_19_next <= temp_39_1_bitnot;
+  lfsr0_2_19_en <= lfsr0_join_37_1_en;
+  lfsr1_3_19_next <= lfsr0_2_19;
+  lfsr1_3_19_en <= lfsr1_join_37_1_en;
+  lfsr2_4_19_next <= lfsr1_3_19;
+  lfsr2_4_19_en <= lfsr2_join_37_1_en;
+  lfsr3_5_19_next <= lfsr2_4_19;
+  lfsr3_5_19_en <= lfsr3_join_37_1_en;
+  lfsr4_6_19_next <= lfsr3_5_19;
+  lfsr4_6_19_en <= lfsr4_join_37_1_en;
+  lfsr5_7_19_next <= lfsr4_6_19;
+  lfsr5_7_19_en <= lfsr5_join_37_1_en;
+  lfsr6_8_19_next <= lfsr5_7_19;
+  lfsr6_8_19_en <= lfsr6_join_37_1_en;
+  lfsr7_9_19_next <= lfsr6_8_19;
+  lfsr7_9_19_en <= lfsr7_join_37_1_en;
+  lfsr8_10_19_next <= lfsr7_9_19;
+  lfsr8_10_19_en <= lfsr8_join_37_1_en;
+  lfsr9_11_19_next <= lfsr8_10_19;
+  lfsr9_11_19_en <= lfsr9_join_37_1_en;
+  lfsr10_12_20_next <= lfsr9_11_19;
+  lfsr10_12_20_en <= lfsr10_join_37_1_en;
+  lfsr11_13_20_next <= lfsr10_12_20;
+  lfsr11_13_20_en <= lfsr11_join_37_1_en;
+  lfsr12_14_20_next <= lfsr11_13_20;
+  lfsr12_14_20_en <= lfsr12_join_37_1_en;
+  lfsr13_15_20_next <= lfsr12_14_20;
+  lfsr13_15_20_en <= lfsr13_join_37_1_en;
+  lfsr14_16_20_next <= lfsr13_15_20;
+  lfsr14_16_20_en <= lfsr14_join_37_1_en;
+  lfsr15_17_20_next <= lfsr14_16_20;
+  lfsr15_17_20_en <= lfsr15_join_37_1_en;
+  dout <= unsigned_to_std_logic_vector(lfsr15_17_20);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_mux_81a2b1b804 is
+  port (
+    sel : in std_logic_vector((1 - 1) downto 0);
+    d0 : in std_logic_vector((1 - 1) downto 0);
+    d1 : in std_logic_vector((1 - 1) downto 0);
+    y : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_mux_81a2b1b804;
+architecture behavior of sysgen_mux_81a2b1b804
+is
+  signal sel_1_20: std_logic;
+  signal d0_1_24: std_logic_vector((1 - 1) downto 0);
+  signal d1_1_27: std_logic_vector((1 - 1) downto 0);
+  signal sel_internal_2_1_convert: std_logic_vector((1 - 1) downto 0);
+  signal unregy_join_6_1: std_logic_vector((1 - 1) downto 0);
+begin
+  sel_1_20 <= sel(0);
+  d0_1_24 <= d0;
+  d1_1_27 <= d1;
+  sel_internal_2_1_convert <= cast(std_logic_to_vector(sel_1_20), 0, 1, 0, xlUnsigned);
+  proc_switch_6_1: process (d0_1_24, d1_1_27, sel_internal_2_1_convert)
+  is
+  begin
+    case sel_internal_2_1_convert is 
+      when "0" =>
+        unregy_join_6_1 <= d0_1_24;
+      when others =>
+        unregy_join_6_1 <= d1_1_27;
+    end case;
+  end process proc_switch_6_1;
+  y <= unregy_join_6_1;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_mux_b4753900d3 is
+  port (
+    sel : in std_logic_vector((2 - 1) downto 0);
+    d0 : in std_logic_vector((16 - 1) downto 0);
+    d1 : in std_logic_vector((16 - 1) downto 0);
+    d2 : in std_logic_vector((16 - 1) downto 0);
+    y : out std_logic_vector((16 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_mux_b4753900d3;
+architecture behavior of sysgen_mux_b4753900d3
+is
+  signal sel_1_20: std_logic_vector((2 - 1) downto 0);
+  signal d0_1_24: std_logic_vector((16 - 1) downto 0);
+  signal d1_1_27: std_logic_vector((16 - 1) downto 0);
+  signal d2_1_30: std_logic_vector((16 - 1) downto 0);
+  type array_type_pipe_18_22 is array (0 to (1 - 1)) of std_logic_vector((16 - 1) downto 0);
+  signal pipe_18_22: array_type_pipe_18_22 := (
+    0 => "0000000000000000");
+  signal pipe_18_22_front_din: std_logic_vector((16 - 1) downto 0);
+  signal pipe_18_22_back: std_logic_vector((16 - 1) downto 0);
+  signal pipe_18_22_push_front_pop_back_en: std_logic;
+  signal unregy_join_6_1: std_logic_vector((16 - 1) downto 0);
+begin
+  sel_1_20 <= sel;
+  d0_1_24 <= d0;
+  d1_1_27 <= d1;
+  d2_1_30 <= d2;
+  pipe_18_22_back <= pipe_18_22(0);
+  proc_pipe_18_22: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (pipe_18_22_push_front_pop_back_en = '1')) then
+        pipe_18_22(0) <= pipe_18_22_front_din;
+      end if;
+    end if;
+  end process proc_pipe_18_22;
+  proc_switch_6_1: process (d0_1_24, d1_1_27, d2_1_30, sel_1_20)
+  is
+  begin
+    case sel_1_20 is 
+      when "00" =>
+        unregy_join_6_1 <= d0_1_24;
+      when "01" =>
+        unregy_join_6_1 <= d1_1_27;
+      when others =>
+        unregy_join_6_1 <= d2_1_30;
+    end case;
+  end process proc_switch_6_1;
+  pipe_18_22_front_din <= unregy_join_6_1;
+  pipe_18_22_push_front_pop_back_en <= '1';
+  y <= pipe_18_22_back;
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_mux_7a215d4692 is
+  port (
+    sel : in std_logic_vector((2 - 1) downto 0);
+    d0 : in std_logic_vector((1 - 1) downto 0);
+    d1 : in std_logic_vector((1 - 1) downto 0);
+    d2 : in std_logic_vector((1 - 1) downto 0);
+    y : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_mux_7a215d4692;
+architecture behavior of sysgen_mux_7a215d4692
+is
+  signal sel_1_20: std_logic_vector((2 - 1) downto 0);
+  signal d0_1_24: std_logic;
+  signal d1_1_27: std_logic;
+  signal d2_1_30: std_logic;
+  type array_type_pipe_18_22 is array (0 to (1 - 1)) of std_logic;
+  signal pipe_18_22: array_type_pipe_18_22 := (
+    0 => '0');
+  signal pipe_18_22_front_din: std_logic;
+  signal pipe_18_22_back: std_logic;
+  signal pipe_18_22_push_front_pop_back_en: std_logic;
+  signal unregy_join_6_1: std_logic;
+begin
+  sel_1_20 <= sel;
+  d0_1_24 <= d0(0);
+  d1_1_27 <= d1(0);
+  d2_1_30 <= d2(0);
+  pipe_18_22_back <= pipe_18_22(0);
+  proc_pipe_18_22: process (clk)
+  is
+    variable i: integer;
+  begin
+    if (clk'event and (clk = '1')) then
+      if ((ce = '1') and (pipe_18_22_push_front_pop_back_en = '1')) then
+        pipe_18_22(0) <= pipe_18_22_front_din;
+      end if;
+    end if;
+  end process proc_pipe_18_22;
+  proc_switch_6_1: process (d0_1_24, d1_1_27, d2_1_30, sel_1_20)
+  is
+  begin
+    case sel_1_20 is 
+      when "00" =>
+        unregy_join_6_1 <= d0_1_24;
+      when "01" =>
+        unregy_join_6_1 <= d1_1_27;
+      when others =>
+        unregy_join_6_1 <= d2_1_30;
+    end case;
+  end process proc_switch_6_1;
+  pipe_18_22_front_din <= unregy_join_6_1;
+  pipe_18_22_push_front_pop_back_en <= '1';
+  y <= std_logic_to_vector(pipe_18_22_back);
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+entity sysgen_constant_20b3b4887d is
+  port (
+    op : out std_logic_vector((1 - 1) downto 0);
+    clk : in std_logic;
+    ce : in std_logic;
+    clr : in std_logic);
+end sysgen_constant_20b3b4887d;
+architecture behavior of sysgen_constant_20b3b4887d
+is
+begin
+  op <= "1";
+end behavior;
+
+library xil_defaultlib;
+use xil_defaultlib.conv_pkg.all;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
 entity transmitter_axi_lite_interface is 
     port(
+        observation_point : out std_logic_vector(31 downto 0);
         modulation : out std_logic_vector(0 downto 0);
         enable_tx : out std_logic_vector(0 downto 0);
         enable_data : out std_logic_vector(0 downto 0);
@@ -2215,6 +2589,7 @@ end transmitter_axi_lite_interface;
 architecture structural of transmitter_axi_lite_interface is 
 component transmitter_axi_lite_interface_verilog is
     port(
+        observation_point : out std_logic_vector(31 downto 0);
         modulation : out std_logic_vector(0 downto 0);
         enable_tx : out std_logic_vector(0 downto 0);
         enable_data : out std_logic_vector(0 downto 0);
@@ -2243,6 +2618,7 @@ end component;
 begin
 inst : transmitter_axi_lite_interface_verilog
     port map(
+    observation_point => observation_point,
     modulation => modulation,
     enable_tx => enable_tx,
     enable_data => enable_data,
@@ -2532,7 +2908,8 @@ entity transmitter_xlfifogen_u is
       rd_en: in std_logic;
       dout: out std_logic_vector(data_width - 1 downto 0);
       full: out std_logic;
-      empty: out std_logic 
+      empty: out std_logic;
+      data_count: out std_logic_vector(data_count_width - 1 downto 0) 
  		  ); 
  end component;
 
@@ -2565,7 +2942,8 @@ entity transmitter_xlfifogen_u is
         full => core_full,
         dout => dout_net,
         empty => empty_net
-
+,
+        data_count => core_dcount
   ); 
    end generate;
 

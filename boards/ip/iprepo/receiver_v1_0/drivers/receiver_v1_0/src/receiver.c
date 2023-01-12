@@ -94,6 +94,20 @@ u32 receiver_modulation_read(receiver *InstancePtr) {
     Data = receiver_ReadReg(InstancePtr->receiver_BaseAddress, 48);
     return Data;
 }
+void receiver_global_reset_sync_write(receiver *InstancePtr, u32 Data) {
+
+    Xil_AssertVoid(InstancePtr != NULL);
+
+    receiver_WriteReg(InstancePtr->receiver_BaseAddress, 56, Data);
+}
+u32 receiver_global_reset_sync_read(receiver *InstancePtr) {
+
+    u32 Data;
+    Xil_AssertVoid(InstancePtr != NULL);
+
+    Data = receiver_ReadReg(InstancePtr->receiver_BaseAddress, 56);
+    return Data;
+}
 void receiver_enable_transfer_write(receiver *InstancePtr, u32 Data) {
 
     Xil_AssertVoid(InstancePtr != NULL);

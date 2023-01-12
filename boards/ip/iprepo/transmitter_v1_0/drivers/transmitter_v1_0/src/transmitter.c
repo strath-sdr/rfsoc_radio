@@ -10,6 +10,20 @@ int transmitter_CfgInitialize(transmitter *InstancePtr, transmitter_Config *Conf
     return XST_SUCCESS;
 }
 #endif
+void transmitter_observation_point_write(transmitter *InstancePtr, u32 Data) {
+
+    Xil_AssertVoid(InstancePtr != NULL);
+
+    transmitter_WriteReg(InstancePtr->transmitter_BaseAddress, 12, Data);
+}
+u32 transmitter_observation_point_read(transmitter *InstancePtr) {
+
+    u32 Data;
+    Xil_AssertVoid(InstancePtr != NULL);
+
+    Data = transmitter_ReadReg(InstancePtr->transmitter_BaseAddress, 12);
+    return Data;
+}
 void transmitter_modulation_write(transmitter *InstancePtr, u32 Data) {
 
     Xil_AssertVoid(InstancePtr != NULL);

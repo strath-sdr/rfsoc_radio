@@ -110,6 +110,29 @@ Initialize transmitter pointer with a specifc instance of the device based devic
   @return int XST_SUCCESS if initialization is successful
 <br/>
 </p>
+<h1>void transmitter_observation_point_write(transmitter *InstancePtr, u32 Data);</h1>
+<p>
+ Write to observation_point gateway of transmitter. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the observation_point instance to operate on.<br/>
+ @param	Data is value to be written to gateway observation_point.<br/>
+<br/>
+ @return	None.<br/>
+<br/>
+ @note    .<br/>
+<br/>
+</p>
+<h1>u32 transmitter_observation_point_read(transmitter *InstancePtr);</h1>
+<p>
+ Read from observation_point gateway of transmitter. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the observation_point instance to operate on.<br/>
+<br/>
+ @return	u32<br/>
+
+ @note    .<br/>
+<br/>
+</p>
 <h1>void transmitter_modulation_write(transmitter *InstancePtr, u32 Data);</h1>
 <p>
  Write to modulation gateway of transmitter. Assignments are LSB-justified.<br/>

@@ -1041,6 +1041,10 @@ mmediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spi
         <spirit:userFileType>xci</spirit:userFileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>receiver_cmpy_v6_0_i2/receiver_cmpy_v6_0_i2.xci</spirit:name>
+        <spirit:userFileType>xci</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>receiver_fifo_generator_i0/receiver_fifo_generator_i0.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
       </spirit:file>
@@ -1058,14 +1062,6 @@ mmediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spi
       </spirit:file>
       <spirit:file>
         <spirit:name>receiver_fir_compiler_v7_2_i2/receiver_fir_compiler_v7_2_i2.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>receiver_fir_compiler_v7_2_i3/receiver_fir_compiler_v7_2_i3.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>receiver_fir_compiler_v7_2_i4/receiver_fir_compiler_v7_2_i4.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
       </spirit:file>
       <spirit:file>
@@ -1117,11 +1113,11 @@ mmediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spi
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>xpm_e5ca12_vivado.mem</spirit:name>
+        <spirit:name>xpm_47bbfb_vivado.mem</spirit:name>
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>xpm_6f9821_vivado.mem</spirit:name>
+        <spirit:name>xpm_77999f_vivado.mem</spirit:name>
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
       <spirit:file>
@@ -1129,11 +1125,11 @@ mmediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spi
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>xpm_62270a_vivado.mem</spirit:name>
+        <spirit:name>xpm_491135_vivado.mem</spirit:name>
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>xpm_3986c8_vivado.mem</spirit:name>
+        <spirit:name>xpm_77ff11_vivado.mem</spirit:name>
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
       <spirit:file>
@@ -1285,6 +1281,10 @@ mmediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spi
         <spirit:userFileType>xci</spirit:userFileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>receiver_cmpy_v6_0_i2/receiver_cmpy_v6_0_i2.xci</spirit:name>
+        <spirit:userFileType>xci</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>receiver_fifo_generator_i0/receiver_fifo_generator_i0.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
       </spirit:file>
@@ -1302,14 +1302,6 @@ mmediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spi
       </spirit:file>
       <spirit:file>
         <spirit:name>receiver_fir_compiler_v7_2_i2/receiver_fir_compiler_v7_2_i2.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>receiver_fir_compiler_v7_2_i3/receiver_fir_compiler_v7_2_i3.xci</spirit:name>
-        <spirit:userFileType>xci</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>receiver_fir_compiler_v7_2_i4/receiver_fir_compiler_v7_2_i4.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
       </spirit:file>
       <spirit:file>
@@ -1357,11 +1349,11 @@ mmediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spi
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>xpm_e5ca12_vivado.mem</spirit:name>
+        <spirit:name>xpm_47bbfb_vivado.mem</spirit:name>
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>xpm_6f9821_vivado.mem</spirit:name>
+        <spirit:name>xpm_77999f_vivado.mem</spirit:name>
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
       <spirit:file>
@@ -1369,11 +1361,11 @@ mmediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spi
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>xpm_62270a_vivado.mem</spirit:name>
+        <spirit:name>xpm_491135_vivado.mem</spirit:name>
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>xpm_3986c8_vivado.mem</spirit:name>
+        <spirit:name>xpm_77ff11_vivado.mem</spirit:name>
         <spirit:userFileType>mem</spirit:userFileType>
       </spirit:file>
       <spirit:file>
@@ -1547,8 +1539,8 @@ mmediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spi
         <xilinx:xpmLibrary>XPM_FIFO</xilinx:xpmLibrary>
         <xilinx:xpmLibrary>XPM_CDC</xilinx:xpmLibrary>
       </xilinx:xpmLibraries>
-      <xilinx:coreRevision>303900560</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2023-01-06T08:49:58Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>304274169</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2023-01-10T16:36:38Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.2</xilinx:xilinxVersion>

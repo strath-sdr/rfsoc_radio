@@ -73,6 +73,29 @@ int transmitter_Initialize(transmitter *InstancePtr, const char* InstanceName);
 int transmitter_Release(transmitter *InstancePtr);
 #endif
 /**
+* Write to observation_point gateway of transmitter. Assignments are LSB-justified.
+*
+* @param	InstancePtr is the observation_point instance to operate on.
+* @param	Data is value to be written to gateway observation_point.
+*
+* @return	None.
+*
+* @note    .
+*
+*/
+void transmitter_observation_point_write(transmitter *InstancePtr, u32 Data);
+/**
+* Read from observation_point gateway of transmitter. Assignments are LSB-justified.
+*
+* @param	InstancePtr is the observation_point instance to operate on.
+*
+* @return	u32
+*
+* @note    .
+*
+*/
+u32 transmitter_observation_point_read(transmitter *InstancePtr);
+/**
 * Write to modulation gateway of transmitter. Assignments are LSB-justified.
 *
 * @param	InstancePtr is the modulation instance to operate on.

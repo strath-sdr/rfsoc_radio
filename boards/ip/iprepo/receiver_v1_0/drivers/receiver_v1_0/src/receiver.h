@@ -211,6 +211,29 @@ void receiver_modulation_write(receiver *InstancePtr, u32 Data);
 */
 u32 receiver_modulation_read(receiver *InstancePtr);
 /**
+* Write to global_reset_sync gateway of receiver. Assignments are LSB-justified.
+*
+* @param	InstancePtr is the global_reset_sync instance to operate on.
+* @param	Data is value to be written to gateway global_reset_sync.
+*
+* @return	None.
+*
+* @note    .
+*
+*/
+void receiver_global_reset_sync_write(receiver *InstancePtr, u32 Data);
+/**
+* Read from global_reset_sync gateway of receiver. Assignments are LSB-justified.
+*
+* @param	InstancePtr is the global_reset_sync instance to operate on.
+*
+* @return	u32
+*
+* @note    .
+*
+*/
+u32 receiver_global_reset_sync_read(receiver *InstancePtr);
+/**
 * Write to enable_transfer gateway of receiver. Assignments are LSB-justified.
 *
 * @param	InstancePtr is the enable_transfer instance to operate on.

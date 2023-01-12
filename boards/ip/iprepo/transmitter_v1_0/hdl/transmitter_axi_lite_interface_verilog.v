@@ -35,7 +35,8 @@
 //-----------------------------------------------------------------
 
 `include "conv_pkg.v"
-module transmitter_axi_lite_interface_verilog#(parameter C_S_AXI_DATA_WIDTH = 32, C_S_AXI_ADDR_WIDTH = 4, C_S_NUM_OFFSETS = 3)(
+module transmitter_axi_lite_interface_verilog#(parameter C_S_AXI_DATA_WIDTH = 32, C_S_AXI_ADDR_WIDTH = 4, C_S_NUM_OFFSETS = 4)(
+  output wire[31:0] observation_point,
   output wire[0:0] modulation,
   output wire[0:0] enable_tx,
   output wire[0:0] enable_data,
@@ -98,34 +99,40 @@ assign transmitter_s_axi_rvalid = axi_rvalid;
 assign transmitter_s_axi_rresp  = axi_rresp;
 // map input 0
 assign slv_wire_array[0] = slv_reg_array[0];
-assign modulation = slv_wire_array[0][0];
+assign observation_point[31:0] = slv_wire_array[0][31:0];
 // map input 1
 assign slv_wire_array[1] = slv_reg_array[1];
-assign enable_tx = slv_wire_array[1][0];
+assign modulation = slv_wire_array[1][0];
 // map input 2
 assign slv_wire_array[2] = slv_reg_array[2];
-assign enable_data = slv_wire_array[2][0];
+assign enable_tx = slv_wire_array[2][0];
+// map input 3
+assign slv_wire_array[3] = slv_reg_array[3];
+assign enable_data = slv_wire_array[3][0];
   initial
   begin
     slv_reg_array[0] = 32'd0;
     slv_reg_array[1] = 32'd0;
     slv_reg_array[2] = 32'd0;
+    slv_reg_array[3] = 32'd0;
   end
   always @(axi_awaddr)
   begin
     case(axi_awaddr)
-      4'd8 : dec_w = 0;
-      4'd4 : dec_w = 1;
-      4'd0 : dec_w = 2;
+      4'd12 : dec_w = 0;
+      4'd8 : dec_w = 1;
+      4'd4 : dec_w = 2;
+      4'd0 : dec_w = 3;
       default : dec_w = 0;
     endcase
   end
   always @(axi_araddr)
   begin
     case(axi_araddr)
-      4'd8 : dec_r = 0;
-      4'd4 : dec_r = 1;
-      4'd0 : dec_r = 2;
+      4'd12 : dec_r = 0;
+      4'd8 : dec_r = 1;
+      4'd4 : dec_r = 2;
+      4'd0 : dec_r = 3;
       default : dec_r = 0;
     endcase
   end
@@ -175,6 +182,7 @@ assign enable_data = slv_wire_array[2][0];
         slv_reg_array[0] = 32'd0;
         slv_reg_array[1] = 32'd0;
         slv_reg_array[2] = 32'd0;
+        slv_reg_array[3] = 32'd0;
       end
     else begin
       if (slv_reg_wren)

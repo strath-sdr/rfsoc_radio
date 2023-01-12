@@ -248,6 +248,29 @@ Initialize receiver pointer with a specifc instance of the device based device i
  @note    .<br/>
 <br/>
 </p>
+<h1>void receiver_global_reset_sync_write(receiver *InstancePtr, u32 Data);</h1>
+<p>
+ Write to global_reset_sync gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the global_reset_sync instance to operate on.<br/>
+ @param	Data is value to be written to gateway global_reset_sync.<br/>
+<br/>
+ @return	None.<br/>
+<br/>
+ @note    .<br/>
+<br/>
+</p>
+<h1>u32 receiver_global_reset_sync_read(receiver *InstancePtr);</h1>
+<p>
+ Read from global_reset_sync gateway of receiver. Assignments are LSB-justified.<br/>
+<br/>
+ @param	InstancePtr is the global_reset_sync instance to operate on.<br/>
+<br/>
+ @return	u32<br/>
+
+ @note    .<br/>
+<br/>
+</p>
 <h1>void receiver_enable_transfer_write(receiver *InstancePtr, u32 Data);</h1>
 <p>
  Write to enable_transfer gateway of receiver. Assignments are LSB-justified.<br/>
