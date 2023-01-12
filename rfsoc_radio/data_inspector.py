@@ -14,9 +14,10 @@ from .dma_timer import DmaTimer
 
 class DataInspector(DefaultHierarchy):
     
-    def __init__(self, description, plotting_rate = 0.4, autoscale = False):
+    def __init__(self, description, plotting_rate = 0.5, autoscale = False):
         super().__init__(description)
         
+        self.fractional = 14
         self.data_inspector_module.packetsize = 64
         self.data_inspector_module.enable = 0
         self.data_inspector_module.reset = 1
@@ -66,7 +67,7 @@ class DataInspector(DefaultHierarchy):
         self.axi_dma.recvchannel.wait()
         self.data_inspector_module.enable = 0
         self.data_inspector_module.reset = 1
-        t_data = np.array(self.buffer) * 2**-14
+        t_data = np.array(self.buffer) * 2**-self.fractional
         c_data = t_data[::2] + 1j * t_data[1::2]
         if self._autoscale:
             return self._scale_data(c_data)
@@ -115,31 +116,32 @@ class DataInspector(DefaultHierarchy):
             return True
         return False 
         
-    class DataInspectorCore(DefaultIP):
-        """Driver for Data Inspector's core logic IP
-        Exposes all the configuration registers by name via data-driven properties
-        """
-        
-        def __init__(self, description):
-            super().__init__(description=description)
-            
-        bindto = ['UoS:RFSoC:inspector:1.0']
-        
-    # LUT of property addresses for our data-driven properties
-    _dataInspector_props = [("reset", 0),
-                            ("enable", 4),
-                            ("packetsize", 8)]
+class DataInspectorCore(DefaultIP):
+    """Driver for Data Inspector's core logic IP
+    Exposes all the configuration registers by name via data-driven properties
+    """
+
+    def __init__(self, description):
+        super().__init__(description=description)
+
+    bindto = ['UoS:RFSoC:inspector:1.0']
+
+# LUT of property addresses for our data-driven properties
+_dataInspector_props = [("reset", 0),
+                        ("enable", 4),
+                        ("packetsize", 8)]
+
+# Function to return a MMIO Getter and Setter based on a relative address
+def _create_mmio_property(addr):
+    def _get(self):
+        return self.read(addr)
+
+    def _set(self, value):
+        self.write(addr, value)
+
+    return property(_get, _set)
+
+# Generate getters and setters based on _dataInspector_props
+for (name, addr) in _dataInspector_props:
+    setattr(DataInspectorCore, name, _create_mmio_property(addr))
     
-    # Function to return a MMIO Getter and Setter based on a relative address
-    def _create_mmio_property(addr):
-        def _get(self):
-            return self.read(addr)
-        
-        def _set(self, value):
-            self.write(addr, value)
-            
-        return property(_get, _set)
-    
-    # Generate getters and setters based on _dataInspector_props
-    for (name, addr) in _dataInspector_props:
-        setattr(DataInspectorCore, name, _create_mmio_property(addr))
