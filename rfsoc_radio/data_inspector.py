@@ -38,7 +38,7 @@ class DataInspector(DefaultHierarchy):
         
     def set_frequency(self, fs):
         self._f_plot.set_frequency(fs)
-        #self._t_plot.sample_frequency = fs
+        self._t_plot.sample_frequency = fs
         
     def set_plotting_rate(self, rate):
         self._plotting_rate = rate
