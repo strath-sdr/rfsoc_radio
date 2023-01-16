@@ -13,7 +13,7 @@ class SpectrumAnalyser():
                  data,
                  fs,
                  animation_period=50,
-                 width=1000,
+                 width=800,
                  height=400,
                  autosize=True):
         """Create a new Spectrum Analyser object for plotting frequency against power."""
@@ -77,36 +77,39 @@ class SpectrumAnalyser():
 class TimePlot():
     def __init__(self,
                  data,
+                 sample_frequency=100e3,
                  animation_period=50,
-                 width=1000,
+                 width=800,
                  height=400,
                  autosize=True):
         """Create a new plot object for plotting data against time."""
         
         self._data = np.empty(len(data))
+        self._sample_frequency = sample_frequency
         self._animation_period = animation_period
         self._width = width
         self._height = height
         self._yaxisrange = [-0.6, 0.6]
-        self._xaxisrange = [-0.5, len(data)-0.5]
         self._autosize = autosize
         self._complex = isinstance(data[0], complex)
         
         if self._complex:
             self._data = [{'y' : np.real(data),
+                           'x' : np.arange(0, len(data)/sample_frequency, 1/sample_frequency),
                            'name' : 'Real Signal'},
                           {'y' : np.imag(data),
+                           'x' : np.arange(0, len(data)/sample_frequency, 1/sample_frequency),
                            'name' : 'Imag Signal'}]
         else:
-            self._data = [{'y' : data, 'name' : 'Time Signal'}]
+            self._data = [{'y' : data, 'name' : 'Time Signal',
+                           'x' : np.arange(0, len(data)/sample_frequency, 1/sample_frequency)}]
         
         self._layout = {
             'height' : self._height,
             'width' : self._width,
             'autosize' : True,
             'xaxis' : {
-                'range' : self._xaxisrange,
-                'title' : 'Samples',
+                'title' : 'Seconds (s)',
             },
             'yaxis' : {
                 'title' : 'Amplitude',
@@ -119,6 +122,14 @@ class TimePlot():
             data = self._data
         )
         
+    @property
+    def sample_frequency(self):
+        return self._sample_frequency
+    
+    @sample_frequency.setter
+    def sample_frequency(self, value):
+        self._sample_frequency = value
+        
     def set_axisrange(self, axisrange):
         self._yaxisrange = axisrange
         self._plot.layout.yaxis.range = axisrange
@@ -126,18 +137,23 @@ class TimePlot():
     def update_data(self, data):
         """Update the frame of data currently on the canvas
         """
-        self._xaxisrange = len(data)
-        self._plot.layout.xaxis.range = [-0.5, self._xaxisrange-0.5]
+        #self._xaxisrange = [0, len(data)/self._sample_frequency-1/self._sample_frequency]
+        #self._plot.layout.xaxis.range = [-0.5, self._xaxisrange-0.5]
         
         if self._complex:
-            self._data = [{'y' : np.real(data)},
-                          {'y' : np.imag(data)}]
+            self._data = [{'y' : np.real(data),
+                           'x' : np.arange(0, len(data)/self._sample_frequency, 1/self._sample_frequency)},
+                          {'y' : np.imag(data),
+                           'x' : np.arange(0, len(data)/self._sample_frequency, 1/self._sample_frequency)}]
         else:
-            self._data = [{'y' : data}]
+            self._data = [{'y' : data,
+                           'x' : np.arange(0, len(data)/self._sample_frequency, 1/self._sample_frequency)}]
 
         self._plot.data[0].y = self._data[0].get('y')
+        self._plot.data[0].x = self._data[0].get('x')
         if self._complex:
             self._plot.data[1].y = self._data[1].get('y')
+            self._plot.data[1].x = self._data[1].get('x')
                 
     def get_widget(self):
         return self._plot
