@@ -96,10 +96,10 @@ class TimePlot():
         if self._complex:
             self._data = [{'y' : np.real(data),
                            'x' : np.arange(0, len(data)/sample_frequency, 1/sample_frequency),
-                           'name' : 'Real Signal'},
+                           'name' : 'In-Phase Signal'},
                           {'y' : np.imag(data),
                            'x' : np.arange(0, len(data)/sample_frequency, 1/sample_frequency),
-                           'name' : 'Imag Signal'}]
+                           'name' : 'Quadrature Signal'}]
         else:
             self._data = [{'y' : data, 'name' : 'Time Signal',
                            'x' : np.arange(0, len(data)/sample_frequency, 1/sample_frequency)}]
