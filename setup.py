@@ -68,7 +68,7 @@ setup(
     name="rfsoc_radio",
     version='0.3.1',
     install_requires=[
-        'pynq==2.7',
+        'pynq>=2.7',
     ],
     url='https://github.com/strath-sdr/rfsoc_radio.git',
     license='BSD 3-Clause License',
