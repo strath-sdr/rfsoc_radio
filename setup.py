@@ -24,7 +24,7 @@ class package_installer():
 
     def check_board(self):
         if not os.path.isdir(f'boards/{self.board}/{self.name}'):
-            raise ValueError("Board {} is not supported.".format(brd))
+            raise ValueError("Board {} is not supported.".format(self.board))
         if not os.path.isdir(os.environ['PYNQ_JUPYTER_NOTEBOOKS']):
             raise ValueError(
                 "Directory {} does not exist.".format(os.environ['PYNQ_JUPYTER_NOTEBOOKS']))
@@ -35,7 +35,7 @@ class package_installer():
             temp_prj = os.path.join(cwd, 'boards', self.board, prj)
             for directory in os.listdir(temp_prj):
                 src = os.path.join(temp_prj)
-                dst = os.path.join(cwd, self.name)
+                dst = os.path.join(cwd, self.name, directory)
                 copy_tree(src, dst)
 
     def generate_pkg_dirs(self):
@@ -55,7 +55,7 @@ class package_installer():
               author_email=self.email,
               packages=find_packages(),
               package_data={'': self.generate_pkg_dirs()},
-              description=description)
+              description=self.description)
 
 package_installer(name = "rfsoc_radio",
                   version = "0.3.2",
