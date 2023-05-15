@@ -34,8 +34,8 @@ class package_installer():
         for prj in os.listdir(os.path.join(cwd, 'boards', self.board)):
             temp_prj = os.path.join(cwd, 'boards', self.board, prj)
             for directory in os.listdir(temp_prj):
-                src = os.path.join(temp_prj)
-                dst = os.path.join(cwd, self.name, directory)
+                src = os.path.join(temp_prj, directory)
+                dst = os.path.join(cwd, self.name, prj, directory)
                 copy_tree(src, dst)
 
     def generate_pkg_dirs(self):
