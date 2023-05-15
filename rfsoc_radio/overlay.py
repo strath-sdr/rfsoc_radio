@@ -29,7 +29,7 @@ class RadioOverlay(Overlay):
         # Generate default bitfile name
         if bitfile_name is None:
             this_dir = os.path.dirname(__file__)
-            bitfile_name = os.path.join(this_dir, 'bitstream', 'rfsoc_radio.bit')
+            bitfile_name = os.path.join(this_dir, 'rfsoc_radio', 'bitstream', 'rfsoc_radio.bit')
             
         # Create Overlay
         super().__init__(bitfile_name, **kwargs)
