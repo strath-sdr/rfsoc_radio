@@ -46,6 +46,7 @@ Follow the instructions below to install the radio demonstrator on your developm
 
 ```sh
 pip3 install git+https://github.com/strath-sdr/rfsoc_radio
+python -m rfsoc_radio install
 ```
 
 Once installation has complete, you will find the radio demonstrator notebooks located in the jupyter home workspace in the `rfsoc_radio` folder.
