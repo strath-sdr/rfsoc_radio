@@ -64,5 +64,5 @@ package_installer(name = "rfsoc_radio",
                   email = "david.northcote@strath.ac.uk",
                   license = "BSD 3-Clause License",
                   url = "https://github.com/strath-sdr/rfsoc_radio.git",
-                  version = "pynq>=2.7",
+                  pynq_version = "pynq>=2.7",
                   board = os.environ['BOARD'])
