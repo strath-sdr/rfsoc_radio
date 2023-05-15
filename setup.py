@@ -31,9 +31,9 @@ class package_installer():
         
     def copy_projects(self):
         cwd = os.getcwd()
-        for prj in os.listdir(os.path.join(cwd, 'boards', self.board)):
+        for prj in next(os.walk(os.path.join(cwd, 'boards', self.board)))[1]:
             temp_prj = os.path.join(cwd, 'boards', self.board, prj)
-            for directory in os.listdir(temp_prj):
+            for directory in next(os.listdir(temp_prj))[1]:
                 src = os.path.join(temp_prj, directory)
                 dst = os.path.join(cwd, self.name, prj, directory)
                 copy_tree(src, dst)
