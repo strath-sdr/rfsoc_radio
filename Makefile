@@ -1,4 +1,4 @@
-all: rfsoc2x2 rfsoc4x2 zcu111 zcu208 zcu216
+all: rfsoc2x2 rfsoc4x2 zcu111 zcu208 zcu216 tarball
 
 rfsoc2x2:
 	$(MAKE) -C boards/RFSoC2x2/rfsoc_radio/
@@ -14,3 +14,6 @@ rfsoc4x2:
 
 zcu111:
 	$(MAKE) -C boards/ZCU111/rfsoc_radio/
+
+tarball:
+	tar -czvf rfsoc_radio.tar.gz .
