@@ -23,13 +23,13 @@ class RadioOverlay(Overlay):
     
     def __init__(self, bitfile_name=None, init_rf_clks=True, run_test=True, debug_test=False, **kwargs):
         
-        GEN3 = ['RFSoC4x2']
+        GEN3 = ['RFSoC4x2', 'ZCU208', 'ZCU216']
         GEN1 = ['RFSoC2x2', 'ZCU111']
         
         # Generate default bitfile name
         if bitfile_name is None:
             this_dir = os.path.dirname(__file__)
-            bitfile_name = os.path.join(this_dir, 'bitstream', 'rfsoc_radio.bit')
+            bitfile_name = os.path.join(this_dir, 'rfsoc_radio', 'bitstream', 'rfsoc_radio.bit')
             
         # Create Overlay
         super().__init__(bitfile_name, **kwargs)
@@ -50,6 +50,11 @@ class RadioOverlay(Overlay):
             self.dac_block = self.dac_tile.blocks[0]
             self.adc_tile = self.rf.adc_tiles[2]
             self.adc_block = self.adc_tile.blocks[1]
+        elif board in ['ZCU208', 'ZCU216']:
+            self.dac_tile = self.rf.dac_tiles[2]
+            self.dac_block = self.dac_tile.blocks[0]
+            self.adc_tile = self.rf.adc_tiles[1]
+            self.adc_block = self.adc_tile.blocks[0]
         elif board == 'RFSoC2x2':
             self.dac_tile = self.rf.dac_tiles[1]
             self.dac_block = self.dac_tile.blocks[0]

@@ -12,7 +12,12 @@
 </table>
 
 # RFSoC Radio Transceiver
-This repository is only compatible with [PYNQ images v2.7](https://github.com/Xilinx/PYNQ/releases) for the [ZCU111](https://www.xilinx.com/products/boards-and-kits/zcu111.html), [RFSoC2x2](http://rfsoc-pynq.io/), and [RFSoC4x2](http://rfsoc-pynq.io/).
+This repository is compatible with [PYNQ images v2.7](https://github.com/Xilinx/PYNQ/releases) and higher for the following RFSoC development boards:
+* [ZCU111](https://www.xilinx.com/products/boards-and-kits/zcu111.html),
+* [RFSoC2x2](http://rfsoc-pynq.io/),
+* [ZCU208](https://www.xilinx.com/products/boards-and-kits/zcu208.html),
+* [ZCU216](https://www.xilinx.com/products/boards-and-kits/zcu216.html),
+* [RFSoC4x2](http://rfsoc-pynq.io/).
 
 ## Introduction
 This repository contains a BPSK & QPSK transceiver radio design for RFSoC platforms. The radio is capable of transmitting and receiving BPSK & QPSK modulated waveforms in loopback, or between RFSoC development boards running the same design. A simple "hello world" example is presented demonstrating that transmitted waveforms can be received, synchronised, and the payload extracted for analysis. Check out the demonstration below and the quick start guide to install the project on your RFSoC platform.
@@ -23,7 +28,7 @@ This repository contains a BPSK & QPSK transceiver radio design for RFSoC platfo
 
 ## Quick Start
 Follow the instructions below to install the radio demonstrator on your development board. **You will need to give your board access to the internet**.
-* Power on your RFSoC2x2, RFSoC4x2, or ZCU111 development board with an SD Card containing a fresh PYNQ v2.7 image.
+* Power on your RFSoC development board with an SD Card containing a fresh PYNQ v2.7 image or higher.
 * Navigate to Jupyter Labs by opening a browser (preferably Chrome) and connecting to `http://<board_ip_address>:9090/lab`.
 * We need to open a terminal in Jupyter Lab. Firstly, open a launcher window as shown in the figure below:
 
@@ -41,9 +46,10 @@ Follow the instructions below to install the radio demonstrator on your developm
 
 ```sh
 pip3 install git+https://github.com/strath-sdr/rfsoc_radio
+python -m rfsoc_radio install
 ```
 
-Once installation has complete, you will find the radio demonstrator notebooks located in the jupyter home workspace in the `rfsoc-studio/radio-demonstrator` folder.
+Once installation has complete, you will find the radio demonstrator notebooks located in the jupyter home workspace in the `rfsoc_radio` folder.
 
 ## Using the Project Files
 The following software is required to use the project files in this repository.

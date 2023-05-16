@@ -24,7 +24,5 @@
 *vivado.log
 
 # Ignore ./rfstrath/rfstrath/
-**/rfsoc_radio/rfstrath
-**/rfsoc_radio/rfsoc_pynq
-**/rfsoc_radio/rfsoc_radio
 **/rfsoc_radio/block_design
+**/rfsoc_radio/bitstream
