@@ -45,7 +45,7 @@ Follow the instructions below to install the radio demonstrator on your developm
 * Now simply install the radio demonstrator through PIP by executing the following command in the terminal:
 
 ```sh
-pip3 install git+https://github.com/strath-sdr/rfsoc_radio
+pip3 install https://github.com/strath-sdr/rfsoc_radio/releases/download/v0.3.3/rfsoc_radio.tar.gz
 python -m rfsoc_radio install
 ```
 
