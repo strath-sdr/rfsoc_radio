@@ -13,11 +13,11 @@
 
 # RFSoC Radio Transceiver
 This repository is compatible with [PYNQ images v2.7](https://github.com/Xilinx/PYNQ/releases) and higher for the following RFSoC development boards:
-* [ZCU111](https://www.xilinx.com/products/boards-and-kits/zcu111.html),
-* [RFSoC2x2](http://rfsoc-pynq.io/),
 * [ZCU208](https://www.xilinx.com/products/boards-and-kits/zcu208.html),
 * [ZCU216](https://www.xilinx.com/products/boards-and-kits/zcu216.html),
+* [ZCU111](https://www.xilinx.com/products/boards-and-kits/zcu111.html),
 * [RFSoC4x2](http://rfsoc-pynq.io/).
+* [RFSoC2x2](http://rfsoc-pynq.io/),
 
 ## Introduction
 This repository contains a BPSK & QPSK transceiver radio design for RFSoC platforms. The radio is capable of transmitting and receiving BPSK & QPSK modulated waveforms in loopback, or between RFSoC development boards running the same design. A simple "hello world" example is presented demonstrating that transmitted waveforms can be received, synchronised, and the payload extracted for analysis. Check out the demonstration below and the quick start guide to install the project on your RFSoC platform.
