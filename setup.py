@@ -58,7 +58,7 @@ class package_installer():
               description=self.description)
 
 package_installer(name = "rfsoc_radio",
-                  version = "0.3.2",
+                  version = "0.3.3",
                   description  = "PYNQ example of using the RFSoC as a radio transceiver.",
                   author = "David Northcote",
                   email = "david.northcote@strath.ac.uk",
