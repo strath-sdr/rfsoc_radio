@@ -18,6 +18,7 @@ from .transmitter import Transmitter
 from .data_inspector import DataInspector, DataInspectorCore
 from .switch import Switch
 
+from rfsoc_radio import clocks
 
 class RadioOverlay(Overlay):
     
@@ -34,14 +35,8 @@ class RadioOverlay(Overlay):
         # Create Overlay
         super().__init__(bitfile_name, **kwargs)
         
-        # Determine board and set PLL appropriately
+        # Determine board
         board = os.environ['BOARD']
-        if board in GEN3:
-            lmk_clk = 245.76
-        elif board in GEN1:
-            lmk_clk = 122.88
-        else:
-            raise RuntimeError('Platform not supported.') # shouldn't get here
         
         # Extract friendly dataconverter names
         self.rf = self.usp_rf_data_converter
@@ -70,8 +65,7 @@ class RadioOverlay(Overlay):
         
         # Start up LMX clock
         if init_rf_clks:
-            xrfclk.set_ref_clks(lmk_clk, 409.6)
-            time.sleep(1)
+            clocks.set_custom_lmclks()
         
         # Set ADC defaults
         self.adc_tile.DynamicPLLConfig(1, 409.6, 1024)
