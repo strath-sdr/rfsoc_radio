@@ -1,0 +1,118 @@
+name: Vivado Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      boards:
+        description: "Boards to build: comma-separated (e.g. RFSoC4x2,ZCU208) or 'all'"
+        required: true
+        default: "RFSoC4x2,ZCU208,ZCU111,ZCU216,RFSoC2x2"
+      vivado_settings:
+        description: "OPTIONAL override: full path to settings64.sh on this runner"
+        required: false
+        default: ""
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  prep-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.mk.outputs.matrix }}
+    steps:
+      - id: mk
+        shell: bash
+        run: |
+          allowed="ZCU111 ZCU208 ZCU216 RFSoC2x2 RFSoC4x2"
+          boards_in="${{ github.event.inputs.boards }}"
+          if [ -z "$boards_in" ]; then boards_in="RFSoC4x2,ZCU208"; fi
+          if [ "$boards_in" = "all" ]; then
+            boards="$allowed"
+          else
+            boards=$(echo "$boards_in" | tr ',' ' ')
+          fi
+          for b in $boards; do
+            ok=0; for a in $allowed; do [ "$b" = "$a" ] && ok=1; done
+            [ $ok -eq 1 ] || (echo "Invalid board: $b. Allowed: $allowed" && exit 1)
+          done
+          json='{"boards":['; first=1
+          for b in $boards; do
+            [ $first -eq 1 ] || json+=','
+            json+="\"$b\""; first=0
+          done
+          json+=']}'
+          echo "matrix=$json" >> "$GITHUB_OUTPUT"
+
+  build-bitstream:
+    needs: prep-matrix
+    if: ${{ github.event_name == 'workflow_dispatch' || github.base_ref == 'main' }}
+    runs-on: [self-hosted, linux, x64]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.prep-matrix.outputs.matrix) }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve Vivado settings path
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Priority:
+          # 1) workflow_dispatch input (manual override)
+          # 2) runner env var VIVADO_SETTINGS
+          V="${{ github.event.inputs.vivado_settings }}"
+          if [ -n "${V:-}" ]; then
+            SETTINGS="$V"
+          elif [ -n "${VIVADO_SETTINGS:-}" ]; then
+            SETTINGS="$VIVADO_SETTINGS"
+          else
+            echo "ERROR: Vivado path not provided."
+            echo "Set VIVADO_SETTINGS on this self-hosted runner (recommended),"
+            echo "or supply 'vivado_settings' when manually running the workflow."
+            exit 1
+          fi
+
+          if [ ! -f "$SETTINGS" ]; then
+            echo "ERROR: settings64.sh not found at: $SETTINGS"
+            exit 1
+          fi
+
+          echo "Using: $SETTINGS"
+          echo "VIVADO_SETTINGS_RESOLVED=$SETTINGS" >> "$GITHUB_ENV"
+
+      - name: Run Vivado Build
+        shell: bash
+        run: |
+          source "$VIVADO_SETTINGS_RESOLVED"
+          cd boards/${{ matrix.boards }}/rfsoc_radio/
+          make all
+          cd ../../..
+
+      - name: Create per-board tarball (in RUNNER_TEMP)
+        shell: bash
+        run: |
+          TAR="rfsoc_radio_${{ matrix.boards }}_${{ github.sha }}.tar.gz"
+          TAR_PATH="${RUNNER_TEMP}/${TAR}"
+
+          tar -czf "$TAR_PATH" \
+            --warning=no-file-changed \
+            --exclude=".git" --exclude=".github" --exclude="**/.Xil" \
+            --exclude="**/*.jou" --exclude="**/*.log" \
+            .
+
+          echo "TAR_PATH=$TAR_PATH" >> "$GITHUB_ENV"
+          echo "Created: $TAR_PATH"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bitstream-archive-${{ matrix.boards }}
+          path: ${{ env.TAR_PATH }}
+          retention-days: 7
+
+      - name: Cleanup workspace
+        if: always()
+        shell: bash
+        run: |
+          rm -rf "$GITHUB_WORKSPACE"
