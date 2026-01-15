@@ -45,7 +45,6 @@ jobs:
 
   build-bitstream:
     needs: prep-matrix
-    if: ${{ github.event_name == 'workflow_dispatch' || github.base_ref == 'main' }}
     runs-on: [self-hosted, linux, x64]
     strategy:
       fail-fast: false
