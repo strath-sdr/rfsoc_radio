@@ -25,7 +25,7 @@ jobs:
         run: |
           allowed="ZCU111 ZCU208 ZCU216 RFSoC2x2 RFSoC4x2"
           boards_in="${{ github.event.inputs.boards }}"
-          if [ -z "$boards_in" ]; then boards_in="RFSoC4x2,ZCU208"; fi
+          if [ -z "$boards_in" ]; then boards_in="RFSoC4x2,ZCU208,ZCU111,ZCU216,RFSoC2x2"; fi
           if [ "$boards_in" = "all" ]; then
             boards="$allowed"
           else
