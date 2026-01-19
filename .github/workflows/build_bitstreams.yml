@@ -109,9 +109,3 @@ jobs:
           name: bitstream-archive-${{ matrix.boards }}
           path: ${{ env.TAR_PATH }}
           retention-days: 7
-
-      - name: Cleanup workspace
-        if: always()
-        shell: bash
-        run: |
-          rm -rf "$GITHUB_WORKSPACE"
