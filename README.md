@@ -12,7 +12,7 @@
 </table>
 
 # RFSoC Radio Transceiver
-This repository is compatible with [PYNQ images v2.7](https://github.com/Xilinx/PYNQ/releases) and higher for the following RFSoC development boards:
+This repository is compatible with [PYNQ images v3.1.1](https://github.com/Xilinx/PYNQ/releases) and higher for the following RFSoC development boards:
 * [ZCU208](https://www.xilinx.com/products/boards-and-kits/zcu208.html),
 * [ZCU216](https://www.xilinx.com/products/boards-and-kits/zcu216.html),
 * [ZCU111](https://www.xilinx.com/products/boards-and-kits/zcu111.html),
@@ -53,7 +53,7 @@ Once installation has complete, you will find the radio demonstrator notebooks l
 
 ## Using the Project Files
 The following software is required to use the project files in this repository.
-- Vivado Design Suite 2020.2
+- Vivado Design Suite 2024.1
 - System Generator for DSP
 - MATLAB R2020a
 
