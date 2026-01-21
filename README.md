@@ -12,12 +12,16 @@
 </table>
 
 # RFSoC Radio Transceiver
-This repository is compatible with [PYNQ images v2.7](https://github.com/Xilinx/PYNQ/releases) and higher for the following RFSoC development boards:
+This repository is compatible with [PYNQ images v3.0.1](https://github.com/Xilinx/PYNQ/releases) and higher for the following RFSoC development boards:
 * [ZCU208](https://www.xilinx.com/products/boards-and-kits/zcu208.html),
-* [ZCU216](https://www.xilinx.com/products/boards-and-kits/zcu216.html),
 * [ZCU111](https://www.xilinx.com/products/boards-and-kits/zcu111.html),
-* [RFSoC4x2](http://rfsoc-pynq.io/).
+* [RFSoC4x2](http://rfsoc-pynq.io/),
 * [RFSoC2x2](http://rfsoc-pynq.io/),
+
+The following boards are limited to PYNQ version 2.7 and Vivado 2020.2 since this board is not officially supported by PYNQ and no official SD card image exists:
+* [ZCU216](https://www.xilinx.com/products/boards-and-kits/zcu216.html).
+
+The SD card image for this board has been made available from the following repository: [sarafs1926/ZCU216-PYNQ](https://github.com/sarafs1926/ZCU216-PYNQ).
 
 ## Introduction
 This repository contains a BPSK & QPSK transceiver radio design for RFSoC platforms. The radio is capable of transmitting and receiving BPSK & QPSK modulated waveforms in loopback, or between RFSoC development boards running the same design. A simple "hello world" example is presented demonstrating that transmitted waveforms can be received, synchronised, and the payload extracted for analysis. Check out the demonstration below and the quick start guide to install the project on your RFSoC platform.
@@ -53,15 +57,14 @@ Once installation has complete, you will find the radio demonstrator notebooks l
 
 ## Using the Project Files
 The following software is required to use the project files in this repository.
-- Vivado Design Suite 2020.2
-- System Generator for DSP
-- MATLAB R2020a
+- Vivado Design Suite 2024.1
+- System Generator for DSP (MATLAB R2020a with Vivado Design Suite 2020.2)
 
 ### System Generator
 The Tx and Rx IPs are in separate directories in `rfsoc_radio/boards/ip/sysgen/` that can be opened using the appropriate System Generator dialogue. Due to the large amount of decimation and interpolation in both IPs, simulating the output can take an extraordinarily long time. A less extreme multirate system would simulate much faster! 
 
 ### Vivado
-This project can be built with Vivado from the command line. Open Vivado 2020.2 and execute the following into the tcl console:
+This project can be built with Vivado from the command line. Open Vivado 2024.1 and execute the following into the tcl console:
 
 ```sh
 cd /<repository-location>/boards/<board-name>/rfsoc_radio/
