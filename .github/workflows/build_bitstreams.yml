@@ -11,40 +11,98 @@ on:
         description: "OPTIONAL override: full path to settings64.sh on this runner"
         required: false
         default: ""
+
+  # Only trigger automatically when bitstream inputs change (NOT docs/README edits)
   pull_request:
     branches: [ main, master ]
+    paths:
+      - "ip/**"
+      - "boards/**/rfsoc_radio/rfsoc_radio.tcl"
+      - "boards/**/rfsoc_radio/constraints.xdc"
 
 jobs:
   prep-matrix:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.mk.outputs.matrix }}
+      should_run: ${{ steps.mk.outputs.should_run }}
     steps:
+      - uses: actions/checkout@v4
+
       - id: mk
+        env:
+          GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
+          set -euo pipefail
+
           allowed="ZCU111 ZCU208 ZCU216 RFSoC2x2 RFSoC4x2"
-          boards_in="${{ github.event.inputs.boards }}"
-          if [ -z "$boards_in" ]; then boards_in="RFSoC4x2,ZCU208,ZCU111,ZCU216,RFSoC2x2"; fi
-          if [ "$boards_in" = "all" ]; then
-            boards="$allowed"
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            boards_in="${{ github.event.inputs.boards }}"
+            if [ -z "$boards_in" ]; then boards_in="RFSoC4x2,ZCU208,ZCU111,ZCU216,RFSoC2x2"; fi
+
+            if [ "$boards_in" = "all" ]; then
+              boards="$allowed"
+            else
+              boards="$(echo "$boards_in" | tr ',' ' ')"
+            fi
+
           else
-            boards=$(echo "$boards_in" | tr ',' ' ')
+            pr_number="${{ github.event.pull_request.number }}"
+
+            files="$(gh api "/repos/${{ github.repository }}/pulls/${pr_number}/files" \
+              --paginate --jq '.[].filename')"
+
+            echo "Changed files:"
+            echo "$files"
+
+            # If any shared IP changed, rebuild everything
+            if echo "$files" | grep -qE '^ip/'; then
+              boards="$allowed"
+            else
+              # Otherwise, rebuild only the boards whose TCL/XDC changed
+              boards="$(echo "$files" \
+                | grep -E '^boards/[^/]+/rfsoc_radio/(rfsoc_radio\.tcl|constraints\.xdc)$' \
+                | sed -E 's|^boards/([^/]+)/.*|\1|' \
+                | sort -u || true)"
+            fi
           fi
+
+          # Nothing relevant changed -> skip build job
+          if [ -z "${boards:-}" ]; then
+            echo "No relevant changes detected; skipping build."
+            echo 'matrix={"boards":[]}' >> "$GITHUB_OUTPUT"
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Validate boards list
           for b in $boards; do
-            ok=0; for a in $allowed; do [ "$b" = "$a" ] && ok=1; done
+            ok=0
+            for a in $allowed; do
+              [ "$b" = "$a" ] && ok=1
+            done
             [ $ok -eq 1 ] || (echo "Invalid board: $b. Allowed: $allowed" && exit 1)
           done
-          json='{"boards":['; first=1
+
+          # Build JSON matrix
+          json='{"boards":['
+          first=1
           for b in $boards; do
             [ $first -eq 1 ] || json+=','
-            json+="\"$b\""; first=0
+            json+="\"$b\""
+            first=0
           done
           json+=']}'
+
           echo "matrix=$json" >> "$GITHUB_OUTPUT"
+          echo "should_run=true" >> "$GITHUB_OUTPUT"
+          echo "Matrix: $json"
 
   build-bitstream:
     needs: prep-matrix
+    if: ${{ needs.prep-matrix.outputs.should_run == 'true' }}
     runs-on: [self-hosted, linux, x64]
     strategy:
       fail-fast: false
@@ -84,14 +142,17 @@ jobs:
       - name: Run Vivado Build
         shell: bash
         run: |
+          set -euo pipefail
           source "$VIVADO_SETTINGS_RESOLVED"
-          cd boards/${{ matrix.boards }}/rfsoc_radio/
+          cd "boards/${{ matrix.boards }}/rfsoc_radio/"
           make all
           cd ../../..
 
       - name: Create per-board tarball (in RUNNER_TEMP)
         shell: bash
         run: |
+          set -euo pipefail
+
           TAR="rfsoc_radio_${{ matrix.boards }}_${{ github.sha }}.tar.gz"
           TAR_PATH="${RUNNER_TEMP}/${TAR}"
 
@@ -110,7 +171,7 @@ jobs:
           path: ${{ env.TAR_PATH }}
           retention-days: 7
 
-# Check if it works on hardware
+      # Check if it works on hardware
       - name: Create pending HW check (PR only)
         if: ${{ github.event_name == 'pull_request' }}
         env:
