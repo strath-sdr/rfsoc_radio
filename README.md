@@ -58,14 +58,13 @@ Once installation has complete, you will find the radio demonstrator notebooks l
 ## Using the Project Files
 The following software is required to use the project files in this repository.
 - Vivado Design Suite 2024.1
-- System Generator for DSP
-- MATLAB R2020a
+- System Generator for DSP (MATLAB R2020a with Vivado Design Suite 2020.2)
 
 ### System Generator
 The Tx and Rx IPs are in separate directories in `rfsoc_radio/boards/ip/sysgen/` that can be opened using the appropriate System Generator dialogue. Due to the large amount of decimation and interpolation in both IPs, simulating the output can take an extraordinarily long time. A less extreme multirate system would simulate much faster! 
 
 ### Vivado
-This project can be built with Vivado from the command line. Open Vivado 2020.2 and execute the following into the tcl console:
+This project can be built with Vivado from the command line. Open Vivado 2024.1 and execute the following into the tcl console:
 
 ```sh
 cd /<repository-location>/boards/<board-name>/rfsoc_radio/
